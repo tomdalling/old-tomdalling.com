@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tom Dalling</title>
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans+Mono' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <style type="text/css">
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        body {
+            font-size: 16pt;
+            font-family: 'Roboto', sans-serif;
+        }
+        aside {
+          text-align: center;
+          float: right;
+          width: 300px;
+          background: #aaa;
+          min-height: 100%;
+        }
+        aside ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        main {
+          background: white;
+          margin-right: 300px;
+          overflow: hidden;
+          padding: 10px;
+          min-height: 100%;
+        }
+        table.posts .date {
+            text-align: right;
+            font-family: 'Droid Sans Mono', monospace;
+            font-size: 12pt;
+            font-variant: small-caps;
+        }
+
+        nav {
+          background: red;
+          padding: 20px;
+          overflow: hidden;
+        }
+
+        nav ul {
+          margin: 0;
+          padding: 0;
+          list-style: none;
+        }
+
+        nav > a {
+          float: left;
+        }
+
+        nav li {
+            float: left;
+            margin-left: 20px;
+        }
+    </style>
+  </head>
+  <body>
+    
+    <nav>
+      <a href="#">TomDalling.com</a>
+
+      <ul>
+        <li><a href="#">Writing</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+
+    <aside>
+      <img src="mahface.jpg" width="300"/>
+      <h1>Tom Dalling</h1>
+      <p>Tapping on my keyboards for the pleasure of your eyeballs.</p>
+      <ul>
+        <li><a href="#">Twitter</a></li>
+        <li><a href="#">Github</a></li>
+        <li><a href="#">Email</a></li>
+        <li><a href="#">Stack Overflow</a></li>
+      </ul>
+    </aside>
+
+    <main>
+      <h2>Writing</h2>
+      <table class="posts">
+        <tr>
+          <td class="date">24 FEB 2014</td>
+          <td class="title"><a href="/blog/my-first-post">Explaining Homogenous Coordinates &amp; Projective Geometry</a></td>
+        </tr>
+        <tr>
+          <td class="date">18 APR 2013</td>
+          <td class="title"><a href="#">Modern OpenGL 07 &mdash; More Lighting: Ambient, Specular, Attenuation, Gamma</a></td>
+        </tr>
+        <tr>
+          <td class="date">23 MAR 2013</td>
+          <td class="title"><a href="#">Modern OpenGL 06 &mdash; Diffuse Point Lighting</a></td>
+        </tr>
+      </table>
+    </main>
+
+  </body>
+</html>

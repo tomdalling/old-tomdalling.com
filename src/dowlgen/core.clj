@@ -3,7 +3,11 @@
             [clojure.java.io :as io]
             [clojure.string :as string]
             [hiccup.page :refer [html5]]
+            [net.cgrand.enlive-html :as enlive]
             [stasis.core :as stasis]))
+
+(def input-dir "site")
+(def output-dir "dist")
 
 (defn map-map [key-fn val-fn coll]
   (zipmap (map key-fn (keys coll))
@@ -20,31 +24,33 @@
               :content "width=device-width, initial-scale=1.0"}]
       [:title "Tech blog"]
       [:link {:rel "stylesheet" :href "/styles/styles.css"}]]
-    [:body
-      [:div.logo "cjohansen.no"]
-      [:div.body page]]))
+    [:body page]))
 
-(defn markdown-pages [pages]
-  (map-map #(string/replace % #"\.md$" "/")
+(defn transform-markdown [pages]
+  (map-map #(string/replace % #"\.md$" ".html")
            #(layout-page (markdown/to-html %))
            pages))
 
-(defn partial-pages [pages]
+(defn transform-html [pages]
   (map-vals layout-page pages))
 
+(defn transform-pages* [kw regex f]
+  {kw (f (stasis/slurp-directory input-dir regex))})
+
+(defn transform-pages [& keyword-regex-f-pairs]
+  (->> keyword-regex-f-pairs
+    (partition 3)
+    (map #(apply transform-pages* %))
+    (reduce merge)
+    (stasis/merge-page-sources)))
+
 (defn get-pages []
-  (stasis/merge-page-sources
-    {:public
-     (stasis/slurp-directory "resources/public" #".*\.(html|css|js)$")
-     :partials
-     (partial-pages (stasis/slurp-directory "resources/partials" #".*\.html$"))
-     :markdown
-     (markdown-pages (stasis/slurp-directory "resources/md" #".*\.md$"))}))
+  (transform-pages
+    :html #"\.html$" transform-html
+    :markdown #"\.md$" transform-markdown))
 
 (def app
   (stasis/serve-pages get-pages))
-
-(def export-dir "dist")
 
 (defn export []
   (stasis/empty-directory! export-dir)

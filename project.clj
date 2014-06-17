@@ -4,7 +4,8 @@
                  [me.raynes/cegdown "0.1.1"]
                  [stasis "2.1.1"]
                  [ring "1.3.0"]
-                 [hiccup "1.0.5"]]
+                 [hiccup "1.0.5"]
+                 [enlive "1.1.5"]]
   :ring {:handler dowlgen.core/app}
   :aliases {"build-site" ["run" "-m" "dowlgen.core/export"]}
   :profiles {
