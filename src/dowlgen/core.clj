@@ -4,7 +4,8 @@
             [clojure.string :as string]
             [hiccup.page :refer [html5]]
             [net.cgrand.enlive-html :as enlive]
-            [stasis.core :as stasis]))
+            [stasis.core :as stasis]
+            [sass.core :as sass]))
 
 (def input-dir "site")
 (def output-dir "dist")
@@ -42,7 +43,7 @@
       [:meta {:name "viewport"
               :content "width=device-width, initial-scale=1.0"}]
       [:title (str title " - TomDalling.com")]
-      [:link {:rel "stylesheet" :href "/styles/styles.css"}]]
+      [:link {:rel "stylesheet" :href "/style.css"}]]
     [:body
       [:h1 title]
       page]))
@@ -72,10 +73,19 @@
     (reduce merge)
     (stasis/merge-page-sources)))
 
+(defn compile-scss [scss]
+    (sass/render-string scss :syntax :scss :style :nested))
+
+(defn transform-scss [pages]
+    (map-map #(change-extension % "css")
+             compile-scss
+             pages))
+
 (defn get-pages []
   (transform-pages
     :html #"\.html$" transform-html
-    :blog #"^/blog/.*\.markdown$" transform-blog-posts))
+    :blog #"^/blog/.*\.markdown$" transform-blog-posts
+    :scss  #"^/style.scss$" transform-scss))
 
 (def app
   (stasis/serve-pages get-pages))

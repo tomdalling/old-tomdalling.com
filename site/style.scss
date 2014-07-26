@@ -1,0 +1,9 @@
+$font-stack:    Helvetica, sans-serif;
+$primary-color: #333;
+
+@import 'site/bootstrap-sass/assets/stylesheets/bootstrap.scss';
+
+body {
+  font: 100% $font-stack;
+  color: $primary-color;
+}
