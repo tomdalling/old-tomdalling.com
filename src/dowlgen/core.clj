@@ -8,6 +8,7 @@
 
 (def input-dir "site")
 (def output-dir "dist")
+(def markdown-options [:autolinks :fenced-code-blocks :strikethrough])
 
 (defn map-map [key-fn val-fn coll]
   (zipmap (map key-fn (keys coll))
@@ -16,23 +17,50 @@
 (defn map-vals [f coll]
   (map-map identity f coll))
 
-(defn layout-page [page]
+(defn read-split-frontmatter [s]
+  (try 
+    (let [reader (java.io.PushbackReader. (java.io.StringReader. s))
+          frontmatter (clojure.edn/read reader)]
+      (if (map? frontmatter)
+        [frontmatter (slurp reader)]
+        [nil s]))
+    (catch Exception e [nil s])))
+
+(defn remove-extension [path]
+  (let [dot-idx (.lastIndexOf path ".")]
+    (if (= dot-idx -1)
+      path
+      (.substring path 0 dot-idx))))
+
+(defn change-extension [path extension]
+  (str (remove-extension path) "." extension))
+
+(defn layout-page [page title]
   (html5
     [:head
       [:meta {:charset "utf-8"}]
       [:meta {:name "viewport"
               :content "width=device-width, initial-scale=1.0"}]
-      [:title "Tech blog"]
+      [:title (str title " - TomDalling.com")]
       [:link {:rel "stylesheet" :href "/styles/styles.css"}]]
-    [:body page]))
+    [:body
+      [:h1 title]
+      page]))
 
-(defn transform-markdown [pages]
-  (map-map #(string/replace % #"\.md$" ".html")
-           #(layout-page (markdown/to-html %))
+(defn md->html [md]
+  (markdown/to-html md markdown-options))
+
+(defn blog-post-html [post-md]
+  (let [[frontmatter markdown] (read-split-frontmatter post-md)]
+    (layout-page (md->html markdown) (:title frontmatter))))
+
+(defn transform-blog-posts [pages]
+  (map-map #(str (remove-extension %) "/index.html")
+           blog-post-html
            pages))
 
 (defn transform-html [pages]
-  (map-vals layout-page pages))
+  (map-vals #(layout-page % "Boo") pages))
 
 (defn transform-pages* [kw regex f]
   {kw (f (stasis/slurp-directory input-dir regex))})
@@ -47,14 +75,12 @@
 (defn get-pages []
   (transform-pages
     :html #"\.html$" transform-html
-    :markdown #"\.md$" transform-markdown))
+    :blog #"^/blog/.*\.markdown$" transform-blog-posts))
 
 (def app
   (stasis/serve-pages get-pages))
 
 (defn export []
-  (stasis/empty-directory! export-dir)
-  (stasis/export-pages (get-pages) export-dir))
+  (stasis/empty-directory! output-dir)
+  (stasis/export-pages (get-pages) output-dir))
 
-(defn -main []
-  (println "Hello"))
