@@ -44,23 +44,27 @@ the controller handles actions such as "Delete person", "Add person", "Email
 person", etc. The following example does not use MVC because the model depends
 on the view.
 
-    //Example 1:
-    void Person::setPicture(Picture pict){
-        m_picture = pict; //set the member variable
-        m_listView->reloadData(); //update the view
-    }
+```cpp
+//Example 1:
+void Person::setPicture(Picture pict){
+    m_picture = pict; //set the member variable
+    m_listView->reloadData(); //update the view
+}
+```
 
 The following example uses MVC:
 
-    //Example 2:
-    void Person::setPicture(Picture pict){
-        m_picture = pict; //set the member variable
-    }
+```cpp
+//Example 2:
+void Person::setPicture(Picture pict){
+    m_picture = pict; //set the member variable
+}
 
-    void PersonListController::changePictureAtIndex(Picture newPict, int personIndex){
-        m_personList[personIndex].setPicture(newPict); //modify the model
-        m_listView->reloadData(); //update the view
-    }
+void PersonListController::changePictureAtIndex(Picture newPict, int personIndex){
+    m_personList[personIndex].setPicture(newPict); //modify the model
+    m_listView->reloadData(); //update the view
+}
+```
 
 In the above example, the `Person` class knows nothing about the view. The
 `PersonListController` handles both changing the model, and updating the view.
@@ -104,16 +108,18 @@ specific to `PersonListView`. The developer must modify the `Person` class to
 accommodate the new `PersonPhotoGridView`, and ends up complicating the model
 like so:
 
-    //Example 3:
-    void Person::setPicture(Picture pict){
-        m_picture = pict; //set the member variable
-        if(m_listView){ //check if it's in a list view
-            m_listView->reloadData(); //update the list view
-        }
-        if(m_gridView){ //check if it's in a grid view
-            m_gridView->reloadData(); //update the grid view
-        }
+```cpp
+//Example 3:
+void Person::setPicture(Picture pict){
+    m_picture = pict; //set the member variable
+    if(m_listView){ //check if it's in a list view
+        m_listView->reloadData(); //update the list view
     }
+    if(m_gridView){ //check if it's in a grid view
+        m_gridView->reloadData(); //update the grid view
+    }
+}
+```
 
 As you can see, the model code is starting to turn nasty. If the project
 manager then says *"we're porting the app to a platform with a different GUI
@@ -123,26 +129,28 @@ make a controller and a view with the new toolkit, just as you would with the
 old toolkit. Without MVC, it is a nightmare to support multiple GUI toolkits.
 The code may end up looking like this:
 
-    //Example 4:
-    void Person::setPicture(Picture pict){
-        m_picture = pict;
-    #ifdef ORIGINAL_GUI_TOOLKIT
-        if(m_listView){ //check if it's in a list view
-            m_listView->reloadData(); //update the list view
-        }
-        if(m_gridView){ //check if it's in a grid view
-            m_gridView->reloadData(); //update the grid view
-        }
-    #endif
-    #ifdef NEW_GUI_TOOLKIT
-        if(m_listView){ //check if it's in a list view
-            m_listView->redisplayData(); //update the list view
-        }
-        if(m_gridView){ //check if it's in a grid view
-            m_gridView->redisplayData(); //update the grid view
-        }
-    #endif
+```cpp
+//Example 4:
+void Person::setPicture(Picture pict){
+    m_picture = pict;
+#ifdef ORIGINAL_GUI_TOOLKIT
+    if(m_listView){ //check if it's in a list view
+        m_listView->reloadData(); //update the list view
     }
+    if(m_gridView){ //check if it's in a grid view
+        m_gridView->reloadData(); //update the grid view
+    }
+#endif
+#ifdef NEW_GUI_TOOLKIT
+    if(m_listView){ //check if it's in a list view
+        m_listView->redisplayData(); //update the list view
+    }
+    if(m_gridView){ //check if it's in a grid view
+        m_gridView->redisplayData(); //update the grid view
+    }
+#endif
+}
+```
 
 The `setPicture` method is basically spaghetti code at this point.
 
@@ -152,11 +160,13 @@ Why not put the controller code in the view?
 One solution to the spaghetti code problem in Example 4 is to move the
 controller code from the model to the view like so:
 
-    //Example 5:
-    PersonListView::newPictureClicked(Picture clickedPicture){
-        m_selectedPerson.setPicture(clickedPicture);
-        this->reloadData();
-    }
+```cpp
+//Example 5:
+PersonListView::newPictureClicked(Picture clickedPicture){
+    m_selectedPerson.setPicture(clickedPicture);
+    this->reloadData();
+}
+```
 
 The above example also makes the model reusable, which is the main advantage of
 MVC. When the view will only ever display one type of model object, then
