@@ -73,12 +73,9 @@
     (reduce merge)
     (stasis/merge-page-sources)))
 
-(defn compile-scss [scss]
-    (sass/render-string scss :syntax :scss :style :nested))
-
 (defn transform-scss [pages]
     (map-map #(change-extension % "css")
-             compile-scss
+             #(sass/render-string % :syntax :scss :style :nested)
              pages))
 
 (defn get-pages []

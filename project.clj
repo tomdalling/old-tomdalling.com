@@ -7,6 +7,7 @@
                  [hiccup "1.0.5"]
                  [enlive "1.1.5"]
                  [sass "3.2.6"]]
+  :jvm-opts ["-XX:+CMSClassUnloadingEnabled"]
   :ring {:handler dowlgen.core/app}
   :aliases {"build-site" ["run" "-m" "dowlgen.core/export"]}
   :profiles {
