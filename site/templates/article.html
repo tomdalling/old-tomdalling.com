@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Example Blog Post</title>
+        <link rel="stylesheet" href="http://localhost:3000/style.css" />
+    </head>
+    <body>
+
+        <div class="container">
+
+          <div class="row">
+            <div class="col-md-12">
+                <nav class="navbar navbar-default" role="navigation">
+                  <div class="container-fluid">
+                    <div class="navbar-header">
+                      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                      </button>
+                      <a class="navbar-brand" href="http://www.tomdalling.com/">Tom Dalling</a>
+                    </div>
+
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                      <ul class="nav navbar-nav">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/blog/">Blog</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </nav>
+            </div>
+          </div>
+
+        <div class="row">
+
+          <div class="col-md-8">
+            <main class="post post-single">
+                <header>
+                    <h1><a href="/example-blog-post/">Example Blog Post</a></h1>
+                    <small class="meta">Posted by Tom on 31 May, 2009.</small>
+                </header>
+
+                <p>Short description goes here. This is the part that is shown in
+                a list of posts.</p>
+
+                <!--more-->
+
+                <h2>Example Heading</h2>
+
+                <p>This part appears in the full-length view of a post</p>
+
+                <pre><code class="cpp">//Example 1:
+void Person::setPicture(Picture pict){
+    m_picture = pict; //set the member variable
+    m_listView-&gt;reloadData(); //update the view
+}</code></pre>
+                        
+
+                <footer>
+                    <div class="alert alert-info subscribe-bait">
+                        <p><strong>Enjoy this post?</strong></p>
+                        <a href="<?php bloginfo('rss2_url') ?>" class="btn btn-success">
+                            Subscribe via RSS
+                        </a>
+                        <a href="https://twitter.com/tom_dalling" class="twitter-follow-button" data-show-count="false" data-size="large">Follow @tom_dalling</a>
+                        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+                    </div>
+
+                    <h2>Comments</h2>
+                    <div id="disqus_thread"></div>
+                    <script type="text/javascript">
+                        var disqus_shortname = 'tomdalling';
+                        var disqus_identifier = '3 http://tomdalling.com/?p=3';
+                        var disqus_title = 'Example Blog Post';
+                        var disqus_url = 'http://www.tomdalling.com/blog/example-blog-post/';
+
+                        (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                        })();
+                    </script>
+                    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments.</a></noscript>
+                </footer>
+            </main>
+          </div>
+
+          <div class="col-md-4 sidebar">
+
+            <div class="panel panel-default">
+              <div class="panel-heading">Subscribe</div>
+              <ul class="list-group">
+                <li class="list-group-item">RSS</li>
+                <li class="list-group-item">Twitter</li>
+              </ul>
+            </div>
+
+            <div class="panel panel-default">
+              <div class="panel-heading">Recent Posts</div>
+              <ul class="list-group">
+                <li class="list-group-item">Explaining Homogenous Coordinates &amp; Projective Geometry</li>
+                <li class="list-group-item">Modern OpenGL 07 &mdash; More Lighting: Ambient, Specular, Attenuation, Gamma</li>
+                <li class="list-group-item">Modern OpenGL 06 &mdash; Diffuse Point Lighting</li>
+                <li class="list-group-item">Modern OpenGL 05 &mdash; Model Assets &amp; Instances</li>
+                <li class="list-group-item">Modern OpenGL 04 &mdash; Cameras, Vectors &amp; Input</li>
+              </ul>
+            </div>
+
+            <div class="panel panel-default">
+              <div class="panel-heading">Categories</div>
+              <ul class="list-group">
+                <li class="list-group-item">C++ (1)</li>
+                <li class="list-group-item">Cocoa (13)</li>
+                <li class="list-group-item">Coding Style/Conventions (5)</li>
+                <li class="list-group-item">Coding Tips (6)</li>
+                <li class="list-group-item">Modern OpenGL Series (8)</li>
+                <li class="list-group-item">Random Stuff (4)</li>
+                <li class="list-group-item">Security (2)</li>
+                <li class="list-group-item">Software Design (9)</li>
+                <li class="list-group-item">Software Processes (1)</li>
+                <li class="list-group-item">Web (1)</li>
+              </ul>
+            </div>
+
+            <div class="panel panel-default">
+              <div class="panel-heading">Archives</div>
+              <ul class="list-group">
+                <li class="list-group-item">February 2014 (1)</li>
+                <li class="list-group-item">April 2013 (1)</li>
+                <li class="list-group-item">March 2013 (1)</li>
+                <li class="list-group-item">February 2013 (1)</li>
+                <li class="list-group-item">January 2013 (2)</li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+    </body>
+</html>
