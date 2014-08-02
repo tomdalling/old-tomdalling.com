@@ -9,13 +9,17 @@
             [optimus.prime :as optimus]
             [optimus.strategies :refer [serve-live-assets]]
             [optimus-sass.core]
-            [clojure.data.json :as json]))
+            [clojure.data.json :as json]
+            [clj-time.core :as clj-time]
+            [clj-time.format :as time-format]))
 
 (net.cgrand.reload/auto-reload *ns*)
 
 (def input-dir "resources")
 (def output-dir "dist")
 (def site-url "http://www.tomdalling.com")
+(def markdown-date-formatter (time-format/formatter "yyyy-MM-dd"))
+(def human-date-formatter (time-format/formatter "dd MMM, yyyy"))
 
 (defn map-map [f coll]
   (into {} (map #(apply f %) coll)))
@@ -49,15 +53,21 @@
 (enlive/deftemplate layout-article "templates/article.html" [article]
   [:title] (enlive/content (:title article))
   [:h1] (enlive/content (:title article))
-  [:.post-date] (enlive/content (:date article))
+  [:.post-date] (enlive/content (time-format/unparse human-date-formatter (:date article)))
   [:.post-content] (enlive/html-content (:content article))
   [:script#disqus_script] (enlive/content (disqus-js article))
   [(enlive/attr= :rel "stylesheet")] (enlive/set-attr :href "/style.css")) ;; TODO: get stylesheet url from optimus
 
+(defn make-article [frontmatter content uri]
+  (as-> frontmatter article
+        (assoc article :content content)
+        (assoc article :uri uri)
+        (update-in article [:date] #(time-format/parse blog-date-formatter %))))
+
 (defn blog-post-html [post-md uri]
   (let [[frontmatter md] (read-split-frontmatter post-md)
         content (markdown/to-html md [:autolinks :fenced-code-blocks :strikethrough])
-        article (assoc frontmatter :content content :uri uri)]
+        article (make-article frontmatter content uri)]
     (apply str (layout-article article))))
 
 (defn blog-post [path content]
