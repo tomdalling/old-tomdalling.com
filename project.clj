@@ -6,7 +6,8 @@
                  [ring "1.3.0"]
                  [enlive "1.1.5"]
                  [optimus "0.15.0"]
-                 [optimus-sass "0.0.2"]]
+                 [optimus-sass "0.0.2"]
+                 [org.clojure/data.json "0.2.5"]]
   :ring {:handler dowlgen.core/app}
   :aliases {"build-site" ["run" "-m" "dowlgen.core/export"]}
   :profiles {

@@ -8,12 +8,14 @@
             [optimus.optimizations :as optimizations]
             [optimus.prime :as optimus]
             [optimus.strategies :refer [serve-live-assets]]
-            [optimus-sass.core]))
+            [optimus-sass.core]
+            [clojure.data.json :as json]))
 
 (net.cgrand.reload/auto-reload *ns*)
 
 (def input-dir "resources")
 (def output-dir "dist")
+(def site-url "http://www.tomdalling.com")
 
 (defn map-map [f coll]
   (into {} (map #(apply f %) coll)))
@@ -36,22 +38,32 @@
 (defn change-extension [path extension]
   (str (remove-extension path) "." extension))
 
+;; TODO: need to escape these JS strings
+(defn disqus-js [article]
+  (when (:disqus-id article)
+    (str "var disqus_shortname = 'tomdalling';\n"
+         "var disqus_identifier = " (json/write-str (:disqus-id article)) ";\n"
+         "var disqus_title = " (json/write-str (:title article)) ";\n"
+         "var disqus_url = " (json/write-str (str site-url (:uri article))) ";\n")))
+
 (enlive/deftemplate layout-article "templates/article.html" [article]
   [:title] (enlive/content (:title article))
   [:h1] (enlive/content (:title article))
   [:.post-date] (enlive/content (:date article))
   [:.post-content] (enlive/html-content (:content article))
+  [:script#disqus_script] (enlive/content (disqus-js article))
   [(enlive/attr= :rel "stylesheet")] (enlive/set-attr :href "/style.css")) ;; TODO: get stylesheet url from optimus
 
-(defn blog-post-html [post-md]
+(defn blog-post-html [post-md uri]
   (let [[frontmatter md] (read-split-frontmatter post-md)
         content (markdown/to-html md [:autolinks :fenced-code-blocks :strikethrough])
-        article (assoc frontmatter :content content)]
+        article (assoc frontmatter :content content :uri uri)]
     (apply str (layout-article article))))
 
 (defn blog-post [path content]
-  [(str (remove-extension path) "/index.html")
-   (fn [_] (blog-post-html content))])
+  (let [uri (str (remove-extension path) "/")]
+    [(str uri "index.html")
+     (fn [_] (blog-post-html content uri))]))
 
 (defn transform-pages* [kw regex f]
   {kw (map-map f (stasis/slurp-directory input-dir regex))})
