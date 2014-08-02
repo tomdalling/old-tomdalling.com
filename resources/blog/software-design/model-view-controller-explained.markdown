@@ -26,9 +26,9 @@ The MVC pattern, in a nutshell, is this:
   - The **view** displays the model data, and sends user
     actions (e.g. button clicks) to the controller. The view can:
 
-      - be independent of both the model and the controller; or
+      - <p>be independent of both the model and the controller; or</p>
 
-      - actually *be* the controller, and therefor depend on the model.
+      - <p>actually *be* the controller, and therefor depend on the model.</p>
 
   - The **controller** provides model data to the view, and
     interprets user actions such as button clicks. The controller depends on
