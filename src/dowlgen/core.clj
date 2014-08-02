@@ -1,6 +1,7 @@
 (ns dowlgen.core
   (:require [me.raynes.cegdown :as markdown]
             [net.cgrand.enlive-html :as enlive]
+            [net.cgrand.reload]
             [stasis.core :as stasis]
             [optimus.export]
             [optimus.assets :as assets]
@@ -8,6 +9,8 @@
             [optimus.prime :as optimus]
             [optimus.strategies :refer [serve-live-assets]]
             [optimus-sass.core]))
+
+(net.cgrand.reload/auto-reload *ns*)
 
 (def input-dir "resources")
 (def output-dir "dist")
