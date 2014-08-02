@@ -1,12 +1,7 @@
 (ns dowlgen.core
   (:require [me.raynes.cegdown :as markdown]
-            [clojure.java.io :as io]
-            [clojure.string :as string]
-            [hiccup.page :refer [html5]]
             [net.cgrand.enlive-html :as enlive]
             [stasis.core :as stasis]
-            [sass.core :as sass]
-            [optimus.link :as link]
             [optimus.assets :as assets]
             [optimus.optimizations :as optimizations]
             [optimus.prime :as optimus]
@@ -15,17 +10,9 @@
 
 (def input-dir "resources")
 (def output-dir "dist")
-(def markdown-options [:autolinks :fenced-code-blocks :strikethrough])
 
-(defn map-map [key-fn val-fn coll]
-  (zipmap (map key-fn (keys coll))
-          (map val-fn (vals coll))))
-
-(defn map-map2 [f coll]
+(defn map-map [f coll]
   (into {} (map #(apply f %) coll)))
-
-(defn map-vals [f coll]
-  (map-map identity f coll))
 
 (defn read-split-frontmatter [s]
   (try 
@@ -50,25 +37,20 @@
   [:h1] (enlive/content (:title article))
   [:.post-date] (enlive/content (:date article))
   [:.post-content] (enlive/html-content (:content article))
-  [(enlive/attr= :rel "stylesheet")] (enlive/set-attr :href "/style.css"))
-
-(defn md->html [md]
-  (markdown/to-html md markdown-options))
+  [(enlive/attr= :rel "stylesheet")] (enlive/set-attr :href "/style.css")) ;; TODO: get stylesheet url from optimus
 
 (defn blog-post-html [post-md]
-  (let [[frontmatter markdown] (read-split-frontmatter post-md)]
-    (apply str (layout-article (assoc frontmatter :content (md->html markdown))))))
+  (let [[frontmatter md] (read-split-frontmatter post-md)
+        content (markdown/to-html md [:autolinks :fenced-code-blocks :strikethrough])
+        article (assoc frontmatter :content content)]
+    (apply str (layout-article article))))
 
-(defn transform-blog-posts [path content]
+(defn blog-post [path content]
   [(str (remove-extension path) "/index.html")
    (fn [_] (blog-post-html content))])
 
-(defn transform-scss [path content]
-  [(change-extension path "css")
-   (fn [_] (sass/render-string content :syntax :scss :style :nested))])
-
 (defn transform-pages* [kw regex f]
-  {kw (map-map2 f (stasis/slurp-directory input-dir regex))})
+  {kw (map-map f (stasis/slurp-directory input-dir regex))})
 
 (defn transform-pages [& keyword-regex-f-pairs]
   (->> keyword-regex-f-pairs
@@ -82,8 +64,7 @@
 
 (defn get-pages []
   (transform-pages
-    :blog #"^/blog/.*\.markdown$" transform-blog-posts
-    :scss #"^/style.scss$" transform-scss))
+    :blog #"^/blog/.*\.markdown$" blog-post))
 
 (def app
   (optimus/wrap (stasis/serve-pages get-pages)
