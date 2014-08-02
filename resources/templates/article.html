@@ -39,23 +39,28 @@
             <main class="post post-single">
                 <header>
                     <h1><a href="/example-blog-post/">Example Blog Post</a></h1>
-                    <small class="meta">Posted by Tom on 31 May, 2009.</small>
+                    <small class="meta">
+                        Posted by Tom on
+                        <span class="post-date">31 May, 2009.</span>
+                    </small>
                 </header>
 
-                <p>Short description goes here. This is the part that is shown in
-                a list of posts.</p>
+                <div class="post-content">
+                    <p>Short description goes here. This is the part that is shown in
+                    a list of posts.</p>
 
-                <!--more-->
+                    <!--more-->
 
-                <h2>Example Heading</h2>
+                    <h2>Example Heading</h2>
 
-                <p>This part appears in the full-length view of a post</p>
+                    <p>This part appears in the full-length view of a post</p>
 
-                <pre><code class="cpp">//Example 1:
+                    <pre><code class="cpp">//Example 1:
 void Person::setPicture(Picture pict){
     m_picture = pict; //set the member variable
     m_listView-&gt;reloadData(); //update the view
 }</code></pre>
+                </div>
                         
 
                 <footer>

@@ -48,12 +48,18 @@
       [:h1 title]
       page]))
 
+(enlive/deftemplate layout-article "templates/article.html" [article]
+  [:title] (enlive/content (:title article))
+  [:h1] (enlive/content (:title article))
+  [:span.post-date] (enlive/content (:date article))
+  [:div.post-content] (enlive/html-content (:content article)))
+
 (defn md->html [md]
   (markdown/to-html md markdown-options))
 
 (defn blog-post-html [post-md]
   (let [[frontmatter markdown] (read-split-frontmatter post-md)]
-    (layout-page (md->html markdown) (:title frontmatter))))
+    (apply str (layout-article (assoc frontmatter :content (md->html markdown))))))
 
 (defn transform-blog-posts [pages]
   (map-map #(str (remove-extension %) "/index.html")
