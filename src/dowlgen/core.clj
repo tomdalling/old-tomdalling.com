@@ -5,7 +5,13 @@
             [hiccup.page :refer [html5]]
             [net.cgrand.enlive-html :as enlive]
             [stasis.core :as stasis]
-            [sass.core :as sass]))
+            [sass.core :as sass]
+            [optimus.link :as link]
+            [optimus.assets :as assets]
+            [optimus.optimizations :as optimizations]
+            [optimus.prime :as optimus]
+            [optimus.strategies :refer [serve-live-assets]]
+            [optimus-sass.core]))
 
 (def input-dir "site")
 (def output-dir "dist")
@@ -39,23 +45,12 @@
 (defn change-extension [path extension]
   (str (remove-extension path) "." extension))
 
-(defn layout-page [page title]
-  (html5
-    [:head
-      [:meta {:charset "utf-8"}]
-      [:meta {:name "viewport"
-              :content "width=device-width, initial-scale=1.0"}]
-      [:title (str title " - TomDalling.com")]
-      [:link {:rel "stylesheet" :href "/style.css"}]]
-    [:body
-      [:h1 title]
-      page]))
-
 (enlive/deftemplate layout-article "templates/article.html" [article]
   [:title] (enlive/content (:title article))
   [:h1] (enlive/content (:title article))
-  [:span.post-date] (enlive/content (:date article))
-  [:div.post-content] (enlive/html-content (:content article)))
+  [:.post-date] (enlive/content (:date article))
+  [:.post-content] (enlive/html-content (:content article))
+  [(enlive/attr= :rel "stylesheet")] (enlive/set-attr :href "/style.css"))
 
 (defn md->html [md]
   (markdown/to-html md markdown-options))
@@ -82,13 +77,19 @@
     (reduce merge)
     (stasis/merge-page-sources)))
 
+(defn get-assets []
+  (concat (assets/load-assets "." ["/style.scss"])))
+
 (defn get-pages []
   (transform-pages
     :blog #"^/blog/.*\.markdown$" transform-blog-posts
-    :scss  #"^/style.scss$" transform-scss))
+    :scss #"^/style.scss$" transform-scss))
 
 (def app
-  (stasis/serve-pages get-pages))
+  (optimus/wrap (stasis/serve-pages get-pages)
+                get-assets
+                optimizations/all
+                serve-live-assets))
 
 (defn export []
   (stasis/empty-directory! output-dir)

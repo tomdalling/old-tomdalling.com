@@ -6,7 +6,9 @@
                  [ring "1.3.0"]
                  [hiccup "1.0.5"]
                  [enlive "1.1.5"]
-                 [sass "3.2.6"]]
+                 [sass "3.2.6"]
+                 [optimus "0.15.0"]
+                 [optimus-sass "0.0.2"]]
   :jvm-opts ["-XX:+CMSClassUnloadingEnabled"]
   :ring {:handler dowlgen.core/app}
   :aliases {"build-site" ["run" "-m" "dowlgen.core/export"]}
