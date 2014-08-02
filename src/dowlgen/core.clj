@@ -13,7 +13,7 @@
             [optimus.strategies :refer [serve-live-assets]]
             [optimus-sass.core]))
 
-(def input-dir "site")
+(def input-dir "resources")
 (def output-dir "dist")
 (def markdown-options [:autolinks :fenced-code-blocks :strikethrough])
 
