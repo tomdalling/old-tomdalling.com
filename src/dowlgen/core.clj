@@ -61,6 +61,14 @@
   (map #(apply build-post %)
        (stasis/slurp-directory input-dir #"^/blog/.*\.markdown$")))
 
+(def archive-month-formatter (time-format/formatter "MMM yyyy"))
+
+(defn post-month [post]
+  (time-format/unparse archive-month-formatter (:date post)))
+
+(defn archived-posts []
+  (group-by post-month (get-posts)))
+
 (defn recent-posts [n]
   (take n
     (sort-by :date (get-posts))))
@@ -73,7 +81,10 @@
   [:#disqus_script] (enlive/content (disqus-js post))
   [:ul.recent-posts :li] (enlive/clone-for [post (recent-posts 5)]
                                            [:a] (enlive/do-> (enlive/set-attr :href (:uri post))
-                                                             (enlive/content (:title post)))))
+                                                             (enlive/content (:title post))))
+  [:ul.archives :li] (enlive/clone-for [[month posts] (archived-posts)]
+                                       [:a] (enlive/content (str month " (" (count posts) ")"))))
+
 
 (defn get-assets []
   (concat (assets/load-assets "." ["/style.scss"])))
