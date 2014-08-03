@@ -69,6 +69,9 @@
 (defn archived-posts []
   (group-by post-month (get-posts)))
 
+(defn categorized-posts []
+  (group-by :category (get-posts)))
+
 (defn recent-posts [n]
   (take n
     (sort-by :date (get-posts))))
@@ -83,7 +86,9 @@
                                            [:a] (enlive/do-> (enlive/set-attr :href (:uri post))
                                                              (enlive/content (:title post))))
   [:ul.archives :li] (enlive/clone-for [[month posts] (archived-posts)]
-                                       [:a] (enlive/content (str month " (" (count posts) ")"))))
+                                       [:a] (enlive/content (str month " (" (count posts) ")")))
+  [:ul.categories :li] (enlive/clone-for [[category posts] (categorized-posts)]
+                                         [:a] (enlive/content (str category " (" (count posts) ")"))))
 
 
 (defn get-assets []
