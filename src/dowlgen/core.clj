@@ -77,6 +77,7 @@
     (sort-by :date (get-posts))))
 
 (enlive/deftemplate post-template "templates/post.html" [post]
+  [[:link (enlive/attr= :rel "canonical")]] (enlive/set-attr :href (:uri post))
   [:title] (enlive/content (:title post))
   [:h1] (enlive/content (:title post))
   [:.post-date] (enlive/content (time-format/unparse human-date-formatter (:date post)))
