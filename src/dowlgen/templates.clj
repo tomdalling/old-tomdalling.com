@@ -26,7 +26,8 @@
       (group-by post-month posts))))
 
 (defn categorized-posts [posts]
-  (group-by :category posts))
+  (sort-by first
+    (group-by :category posts)))
 
 (defn recent-posts [posts n]
   (take n
