@@ -57,7 +57,10 @@
        (stasis/slurp-directory input-dir #"^/blog/.*\.markdown$")))
 
 (defn get-assets []
-  (concat (assets/load-assets "." ["/style.scss"])))
+  (concat (assets/load-assets "." ["/style.scss"])
+          (assets/load-bundle "." "all.js"
+                              ["/jquery-1.11.1.js"
+                               "/bootstrap/js/bootstrap.js"])))
 
 (defn get-pages []
   (let [all-posts (get-posts)]

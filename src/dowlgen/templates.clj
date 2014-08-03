@@ -68,3 +68,4 @@
   [:ul.categories :li]
   (clone-for [[category posts] (categorized-posts all-posts)]
              [:a] (content (str category " (" (count posts) ")"))))
+
