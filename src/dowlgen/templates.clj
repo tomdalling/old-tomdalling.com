@@ -13,7 +13,7 @@
 
 (def archive-month-formatter (tformat/formatter "MMM yyyy"))
 
-(defn post-month [post]
+(defn post-yearmonth [post]
   (let [d (:date post)]
     (t/year-month (t/year d) (t/month d))))
 
@@ -23,7 +23,7 @@
 (defn archived-posts [posts]
   (reverse
     (sort-by first
-      (group-by post-month posts))))
+      (group-by post-yearmonth posts))))
 
 (defn categorized-posts [posts]
   (sort-by first
