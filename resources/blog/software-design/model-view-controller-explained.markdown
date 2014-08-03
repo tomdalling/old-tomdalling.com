@@ -15,23 +15,23 @@ What is Model View Controller (MVC)?
 
 In a typical application you will find these three fundamental parts:
 
-  - Data (Model)
-  - An interface to view and modify the data (View)
-  - Operations that can be performed on the data (Controller)
+- Data (Model)
+- An interface to view and modify the data (View)
+- Operations that can be performed on the data (Controller)
 
 The MVC pattern, in a nutshell, is this:
 
-  - The **model** represents the data, and does nothing else.
+1.  The **model** represents the data, and does nothing else.
     The model does NOT depend on the controller or the view.
 
-  - The **view** displays the model data, and sends user
+2.  The **view** displays the model data, and sends user
     actions (e.g. button clicks) to the controller. The view can:
 
-      - <p>be independent of both the model and the controller; or</p>
+    - <p>be independent of both the model and the controller; or</p>
 
-      - <p>actually <strong>be</strong> the controller, and therefor depend on the model.</p>
+    - <p>actually <strong>be</strong> the controller, and therefor depend on the model.</p>
 
-  - The **controller** provides model data to the view, and
+3.  The **controller** provides model data to the view, and
     interprets user actions such as button clicks. The controller depends on
     the view and the model. In some cases, the controller and the view are the
     same object.
