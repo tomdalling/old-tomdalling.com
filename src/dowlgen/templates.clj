@@ -3,20 +3,27 @@
               [deftemplate attr= set-attr content html-content clone-for do->]]
             [net.cgrand.reload]
             [clojure.data.json :as json]
-            [clj-time.core :as clj-time]
-            [clj-time.format :as time-format]))
+            [clj-time.core :as t]
+            [clj-time.format :as tformat]
+            [clj-time.coerce :as tcoerce]))
 
 (net.cgrand.reload/auto-reload *ns*)
 
-(def human-date-formatter (time-format/formatter "dd MMM, yyyy"))
+(def human-date-formatter (tformat/formatter "dd MMM, yyyy"))
 
-(def archive-month-formatter (time-format/formatter "MMM yyyy"))
+(def archive-month-formatter (tformat/formatter "MMM yyyy"))
 
 (defn post-month [post]
-  (time-format/unparse archive-month-formatter (:date post)))
+  (let [d (:date post)]
+    (t/year-month (t/year d) (t/month d))))
+
+(defn unparse-yearmonth [yearmonth]
+  (tformat/unparse-local archive-month-formatter (tcoerce/to-local-date yearmonth)))
 
 (defn archived-posts [posts]
-  (group-by post-month posts))
+  (reverse
+    (sort-by first
+      (group-by post-month posts))))
 
 (defn categorized-posts [posts]
   (group-by :category posts))
@@ -43,7 +50,7 @@
   (content (:title post))
 
   [:.post-date]
-  (content (time-format/unparse human-date-formatter (:date post)))
+  (content (tformat/unparse-local human-date-formatter (:date post)))
 
   [:.post-content]
   (html-content (:content post))
@@ -57,8 +64,9 @@
                         (content (:title post))))
 
   [:ul.archives :li]
-  (clone-for [[month posts] (archived-posts all-posts)]
-             [:a] (content (str month " (" (count posts) ")")))
+  (clone-for [[yearmonth posts] (archived-posts all-posts)]
+             [:a] (content (str (unparse-yearmonth yearmonth)
+                                " (" (count posts) ")")))
 
   [:ul.categories :li]
   (clone-for [[category posts] (categorized-posts all-posts)]

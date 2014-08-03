@@ -10,13 +10,17 @@
             [optimus.prime :as optimus]
             [optimus.strategies :refer [serve-live-assets]]
             [optimus-sass.core]
-            [clj-time.core :as clj-time]
-            [clj-time.format :as time-format]))
+            [clj-time.core :as t]
+            [clj-time.format :as tformat]))
 
 (def input-dir "resources")
 (def output-dir "dist")
 (def site-url "http://www.tomdalling.com")
-(def markdown-date-formatter (time-format/formatter "yyyy-MM-dd"))
+(def frontmatter-date-formatter (tformat/formatter "yyyy-MM-dd"))
+
+(defn frontmatter-date [date-str]
+  (let [datetime (tformat/parse frontmatter-date-formatter date-str)]
+    (t/local-date (t/year datetime) (t/month datetime) (t/day datetime))))
 
 (defn map-map [f coll]
   (into {} (map #(apply f %) coll)))
@@ -46,7 +50,7 @@
       (assoc post :uri (str (remove-extension path) "/"))
       (assoc post :full-url (str site-url (:uri post)))
       (assoc post :content (markdown/to-html md [:autolinks :fenced-code-blocks :strikethrough]))
-      (update-in post [:date] #(time-format/parse markdown-date-formatter %)))))
+      (update-in post [:date] frontmatter-date))))
 
 (defn get-posts []
   (map #(apply build-post %)
