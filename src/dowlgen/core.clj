@@ -42,47 +42,47 @@
 (defn change-extension [path extension]
   (str (remove-extension path) "." extension))
 
-(defn disqus-js [article]
-  (when (:disqus-id article)
+(defn disqus-js [post]
+  (when (:disqus-id post)
     (str "var disqus_shortname = 'tomdalling';\n"
-         "var disqus_identifier = " (json/write-str (:disqus-id article)) ";\n"
-         "var disqus_title = " (json/write-str (:title article)) ";\n"
-         "var disqus_url = " (json/write-str (str site-url (:uri article))) ";\n")))
+         "var disqus_identifier = " (json/write-str (:disqus-id post)) ";\n"
+         "var disqus_title = " (json/write-str (:title post)) ";\n"
+         "var disqus_url = " (json/write-str (str site-url (:uri post))) ";\n")))
 
-(defn build-article [path file-content]
+(defn build-post [path file-content]
   (let [[frontmatter md] (read-split-frontmatter file-content)]
-    (as-> {} article
-      (merge article frontmatter)
-      (assoc article :uri (str (remove-extension path) "/"))
-      (assoc article :content (markdown/to-html md [:autolinks :fenced-code-blocks :strikethrough]))
-      (update-in article [:date] #(time-format/parse markdown-date-formatter %)))))
+    (as-> {} post
+      (merge post frontmatter)
+      (assoc post :uri (str (remove-extension path) "/"))
+      (assoc post :content (markdown/to-html md [:autolinks :fenced-code-blocks :strikethrough]))
+      (update-in post [:date] #(time-format/parse markdown-date-formatter %)))))
 
-(defn get-articles []
-  (map #(apply build-article %)
+(defn get-posts []
+  (map #(apply build-post %)
        (stasis/slurp-directory input-dir #"^/blog/.*\.markdown$")))
 
-(defn recent-articles [n]
+(defn recent-posts [n]
   (take n
-    (sort-by :date (get-articles))))
+    (sort-by :date (get-posts))))
 
-(enlive/deftemplate article-template "templates/article.html" [article]
-  [:title] (enlive/content (:title article))
-  [:h1] (enlive/content (:title article))
-  [:.post-date] (enlive/content (time-format/unparse human-date-formatter (:date article)))
-  [:.post-content] (enlive/html-content (:content article))
-  [:#disqus_script] (enlive/content (disqus-js article))
-  [:ul.recent-posts :li] (enlive/clone-for [article (recent-articles 5)]
-                                           [:a] (enlive/do-> (enlive/set-attr :href (:uri article))
-                                                             (enlive/content (:title article)))))
+(enlive/deftemplate post-template "templates/post.html" [post]
+  [:title] (enlive/content (:title post))
+  [:h1] (enlive/content (:title post))
+  [:.post-date] (enlive/content (time-format/unparse human-date-formatter (:date post)))
+  [:.post-content] (enlive/html-content (:content post))
+  [:#disqus_script] (enlive/content (disqus-js post))
+  [:ul.recent-posts :li] (enlive/clone-for [post (recent-posts 5)]
+                                           [:a] (enlive/do-> (enlive/set-attr :href (:uri post))
+                                                             (enlive/content (:title post)))))
 
 (defn get-assets []
   (concat (assets/load-assets "." ["/style.scss"])))
 
 (defn get-pages []
   (into {}
-    (for [article (get-articles)]
-      [(str (:uri article) "index.html")
-       (apply str (article-template article))])))
+    (for [post (get-posts)]
+      [(str (:uri post) "index.html")
+       (apply str (post-template post))])))
 
 (def app
   (optimus/wrap (stasis/serve-pages get-pages)
