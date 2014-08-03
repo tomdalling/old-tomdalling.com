@@ -49,13 +49,6 @@
          "var disqus_title = " (json/write-str (:title article)) ";\n"
          "var disqus_url = " (json/write-str (str site-url (:uri article))) ";\n")))
 
-(enlive/deftemplate article-template "templates/article.html" [article]
-  [:title] (enlive/content (:title article))
-  [:h1] (enlive/content (:title article))
-  [:.post-date] (enlive/content (time-format/unparse human-date-formatter (:date article)))
-  [:.post-content] (enlive/html-content (:content article))
-  [:#disqus_script] (enlive/content (disqus-js article)))
-
 (defn build-article [path file-content]
   (let [[frontmatter md] (read-split-frontmatter file-content)]
     (as-> {} article
@@ -67,6 +60,20 @@
 (defn get-articles []
   (map #(apply build-article %)
        (stasis/slurp-directory input-dir #"^/blog/.*\.markdown$")))
+
+(defn recent-articles [n]
+  (take n
+    (sort-by :date (get-articles))))
+
+(enlive/deftemplate article-template "templates/article.html" [article]
+  [:title] (enlive/content (:title article))
+  [:h1] (enlive/content (:title article))
+  [:.post-date] (enlive/content (time-format/unparse human-date-formatter (:date article)))
+  [:.post-content] (enlive/html-content (:content article))
+  [:#disqus_script] (enlive/content (disqus-js article))
+  [:ul.recent-posts :li] (enlive/clone-for [article (recent-articles 5)]
+                                           [:a] (enlive/do-> (enlive/set-attr :href (:uri article))
+                                                             (enlive/content (:title article)))))
 
 (defn get-assets []
   (concat (assets/load-assets "." ["/style.scss"])))
