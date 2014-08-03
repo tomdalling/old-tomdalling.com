@@ -1,6 +1,6 @@
 (ns dowlgen.templates
   (:require [net.cgrand.enlive-html :refer
-              [deftemplate attr= set-attr content html-content clone-for do->]]
+              [deftemplate attr= set-attr content html-content clone-for do-> replace-vars text-node]]
             [net.cgrand.reload]
             [clojure.data.json :as json]
             [clj-time.core :as t]
@@ -34,12 +34,6 @@
     (reverse 
       (sort-by :date posts))))
 
-(defn disqus-js [post]
-  (str "var disqus_shortname = 'tomdalling';\n"
-       "var disqus_identifier = " (json/write-str (:disqus-id post)) ";\n"
-       "var disqus_title = " (json/write-str (:title post)) ";\n"
-       "var disqus_url = " (json/write-str (:full-url post)) ";\n"))
-
 (deftemplate post-template "templates/post.html" [post all-posts]
   [[:link (attr= :rel "canonical")]]
   (set-attr :href (:uri post))
@@ -56,8 +50,10 @@
   [:.post-content]
   (html-content (:content post))
 
-  [:#disqus_script]
-  (content (disqus-js post))
+  [:#disqus_script text-node]
+  (replace-vars {:disqus-id (json/write-str (:disqus-id post))
+                 :disqus-title (json/write-str (:title post))
+                 :disqus-url (json/write-str (:full-url post))})
 
   [:ul.recent-posts :li]
   (clone-for [post (recent-posts all-posts 5)]
