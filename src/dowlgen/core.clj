@@ -42,7 +42,6 @@
 (defn change-extension [path extension]
   (str (remove-extension path) "." extension))
 
-;; TODO: need to escape these JS strings
 (defn disqus-js [article]
   (when (:disqus-id article)
     (str "var disqus_shortname = 'tomdalling';\n"
@@ -50,47 +49,33 @@
          "var disqus_title = " (json/write-str (:title article)) ";\n"
          "var disqus_url = " (json/write-str (str site-url (:uri article))) ";\n")))
 
-(enlive/deftemplate layout-article "templates/article.html" [article]
+(enlive/deftemplate article-template "templates/article.html" [article]
   [:title] (enlive/content (:title article))
   [:h1] (enlive/content (:title article))
   [:.post-date] (enlive/content (time-format/unparse human-date-formatter (:date article)))
   [:.post-content] (enlive/html-content (:content article))
-  [:script#disqus_script] (enlive/content (disqus-js article))
-  [(enlive/attr= :rel "stylesheet")] (enlive/set-attr :href "/style.css")) ;; TODO: get stylesheet url from optimus
+  [:#disqus_script] (enlive/content (disqus-js article)))
 
-(defn make-article [frontmatter content uri]
-  (as-> frontmatter article
-        (assoc article :content content)
-        (assoc article :uri uri)
-        (update-in article [:date] #(time-format/parse blog-date-formatter %))))
+(defn build-article [path file-content]
+  (let [[frontmatter md] (read-split-frontmatter file-content)]
+    (as-> {} article
+      (merge article frontmatter)
+      (assoc article :uri (str (remove-extension path) "/"))
+      (assoc article :content (markdown/to-html md [:autolinks :fenced-code-blocks :strikethrough]))
+      (update-in article [:date] #(time-format/parse markdown-date-formatter %)))))
 
-(defn blog-post-html [post-md uri]
-  (let [[frontmatter md] (read-split-frontmatter post-md)
-        content (markdown/to-html md [:autolinks :fenced-code-blocks :strikethrough])
-        article (make-article frontmatter content uri)]
-    (apply str (layout-article article))))
-
-(defn blog-post [path content]
-  (let [uri (str (remove-extension path) "/")]
-    [(str uri "index.html")
-     (fn [_] (blog-post-html content uri))]))
-
-(defn transform-pages* [kw regex f]
-  {kw (map-map f (stasis/slurp-directory input-dir regex))})
-
-(defn transform-pages [& keyword-regex-f-pairs]
-  (->> keyword-regex-f-pairs
-    (partition 3)
-    (map #(apply transform-pages* %))
-    (reduce merge)
-    (stasis/merge-page-sources)))
+(defn get-articles []
+  (map #(apply build-article %)
+       (stasis/slurp-directory input-dir #"^/blog/.*\.markdown$")))
 
 (defn get-assets []
   (concat (assets/load-assets "." ["/style.scss"])))
 
 (defn get-pages []
-  (transform-pages
-    :blog #"^/blog/.*\.markdown$" blog-post))
+  (into {}
+    (for [article (get-articles)]
+      [(str (:uri article) "index.html")
+       (apply str (article-template article))])))
 
 (def app
   (optimus/wrap (stasis/serve-pages get-pages)
