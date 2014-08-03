@@ -23,7 +23,8 @@
 
 (defn recent-posts [posts n]
   (take n
-    (sort-by :date posts)))
+    (reverse 
+      (sort-by :date posts))))
 
 (defn disqus-js [post]
   (str "var disqus_shortname = 'tomdalling';\n"
