@@ -1,7 +1,7 @@
 (ns dowlgen.templates
   (:require [net.cgrand.enlive-html :refer
               [deftemplate defsnippet attr= set-attr content html-content
-              clone-for do-> replace-vars text-node]]
+              clone-for do-> replace-vars text-node append]]
             [net.cgrand.reload]
             [clojure.data.json :as json]
             [clj-time.core :as t]
@@ -70,8 +70,10 @@
   (set-attr :href (:uri post)))
 
 (deftemplate page-template "templates/page.html" [page all-posts]
-  [[:link (attr= :rel "canonical")]]
-  (set-attr :href (:uri page))
+  [:head]
+  (when (:uri page)
+    (append {:tag :link
+             :attrs {:rel "canonical" :href (:uri page)}}))
 
   [:title]
   (content (:title page))
