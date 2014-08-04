@@ -53,8 +53,10 @@
       (update-in post [:date] frontmatter-date))))
 
 (defn get-posts []
-  (map #(apply build-post %)
-       (stasis/slurp-directory input-dir #"^/blog/.*\.markdown$")))
+  (reverse
+    (sort-by :date
+      (map #(apply build-post %)
+           (stasis/slurp-directory input-dir #"^/blog/.*\.markdown$")))))
 
 (defn get-assets []
   (concat (assets/load-assets "." ["/style.scss"])
@@ -65,9 +67,12 @@
 (defn get-pages []
   (let [all-posts (get-posts)]
     (into {}
-      (for [post all-posts]
-        [(str (:uri post) "index.html")
-         (templates/render-post post all-posts)]))))
+      (concat
+        (for [post all-posts]
+          [(str (:uri post) "index.html")
+           (templates/render-post post all-posts)])
+        [["/index.html"
+          (templates/render-post-list all-posts all-posts)]]))))
 
 (def app
   (optimus/wrap (stasis/serve-pages get-pages)

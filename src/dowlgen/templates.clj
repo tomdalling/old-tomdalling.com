@@ -102,3 +102,11 @@
                     :title (:title post)
                     :content (post-single-snippet post)}
                    all-posts)))
+
+(defn render-post-list [listed-posts all-posts]
+  (apply str
+    (page-template {:uri "/" ;; TODO: get uri properly
+                    :title "Post List" ;; TODO: proper title
+                    :content (map post-list-snippet listed-posts)}
+                   all-posts)))
+
