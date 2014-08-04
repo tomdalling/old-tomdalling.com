@@ -35,6 +35,12 @@
     (reverse 
       (sort-by :date posts))))
 
+(defn shortened-content [content]
+  (let [idx (.indexOf content "<!--more-->")]
+    (if (= idx -1)
+      content ;; separator not found, so use whole content
+      (.substring content 0 idx))))
+
 (defsnippet post-single-snippet "templates/post-single.html" [:article] [post]
   [:h1]
   (content (:title post))
@@ -49,6 +55,19 @@
   (replace-vars {:disqus-id (json/write-str (:disqus-id post))
                  :disqus-title (json/write-str (:title post))
                  :disqus-url (json/write-str (:full-url post))}))
+
+(defsnippet post-list-snippet "templates/post-list.html" [:article] [post]
+  [:h2]
+  (content (:title post))
+
+  [:.post-date]
+  (content (tformat/unparse-local human-date-formatter (:date post)))
+
+  [:.post-content]
+  (html-content (shortened-content (:content post)))
+
+  [:a.more]
+  (set-attr :href (:uri post)))
 
 (deftemplate page-template "templates/page.html" [page all-posts]
   [[:link (attr= :rel "canonical")]]
