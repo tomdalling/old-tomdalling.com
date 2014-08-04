@@ -1,6 +1,7 @@
 (ns dowlgen.templates
   (:require [net.cgrand.enlive-html :refer
-              [deftemplate attr= set-attr content html-content clone-for do-> replace-vars text-node]]
+              [deftemplate defsnippet attr= set-attr content html-content
+              clone-for do-> replace-vars text-node]]
             [net.cgrand.reload]
             [clojure.data.json :as json]
             [clj-time.core :as t]
@@ -34,13 +35,7 @@
     (reverse 
       (sort-by :date posts))))
 
-(deftemplate post-template "templates/post.html" [post all-posts]
-  [[:link (attr= :rel "canonical")]]
-  (set-attr :href (:uri post))
-
-  [:title]
-  (content (:title post))
-
+(defsnippet post-single-snippet "templates/post-single.html" [:article] [post]
   [:h1]
   (content (:title post))
 
@@ -53,7 +48,17 @@
   [:#disqus_script text-node]
   (replace-vars {:disqus-id (json/write-str (:disqus-id post))
                  :disqus-title (json/write-str (:title post))
-                 :disqus-url (json/write-str (:full-url post))})
+                 :disqus-url (json/write-str (:full-url post))}))
+
+(deftemplate page-template "templates/page.html" [page all-posts]
+  [[:link (attr= :rel "canonical")]]
+  (set-attr :href (:uri page))
+
+  [:title]
+  (content (:title page))
+
+  [:main]
+  (content (:content page))
 
   [:ul.recent-posts :li]
   (clone-for [post (recent-posts all-posts 5)]
@@ -69,3 +74,9 @@
   (clone-for [[category posts] (categorized-posts all-posts)]
              [:a] (content (str category " (" (count posts) ")"))))
 
+(defn render-post [post all-posts]
+  (apply str
+    (page-template {:uri (:uri post)
+                    :title (:title post)
+                    :content (post-single-snippet post)}
+                   all-posts)))

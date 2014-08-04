@@ -67,7 +67,7 @@
     (into {}
       (for [post all-posts]
         [(str (:uri post) "index.html")
-         (apply str (templates/post-template post all-posts))]))))
+         (templates/render-post post all-posts)]))))
 
 (def app
   (optimus/wrap (stasis/serve-pages get-pages)
