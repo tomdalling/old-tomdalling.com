@@ -42,9 +42,9 @@
       (.substring content 0 idx))))
 
 (defsnippet post-single-snippet "templates/post-single.html" [:article] [post]
-  [:h1]
-  (content (:title post))
-
+  [:h1 :a]
+  (do-> (content (:title post))
+        (set-attr :href (:uri post)))
   [:.post-date]
   (content (tformat/unparse-local human-date-formatter (:date post)))
 
@@ -57,8 +57,9 @@
                  :disqus-url (json/write-str (:full-url post))}))
 
 (defsnippet post-list-snippet "templates/post-list.html" [:article] [post]
-  [:h2]
-  (content (:title post))
+  [:h2 :a]
+  (do-> (content (:title post))
+        (set-attr :href (:uri post)))
 
   [:.post-date]
   (content (tformat/unparse-local human-date-formatter (:date post)))
