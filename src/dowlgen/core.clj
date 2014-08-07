@@ -71,7 +71,7 @@
         (for [post all-posts]
           [(str (:uri post) "index.html")
            (templates/render-post post all-posts)])
-        [["/index.html"
+        [["/blog/index.html"
           (templates/render-post-list all-posts all-posts)]]))))
 
 (def app
