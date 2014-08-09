@@ -1,7 +1,7 @@
 (ns dowlgen.templates
   (:require [net.cgrand.enlive-html :refer
               [deftemplate defsnippet attr= set-attr content html-content
-              clone-for do-> replace-vars text-node append]]
+              clone-for do-> replace-vars text-node append html-snippet]]
             [net.cgrand.reload]
             [clojure.data.json :as json]
             [clj-time.core :as t]
@@ -118,3 +118,9 @@
                     :content (post-list-snippet listed-posts title)}
                    all-posts)))
 
+(defn render-page-html [page-html title all-posts]
+  (apply str
+    (page-template {:uri "/" ;; TODO: get uri properly
+                    :title title
+                    :content (html-snippet page-html)}
+                   all-posts)))

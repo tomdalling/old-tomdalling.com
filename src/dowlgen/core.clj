@@ -60,9 +60,11 @@
 
 (defn get-assets []
   (concat (assets/load-assets "." ["/style.scss"])
+          (assets/load-assets "static" [#"^/images/.*(png|jpg|gif)$"])
           (assets/load-bundle "." "all.js"
                               ["/jquery-1.11.1.js"
                                "/bootstrap/js/bootstrap.js"])))
+
 
 (defn get-pages []
   (let [all-posts (get-posts)]
@@ -72,7 +74,9 @@
           [(str (:uri post) "index.html")
            (templates/render-post post all-posts)])
         [["/blog/index.html"
-          (templates/render-post-list all-posts "All Posts" all-posts)]]))))
+          (templates/render-post-list all-posts "All Posts" all-posts)]
+         ["/index.html"
+          (templates/render-page-html (slurp "resources/pages/home.html") "Home" all-posts)]]))))
 
 (def app
   (optimus/wrap (stasis/serve-pages get-pages)

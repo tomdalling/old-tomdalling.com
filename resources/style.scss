@@ -113,13 +113,22 @@ body {
     }
 }
 
-.sidebar {
-    .panel-heading {
-        font-weight: bold;
-    }
-    .post-count {
-        padding: 0 0.15em;
-    }
+.sidebar .post-count {
+    padding: 0 0.15em;
+}
+
+.twitter-panel-body {
+    height: 555px;
+    overflow: hidden;
+    padding: 0;
+}
+
+.about-me .mugshot {
+    margin: 0 auto 1em;
+}
+
+.panel-heading {
+    font-weight: bold;
 }
 
 h1 a {
