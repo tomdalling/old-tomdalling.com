@@ -94,12 +94,15 @@
 
   [:ul.archives :li]
   (clone-for [[yearmonth posts] (archived-posts all-posts)]
-             [:a] (content (str (unparse-yearmonth yearmonth)
-                                " (" (count posts) ")")))
+             [:a] (set-attr :href "/blog/2014/07/") ;; TODO: use correct href
+             [:.month] (content (str (unparse-yearmonth yearmonth)))
+             [:.post-count] (content (str (count posts))))
 
   [:ul.categories :li]
   (clone-for [[category posts] (categorized-posts all-posts)]
-             [:a] (content (str category " (" (count posts) ")"))))
+             [:a] (set-attr :href "/blog/category/cocoa/") ;; TODO: use correct href
+             [:.category] (content category)
+             [:.post-count] (content (str (count posts)))))
 
 (defn render-post [post all-posts]
   (apply str

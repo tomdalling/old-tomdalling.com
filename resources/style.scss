@@ -113,8 +113,13 @@ body {
     }
 }
 
-.sidebar .panel-heading {
-    font-weight: bold;
+.sidebar {
+    .panel-heading {
+        font-weight: bold;
+    }
+    .post-count {
+        padding: 0 0.15em;
+    }
 }
 
 h1 a {
