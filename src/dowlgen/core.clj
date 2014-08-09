@@ -72,7 +72,7 @@
           [(str (:uri post) "index.html")
            (templates/render-post post all-posts)])
         [["/blog/index.html"
-          (templates/render-post-list all-posts all-posts)]]))))
+          (templates/render-post-list all-posts "All Posts" all-posts)]]))))
 
 (def app
   (optimus/wrap (stasis/serve-pages get-pages)

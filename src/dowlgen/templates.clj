@@ -56,19 +56,24 @@
                  :disqus-title (json/write-str (:title post))
                  :disqus-url (json/write-str (:full-url post))}))
 
-(defsnippet post-list-snippet "templates/post-list.html" [:article] [post]
-  [:h2 :a]
-  (do-> (content (:title post))
-        (set-attr :href (:uri post)))
+(defsnippet post-list-snippet "templates/post-list.html" [:.post-list] [listed-posts title]
+  [:h1]
+  (content title)
 
-  [:.post-date]
-  (content (tformat/unparse-local human-date-formatter (:date post)))
-
-  [:.post-content]
-  (html-content (shortened-content (:content post)))
-
-  [:a.more]
-  (set-attr :href (:uri post)))
+  [:article]
+  (clone-for [post listed-posts]
+             [:h2 :a]
+             (do-> (content (:title post))
+                   (set-attr :href (:uri post)))
+ 
+             [:.post-date]
+             (content (tformat/unparse-local human-date-formatter (:date post)))
+ 
+             [:.post-content]
+             (html-content (shortened-content (:content post)))
+ 
+             [:a.more]
+             (set-attr :href (:uri post))))
 
 (deftemplate page-template "templates/page.html" [page all-posts]
   [:head]
@@ -103,10 +108,10 @@
                     :content (post-single-snippet post)}
                    all-posts)))
 
-(defn render-post-list [listed-posts all-posts]
+(defn render-post-list [listed-posts title all-posts]
   (apply str
     (page-template {:uri "/" ;; TODO: get uri properly
-                    :title "Post List" ;; TODO: proper title
-                    :content (map post-list-snippet listed-posts)}
+                    :title title
+                    :content (post-list-snippet listed-posts title)}
                    all-posts)))
 
