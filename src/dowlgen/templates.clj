@@ -84,7 +84,7 @@
              :attrs {:rel "canonical" :href (:uri page)}}))
 
   [:title]
-  (content (:title page) " - Tom Dalling") ;; TODO: use a em-dash instead of hyphen
+  (content (:title page) (html-snippet " &mdash; Tom Dalling"))
 
   [:main]
   (content (:content page))
