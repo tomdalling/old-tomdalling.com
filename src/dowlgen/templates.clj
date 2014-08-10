@@ -135,35 +135,25 @@
 (defn rss-build-date []
   "Sat, 08 Mar 2014 06:35:32 +0000") ;; TODO: generate proper date
 
-(defn rss-post-item [post]
-  [:item
-    [:title (:title post)]
-    [:link "TODO: put link here"] ;; TODO: proper link
-    [:comments "TODO: linke to comments here"] ;; TODO: proper link
-    [:pubDate (rss-pubdate (:date post))]
-    [:dc:creator [:-cdata "Tom"]]
-    [:category [:-cdata "Modern OpenGL Series"]] ;; TODO: proper category
-    [:guid {:isPermaLink "false"} "http://tomdalling.com/?p=1388"] ;; TODO: proper guid
-    [:description [:-cdata "TODO: item description"]]]) ;; TODO: item description
-
 (defn render-rss [post-list]
   (xml/emit-str
     (xml/sexp-as-element
-      [:rss {"xmlns:content" "http://purl.org/rss/1.0/modules/content/"
-             "xmlns:wfw" "http://wellformedweb.org/CommentAPI/"
-             "xmlns:dc" "http://purl.org/dc/elements/1.1/"
-             "xmlns:atom" "http://www.w3.org/2005/Atom"
-             "xmlns:sy" "http://purl.org/rss/1.0/modules/syndication/"
-             "xmlns:slash" "http://purl.org/rss/1.0/modules/slash/"
-             "version" "2.0"}
-        (concat
+      [:rss {:version "2.0" :xmlns:sy "http://purl.org/rss/1.0/modules/syndication/" :xmlns:atom "http://www.w3.org/2005/Atom"}
+        (conj
           [:channel
             [:title "Tom Dalling"]
-            [:atom:link {:href "http://www.tomdalling.com/feed/" :rel "self" :type "application/rss+xml"}]
             [:link "http://www.tomdalling.com/"]
+            [:atom:link {:href "http://www.tomdalling.com/feed/" :rel "self" :type "application/rss+xml"}]
             [:description "Web & software developer"]
-            [:lastBuildDate (rss-build-date)]
             [:language "en"]
+            [:generator "Tom Dalling's fingertips"]
             [:sy:updatePeriod "daily"]
             [:sy:updateFrequency "1"]]
-          (map rss-post-item post-list))])))
+          (for [post post-list]
+            [:item
+              [:title (:title post)]
+              [:link "TODO: put link here"] ;; TODO: proper link
+              [:description [:-cdata "TODO: item description"]] ;; TODO: item description
+              [:pubDate (rss-pubdate (:date post))]
+              [:category [:-cdata "Modern OpenGL Series"]] ;; TODO: proper category
+              [:guid {:isPermaLink "false"} "http://tomdalling.com/?p=1388"]]))]))) ;; TODO: proper guid
