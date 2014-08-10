@@ -1,4 +1,5 @@
 @import 'bootstrap/css/bootstrap.css';
+@import 'pygments-solarized-dark.css';
 
 body {
     background: white url(theme/bg-pattern.png);
@@ -147,6 +148,15 @@ body {
 
 .panel-heading {
     font-weight: bold;
+}
+
+.highlight {
+    border-radius: 6px;
+    pre {
+        border: none;
+        background-color: transparent;
+        border-radius: 5px;
+    }
 }
 
 h1 a {

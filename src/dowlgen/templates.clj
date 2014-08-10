@@ -1,11 +1,13 @@
 (ns dowlgen.templates
   (:require [net.cgrand.enlive-html :refer
               [deftemplate defsnippet attr= set-attr content html-content
-              clone-for do-> replace-vars text-node append html-snippet]]
+              clone-for do-> replace-vars text-node append html-snippet
+              sniptest select pred]]
             [net.cgrand.reload]
             [clojure.data.json :as json]
             [clojure.data.xml :as xml]
             [clj-time.core :as t]
+            [clygments.core :as clygments]
             [clj-time.format :as tformat]
             [clj-time.coerce :as tcoerce]))
 
@@ -46,6 +48,22 @@
       content ;; separator not found, so use whole content
       (.substring content 0 idx))))
 
+(defn highlight-code [pre-node]
+  (let [code-node (-> pre-node :content first)
+        code (->> code-node :content (apply str))
+        lang (->> code-node :attrs :class keyword)]
+    (assoc (first (html-snippet (clygments/highlight code lang :html)))
+           :attrs {:class "highlight"})))
+
+(defn markdown-code-block? [node]
+  (and (= 1 (-> node :content count)) ;; one child
+       (= :code (-> node :content first :tag)) ;; the child is <code> tag
+       (-> node :content first :attrs :class))) ;; the child must have a class
+
+(defn xform-post-content [content]
+  (sniptest content
+    [[:pre (pred markdown-code-block?)]] highlight-code))
+
 (defsnippet post-single-snippet "templates/post-single.html" [:article] [post]
   [:h1 :a]
   (do-> (content (:title post))
@@ -63,7 +81,7 @@
   (content (tformat/unparse-local human-date-formatter (:date post)))
 
   [:.post-content]
-  (html-content (:content post))
+  (html-content (xform-post-content (:content post)))
 
   [:#disqus_script text-node]
   (replace-vars {:disqus-id (json/write-str (:disqus-id post))
