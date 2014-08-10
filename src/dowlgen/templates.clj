@@ -50,6 +50,11 @@
   [:h1 :a]
   (do-> (content (:title post))
         (set-attr :href (:uri post)))
+
+  [:header :img]
+  (when (:main-image post)
+    (set-attr :src (:main-image post)))
+
   [:.post-date]
   (content (tformat/unparse-local human-date-formatter (:date post)))
 
