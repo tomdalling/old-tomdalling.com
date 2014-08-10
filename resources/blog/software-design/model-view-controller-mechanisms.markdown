@@ -1,7 +1,7 @@
 {:title "Model View Controller Mechanisms"
  :date "2009-06-07"
  :disqus-id "16 http://tomdalling.com/?p=16"
- :category "Software Design"}
+ :category :software-design}
 
 The previous article, [Model View Controller Explained][previous_article],
 explained what MVC is and why it's such a good design pattern.  The model view

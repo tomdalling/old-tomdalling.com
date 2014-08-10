@@ -28,7 +28,7 @@
       (group-by post-yearmonth posts))))
 
 (defn categorized-posts [posts]
-  (sort-by first
+  (sort-by #(:name (first %))
     (group-by :category posts)))
 
 (defn recent-posts [posts n]
@@ -102,8 +102,8 @@
 
   [:ul.categories :li]
   (clone-for [[category posts] (categorized-posts all-posts)]
-             [:a] (set-attr :href "/blog/category/cocoa/") ;; TODO: use correct href
-             [:.category] (content category)
+             [:a] (set-attr :href (str "/blog/category/" (-> category :keyword name) "/"))
+             [:.category] (content (:name category))
              [:.post-count] (content (str (count posts))))
 
   [:.current-year]
@@ -154,6 +154,6 @@
               [:link (str uri-base (:uri post))]
               [:description [:-cdata (post-shortened-content post)]]
               [:pubDate (rss-date-format (:date post))]
-              [:category [:-cdata "Modern OpenGL Series"]] ;; TODO: proper category
+              [:category [:-cdata (-> post :category :name)]]
               [:guid {:isPermaLink "false"} (:disqus-id post)]]))])))
 

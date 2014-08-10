@@ -18,6 +18,13 @@
 (def output-dir "dist")
 (def site-url "http://www.tomdalling.com")
 (def frontmatter-date-formatter (tformat/formatter "yyyy-MM-dd"))
+(def categories {:software-design "Software Design"})
+
+(defn get-category [kw]
+  (let [found (kw categories)]
+    (if found
+      {:keyword kw :name found}
+      (throw (Exception. (str "Category not found: " kw))))))
 
 (defn frontmatter-date [date-str]
   (let [datetime (tformat/parse frontmatter-date-formatter date-str)]
@@ -48,6 +55,7 @@
       (assoc post :uri (str (remove-extension path) "/"))
       (assoc post :full-url (str site-url (:uri post)))
       (assoc post :content (markdown/to-html md [:autolinks :fenced-code-blocks :strikethrough]))
+      (update-in post [:category] get-category)
       (update-in post [:date] frontmatter-date))))
 
 (defn get-posts []

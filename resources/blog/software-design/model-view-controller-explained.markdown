@@ -1,7 +1,7 @@
 {:title "Model View Controller Explained"
  :date "2009-05-31"
  :disqus-id "3 http://tomdalling.com/?p=3"
- :category "Software Design"}
+ :category :software-design}
 
 Model view controller (MVC) is a very useful and popular design pattern. If
 you're writing software, you should know it. Unfortunately it's also one of the
