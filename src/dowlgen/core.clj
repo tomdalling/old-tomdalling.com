@@ -76,7 +76,7 @@
          ["/index.html"
           (templates/render-page-html (slurp "resources/pages/home.html") "Home" "/" all-posts)]
          ["/feed/index.xml"
-          (templates/render-rss (take 10 all-posts))]]))))
+          (templates/render-rss (take 10 all-posts) "http://www.tomdalling.com")]]))))
 
 (defn wrap-utf8 [handler]
   (fn [request]

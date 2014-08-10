@@ -36,8 +36,9 @@
     (reverse 
       (sort-by :date posts))))
 
-(defn shortened-content [content]
-  (let [idx (.indexOf content "<!--more-->")]
+(defn post-shortened-content [post]
+  (let [content (:content post)
+        idx (.indexOf content "<!--more-->")]
     (if (= idx -1)
       content ;; separator not found, so use whole content
       (.substring content 0 idx))))
@@ -71,7 +72,7 @@
              (content (tformat/unparse-local human-date-formatter (:date post)))
  
              [:.post-content]
-             (html-content (shortened-content (:content post)))
+             (html-content (post-shortened-content post))
  
              [:a.more]
              (set-attr :href (:uri post))))
@@ -129,13 +130,11 @@
                     :content (html-snippet page-html)}
                    all-posts)))
 
-(defn rss-pubdate [date]
-  "Sun, 23 Feb 2014 23:14:36 +0000") ;; TODO: generate proper date
+(defn rss-date-format [date]
+  (tformat/unparse (tformat/formatters :rfc822)
+                   (tcoerce/from-long (tcoerce/to-long date))))
 
-(defn rss-build-date []
-  "Sat, 08 Mar 2014 06:35:32 +0000") ;; TODO: generate proper date
-
-(defn render-rss [post-list]
+(defn render-rss [post-list uri-base]
   (xml/emit-str
     (xml/sexp-as-element
       [:rss {:version "2.0" :xmlns:sy "http://purl.org/rss/1.0/modules/syndication/" :xmlns:atom "http://www.w3.org/2005/Atom"}
@@ -152,8 +151,9 @@
           (for [post post-list]
             [:item
               [:title (:title post)]
-              [:link "TODO: put link here"] ;; TODO: proper link
-              [:description [:-cdata "TODO: item description"]] ;; TODO: item description
-              [:pubDate (rss-pubdate (:date post))]
+              [:link (str uri-base (:uri post))]
+              [:description [:-cdata (post-shortened-content post)]]
+              [:pubDate (rss-date-format (:date post))]
               [:category [:-cdata "Modern OpenGL Series"]] ;; TODO: proper category
-              [:guid {:isPermaLink "false"} "http://tomdalling.com/?p=1388"]]))]))) ;; TODO: proper guid
+              [:guid {:isPermaLink "false"} (:disqus-id post)]]))])))
+
