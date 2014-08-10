@@ -55,6 +55,10 @@
   (when (:main-image post)
     (set-attr :src (:main-image post)))
 
+  [:header :a.category]
+  (do-> (set-attr :href (-> post :category :uri))
+        (content (-> post :category :name)))
+
   [:.post-date]
   (content (tformat/unparse-local human-date-formatter (:date post)))
 
@@ -75,6 +79,10 @@
              [:h2 :a]
              (do-> (content (:title post))
                    (set-attr :href (:uri post)))
+
+             [:header :a.category]
+             (do-> (set-attr :href (-> post :category :uri))
+                   (content (-> post :category :name)))
  
              [:.post-date]
              (content (tformat/unparse-local human-date-formatter (:date post)))
