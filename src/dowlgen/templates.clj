@@ -4,6 +4,7 @@
               clone-for do-> replace-vars text-node append html-snippet]]
             [net.cgrand.reload]
             [clojure.data.json :as json]
+            [clojure.data.xml :as xml]
             [clj-time.core :as t]
             [clj-time.format :as tformat]
             [clj-time.coerce :as tcoerce]))
@@ -102,7 +103,10 @@
   (clone-for [[category posts] (categorized-posts all-posts)]
              [:a] (set-attr :href "/blog/category/cocoa/") ;; TODO: use correct href
              [:.category] (content category)
-             [:.post-count] (content (str (count posts)))))
+             [:.post-count] (content (str (count posts))))
+
+  [:.current-year]
+  (content (-> (t/today) t/year str)))
 
 (defn render-post [post all-posts]
   (apply str
@@ -111,16 +115,55 @@
                     :content (post-single-snippet post)}
                    all-posts)))
 
-(defn render-post-list [listed-posts title all-posts]
+(defn render-post-list [listed-posts title uri all-posts]
   (apply str
-    (page-template {:uri "/" ;; TODO: get uri properly
+    (page-template {:uri uri
                     :title title
                     :content (post-list-snippet listed-posts title)}
                    all-posts)))
 
-(defn render-page-html [page-html title all-posts]
+(defn render-page-html [page-html title uri all-posts]
   (apply str
-    (page-template {:uri "/" ;; TODO: get uri properly
+    (page-template {:uri uri
                     :title title
                     :content (html-snippet page-html)}
                    all-posts)))
+
+(defn rss-pubdate [date]
+  "Sun, 23 Feb 2014 23:14:36 +0000") ;; TODO: generate proper date
+
+(defn rss-build-date []
+  "Sat, 08 Mar 2014 06:35:32 +0000") ;; TODO: generate proper date
+
+(defn rss-post-item [post]
+  [:item
+    [:title (:title post)]
+    [:link "TODO: put link here"] ;; TODO: proper link
+    [:comments "TODO: linke to comments here"] ;; TODO: proper link
+    [:pubDate (rss-pubdate (:date post))]
+    [:dc:creator [:-cdata "Tom"]]
+    [:category [:-cdata "Modern OpenGL Series"]] ;; TODO: proper category
+    [:guid {:isPermaLink "false"} "http://tomdalling.com/?p=1388"] ;; TODO: proper guid
+    [:description [:-cdata "TODO: item description"]]]) ;; TODO: item description
+
+(defn render-rss [post-list]
+  (xml/emit-str
+    (xml/sexp-as-element
+      [:rss {"xmlns:content" "http://purl.org/rss/1.0/modules/content/"
+             "xmlns:wfw" "http://wellformedweb.org/CommentAPI/"
+             "xmlns:dc" "http://purl.org/dc/elements/1.1/"
+             "xmlns:atom" "http://www.w3.org/2005/Atom"
+             "xmlns:sy" "http://purl.org/rss/1.0/modules/syndication/"
+             "xmlns:slash" "http://purl.org/rss/1.0/modules/slash/"
+             "version" "2.0"}
+        (concat
+          [:channel
+            [:title "Tom Dalling"]
+            [:atom:link {:href "http://www.tomdalling.com/feed/" :rel "self" :type "application/rss+xml"}]
+            [:link "http://www.tomdalling.com/"]
+            [:description "Web & software developer"]
+            [:lastBuildDate (rss-build-date)]
+            [:language "en"]
+            [:sy:updatePeriod "daily"]
+            [:sy:updateFrequency "1"]]
+          (map rss-post-item post-list))])))

@@ -1,5 +1,6 @@
 (ns dowlgen.core
   (:require [dowlgen.templates :as templates]
+            [ring.util.response]
             [me.raynes.cegdown :as markdown]
             [net.cgrand.enlive-html :as enlive]
             [net.cgrand.reload]
@@ -21,9 +22,6 @@
 (defn frontmatter-date [date-str]
   (let [datetime (tformat/parse frontmatter-date-formatter date-str)]
     (t/local-date (t/year datetime) (t/month datetime) (t/day datetime))))
-
-(defn map-map [f coll]
-  (into {} (map #(apply f %) coll)))
 
 (defn read-split-frontmatter [s]
   (try 
@@ -74,15 +72,25 @@
           [(str (:uri post) "index.html")
            (templates/render-post post all-posts)])
         [["/blog/index.html"
-          (templates/render-post-list all-posts "All Posts" all-posts)]
+          (templates/render-post-list all-posts "All Posts" "/blog/" all-posts)]
          ["/index.html"
-          (templates/render-page-html (slurp "resources/pages/home.html") "Home" all-posts)]]))))
+          (templates/render-page-html (slurp "resources/pages/home.html") "Home" "/" all-posts)]
+         ["/feed/index.xml"
+          (templates/render-rss (take 10 all-posts))]]))))
+
+(defn wrap-utf8 [handler]
+  (fn [request]
+    (let [response (handler request)]
+      (if (= "text/html" (get-in response [:headers "Content-Type"]))
+        (ring.util.response/charset response "UTF-8")
+        response))))
 
 (def app
-  (optimus/wrap (stasis/serve-pages get-pages)
-                get-assets
-                optimizations/all
-                serve-live-assets))
+  (wrap-utf8
+    (optimus/wrap (stasis/serve-pages get-pages)
+                  get-assets
+                  optimizations/all
+                  serve-live-assets)))
 
 (defn export []
   (let [assets (optimizations/all (get-assets) {})]

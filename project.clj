@@ -8,6 +8,7 @@
                  [optimus "0.15.0"]
                  [optimus-sass "0.0.2"]
                  [org.clojure/data.json "0.2.5"]
+                 [org.clojure/data.xml "0.0.7"]
                  [clj-time "0.8.0"]]
   :ring {:handler dowlgen.core/app}
   :aliases {"build-site" ["run" "-m" "dowlgen.core/export"]}
