@@ -73,6 +73,14 @@
                               ["/jquery-1.11.1.js"
                                "/bootstrap/js/bootstrap.js"])))
 
+(defn post-archive-pages [all-posts]
+  (for [[ym posts] (templates/archived-posts all-posts)]
+    (let [uri (templates/archive-uri ym)]
+      [uri (templates/render-post-list posts
+                                       (str "Archives: " (templates/unparse-yearmonth ym))
+                                       uri
+                                       all-posts)])))
+
 (defn post-category-pages [all-posts]
   (for [[category posts] (group-by :category all-posts)]
     [(:uri category)
@@ -86,6 +94,7 @@
     (into {}
       (concat
         (post-category-pages all-posts)
+        (post-archive-pages all-posts)
         (for [post all-posts]
           [(:uri post) (templates/render-post post all-posts)])
         [["/blog/" (templates/render-post-list all-posts "All Posts" "/blog/" all-posts)]

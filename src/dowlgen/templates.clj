@@ -12,12 +12,15 @@
 (net.cgrand.reload/auto-reload *ns*)
 
 (def human-date-formatter (tformat/formatter "dd MMM, yyyy"))
-
-(def archive-month-formatter (tformat/formatter "MMM yyyy"))
+(def archive-month-formatter (tformat/formatter "MMMM yyyy"))
+(def archive-uri-formatter (tformat/formatter "yyyy/MM"))
 
 (defn post-yearmonth [post]
   (let [d (:date post)]
     (t/year-month (t/year d) (t/month d))))
+
+(defn archive-uri [yearmonth]
+  (str "/blog/" (tformat/unparse-local archive-uri-formatter (tcoerce/to-local-date yearmonth)) "/"))
 
 (defn unparse-yearmonth [yearmonth]
   (tformat/unparse-local archive-month-formatter (tcoerce/to-local-date yearmonth)))
@@ -96,7 +99,7 @@
 
   [:ul.archives :li]
   (clone-for [[yearmonth posts] (archived-posts all-posts)]
-             [:a] (set-attr :href "/blog/2014/07/") ;; TODO: use correct href
+             [:a] (set-attr :href (archive-uri yearmonth))
              [:.month] (content (str (unparse-yearmonth yearmonth)))
              [:.post-count] (content (str (count posts))))
 
