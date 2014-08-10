@@ -23,7 +23,9 @@
 (defn get-category [kw]
   (let [found (kw categories)]
     (if found
-      {:keyword kw :name found}
+      {:keyword kw 
+       :name found
+       :uri (str "/blog/category/" (name kw) "/")}
       (throw (Exception. (str "Category not found: " kw))))))
 
 (defn frontmatter-date [date-str]
@@ -71,20 +73,24 @@
                               ["/jquery-1.11.1.js"
                                "/bootstrap/js/bootstrap.js"])))
 
+(defn post-category-pages [all-posts]
+  (for [[category posts] (group-by :category all-posts)]
+    [(:uri category)
+     (templates/render-post-list posts
+                                 (str "Category: " (:name category))
+                                 (:uri category)
+                                 all-posts)]))
 
 (defn get-pages []
   (let [all-posts (get-posts)]
     (into {}
       (concat
+        (post-category-pages all-posts)
         (for [post all-posts]
-          [(str (:uri post) "index.html")
-           (templates/render-post post all-posts)])
-        [["/blog/index.html"
-          (templates/render-post-list all-posts "All Posts" "/blog/" all-posts)]
-         ["/index.html"
-          (templates/render-page-html (slurp "resources/pages/home.html") "Home" "/" all-posts)]
-         ["/feed/index.xml"
-          (templates/render-rss (take 10 all-posts) "http://www.tomdalling.com")]]))))
+          [(:uri post) (templates/render-post post all-posts)])
+        [["/blog/" (templates/render-post-list all-posts "All Posts" "/blog/" all-posts)]
+         ["/" (templates/render-page-html (slurp "resources/pages/home.html") "Home" "/" all-posts)]
+         ["/feed/index.xml" (templates/render-rss (take 10 all-posts) "http://www.tomdalling.com")]]))))
 
 (defn wrap-utf8 [handler]
   (fn [request]

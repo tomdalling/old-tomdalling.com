@@ -102,7 +102,7 @@
 
   [:ul.categories :li]
   (clone-for [[category posts] (categorized-posts all-posts)]
-             [:a] (set-attr :href (str "/blog/category/" (-> category :keyword name) "/"))
+             [:a] (set-attr :href (:uri category))
              [:.category] (content (:name category))
              [:.post-count] (content (str (count posts))))
 
