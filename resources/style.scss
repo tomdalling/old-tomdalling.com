@@ -27,9 +27,10 @@ body {
     margin-bottom: 1em;
     overflow: auto;
 
-    .meta {
-        color: #999;
-    }
+    .meta { color: #999; }
+    h2 { margin-top: 1.5em; }
+    code { white-space: nowrap; }
+    pre code { white-space: pre; }
 
     blockquote.pull-right {
         width: 40%;
@@ -37,14 +38,6 @@ body {
         padding: 0.5em;
         margin-left:1em;
         clear: right;
-    }
-
-    code {
-        white-space: nowrap;
-    }
-
-    pre code {
-        white-space: pre;
     }
 
     p.image {
