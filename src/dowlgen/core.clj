@@ -20,7 +20,8 @@
 (def frontmatter-date-formatter (tformat/formatter "yyyy-MM-dd"))
 (def categories {:software-design "Software Design"
                  :coding-tips "Coding Tips"
-                 :cocoa "Cocoa"})
+                 :cocoa "Cocoa"
+                 :coding-styleconventions "Coding Style/Conventions"})
 
 (defn get-category [kw]
   (let [found (kw categories)]
