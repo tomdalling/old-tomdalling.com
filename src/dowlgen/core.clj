@@ -18,7 +18,9 @@
 (def output-dir "dist")
 (def site-url "http://www.tomdalling.com")
 (def frontmatter-date-formatter (tformat/formatter "yyyy-MM-dd"))
-(def categories {:software-design "Software Design"})
+(def categories {:software-design "Software Design"
+                 :coding-tips "Coding Tips"
+                 :cocoa "Cocoa"})
 
 (defn get-category [kw]
   (let [found (kw categories)]
