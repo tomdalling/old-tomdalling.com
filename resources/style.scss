@@ -32,6 +32,11 @@ body {
     code { white-space: nowrap; }
     pre code { white-space: pre; }
 
+    .footnote-ref {
+        font-size: 0.83em;
+        vertical-align: super;
+    }
+
     blockquote.pull-right {
         width: 40%;
         background: #ffe9aa;
