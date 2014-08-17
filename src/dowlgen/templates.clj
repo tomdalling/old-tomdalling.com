@@ -69,9 +69,20 @@
   (do-> (content (:title post))
         (set-attr :href (:uri post)))
 
-  [:header :img]
+  [:header :.main-image]
   (when (:main-image post)
-    (set-attr :src (:main-image post)))
+    identity)
+
+  [:header :.main-image :.credit]
+  (when (-> post :main-image :artist)
+    identity)
+
+  [:header :.main-image :img]
+  (set-attr :src (-> post :main-image :uri))
+
+  [:header :.main-image :a.artist]
+  (do-> (content (-> post :main-image :artist))
+        (set-attr :href (-> post :main-image :artist-url)))
 
   [:header :a.category]
   (do-> (set-attr :href (-> post :category :uri))
