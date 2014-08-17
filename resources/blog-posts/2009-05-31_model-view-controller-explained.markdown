@@ -1,5 +1,4 @@
 {:title "Model View Controller Explained"
- :main-image "/images/posts/mvc.jpg"
  :disqus-id "3 http://tomdalling.com/?p=3"
  :category :software-design}
 
