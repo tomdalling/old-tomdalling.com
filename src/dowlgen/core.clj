@@ -71,7 +71,7 @@
       (merge post frontmatter)
       (assoc post :uri (str "/blog/" (name (:keyword category)) "/" uri-name "/"))
       (assoc post :full-url (str site-url (:uri post)))
-      (assoc post :content (markdown/to-html md [:autolinks :fenced-code-blocks :strikethrough]))
+      (assoc post :content (markdown/to-html md [:autolinks :fenced-code-blocks :strikethrough :tables]))
       (assoc post :date date)
       (assoc post :category category))))
 
