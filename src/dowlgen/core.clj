@@ -32,6 +32,12 @@
   (let [datetime (tformat/parse frontmatter-date-formatter date-str)]
     (t/local-date (t/year datetime) (t/month datetime) (t/day datetime))))
 
+(defn last-path-component [path]
+  (let [idx (.lastIndexOf path "/")]
+    (if (= idx -1)
+      path
+      (.substring path (inc idx)))))
+
 (defn read-split-frontmatter [s]
   (try 
     (let [reader (java.io.PushbackReader. (java.io.StringReader. s))
@@ -50,21 +56,27 @@
 (defn change-extension [path extension]
   (str (remove-extension path) "." extension))
 
+(defn split-post-filename [fname]
+  (let [[date-str uri-name] (clojure.string/split (last-path-component fname) #"_" 2)]
+    [(frontmatter-date date-str) (remove-extension uri-name)]))
+
 (defn build-post [path file-content]
-  (let [[frontmatter md] (read-split-frontmatter file-content)]
+  (let [[frontmatter md] (read-split-frontmatter file-content)
+        [date uri-name] (split-post-filename path)
+        category (get-category (:category frontmatter))]
     (as-> {} post
       (merge post frontmatter)
-      (assoc post :uri (str (remove-extension path) "/"))
+      (assoc post :uri (str "/blog/" (name (:keyword category)) "/" uri-name "/"))
       (assoc post :full-url (str site-url (:uri post)))
       (assoc post :content (markdown/to-html md [:autolinks :fenced-code-blocks :strikethrough]))
-      (update-in post [:category] get-category)
-      (update-in post [:date] frontmatter-date))))
+      (assoc post :date date)
+      (assoc post :category category))))
 
 (defn get-posts []
   (reverse
     (sort-by :date
       (map #(apply build-post %)
-           (stasis/slurp-directory input-dir #"^/blog/.*\.markdown$")))))
+           (stasis/slurp-directory input-dir #"^/blog-posts/.*\.markdown$")))))
 
 (defn get-assets []
   (concat (assets/load-assets "." ["/style.scss"])

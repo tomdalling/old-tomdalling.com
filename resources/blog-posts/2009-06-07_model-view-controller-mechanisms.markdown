@@ -1,5 +1,4 @@
 {:title "Model View Controller Mechanisms"
- :date "2009-06-07"
  :disqus-id "16 http://tomdalling.com/?p=16"
  :category :software-design}
 
