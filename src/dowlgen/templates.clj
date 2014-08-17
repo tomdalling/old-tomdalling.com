@@ -2,7 +2,7 @@
   (:require [net.cgrand.enlive-html :refer
               [deftemplate defsnippet attr= set-attr content html-content
               clone-for do-> replace-vars text-node append html-snippet
-              sniptest select pred]]
+              sniptest select pred wrap]]
             [net.cgrand.reload]
             [clojure.data.json :as json]
             [clojure.data.xml :as xml]
@@ -62,7 +62,11 @@
 
 (defn xform-post-content [content]
   (sniptest content
-    [[:pre (pred markdown-code-block?)]] highlight-code))
+    [[:pre (pred markdown-code-block?)]]
+    highlight-code
+    
+    [:table]
+    (set-attr :class "table table-hover table-bordered")))
 
 (defsnippet post-single-snippet "templates/post-single.html" [:article] [post]
   [:h1 :a]
