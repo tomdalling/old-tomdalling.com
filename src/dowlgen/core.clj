@@ -22,7 +22,8 @@
                  :coding-tips "Coding Tips"
                  :cocoa "Cocoa"
                  :coding-styleconventions "Coding Style/Conventions"
-                 :software-processes "Software Processes" })
+                 :software-processes "Software Processes"
+                 :web "Web"})
 
 (defn get-category [kw]
   (let [found (kw categories)]
