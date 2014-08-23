@@ -21,7 +21,8 @@
 (def categories {:software-design "Software Design"
                  :coding-tips "Coding Tips"
                  :cocoa "Cocoa"
-                 :coding-styleconventions "Coding Style/Conventions"})
+                 :coding-styleconventions "Coding Style/Conventions"
+                 :software-processes "Software Processes" })
 
 (defn get-category [kw]
   (let [found (kw categories)]
