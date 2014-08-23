@@ -23,7 +23,8 @@
                  :cocoa "Cocoa"
                  :coding-styleconventions "Coding Style/Conventions"
                  :software-processes "Software Processes"
-                 :web "Web"})
+                 :web "Web"
+                 :modern-opengl "Modern OpenGL Series"})
 
 (defn get-category [kw]
   (let [found (kw categories)]
