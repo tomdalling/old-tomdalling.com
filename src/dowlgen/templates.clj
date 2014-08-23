@@ -166,50 +166,55 @@
   (content (-> (t/today) t/year str)))
 
 (defn render-post [post all-posts]
-  (apply str
-    (page-template {:uri (:uri post)
-                    :title (:title post)
-                    :content (post-single-snippet post)}
-                   all-posts)))
+  (fn [_]
+    (apply str
+      (page-template {:uri (:uri post)
+                      :title (:title post)
+                      :content (post-single-snippet post)}
+                     all-posts))))
 
 (defn render-post-list [listed-posts title uri all-posts]
-  (apply str
-    (page-template {:uri uri
-                    :title title
-                    :content (post-list-snippet listed-posts title)}
-                   all-posts)))
+  (fn [_]
+    (apply str
+      (page-template {:uri uri
+                      :title title
+                      :content (post-list-snippet listed-posts title)}
+                     all-posts))))
 
 (defn render-page-html [page-html title uri all-posts]
-  (apply str
-    (page-template {:uri uri
-                    :title title
-                    :content (html-snippet page-html)}
-                   all-posts)))
+  (fn [_]
+    (apply str
+      (page-template {:uri uri
+                      :title title
+                      :content (html-snippet page-html)}
+                     all-posts))))
 
 (defn rss-date-format [date]
-  (tformat/unparse (tformat/formatters :rfc822)
-                   (tcoerce/from-long (tcoerce/to-long date))))
+  (fn [_]
+    (tformat/unparse (tformat/formatters :rfc822)
+                     (tcoerce/from-long (tcoerce/to-long date)))))
 
 (defn render-rss [post-list uri-base]
-  (xml/emit-str
-    (xml/sexp-as-element
-      [:rss {:version "2.0" :xmlns:sy "http://purl.org/rss/1.0/modules/syndication/" :xmlns:atom "http://www.w3.org/2005/Atom"}
-        (conj
-          [:channel
-            [:title "Tom Dalling"]
-            [:link "http://www.tomdalling.com/"]
-            [:atom:link {:href "http://www.tomdalling.com/feed/" :rel "self" :type "application/rss+xml"}]
-            [:description "Web & software developer"]
-            [:language "en"]
-            [:generator "Tom Dalling's fingertips"]
-            [:sy:updatePeriod "daily"]
-            [:sy:updateFrequency "1"]]
-          (for [post post-list]
-            [:item
-              [:title (:title post)]
-              [:link (str uri-base (:uri post))]
-              [:description [:-cdata (post-shortened-content post)]]
-              [:pubDate (rss-date-format (:date post))]
-              [:category [:-cdata (-> post :category :name)]]
-              [:guid {:isPermaLink "false"} (:disqus-id post)]]))])))
+  (fn [_] 
+    (xml/emit-str
+      (xml/sexp-as-element
+        [:rss {:version "2.0" :xmlns:sy "http://purl.org/rss/1.0/modules/syndication/" :xmlns:atom "http://www.w3.org/2005/Atom"}
+          (conj
+            [:channel
+              [:title "Tom Dalling"]
+              [:link "http://www.tomdalling.com/"]
+              [:atom:link {:href "http://www.tomdalling.com/feed/" :rel "self" :type "application/rss+xml"}]
+              [:description "Web & software developer"]
+              [:language "en"]
+              [:generator "Tom Dalling's fingertips"]
+              [:sy:updatePeriod "daily"]
+              [:sy:updateFrequency "1"]]
+            (for [post post-list]
+              [:item
+                [:title (:title post)]
+                [:link (str uri-base (:uri post))]
+                [:description [:-cdata (post-shortened-content post)]]
+                [:pubDate (rss-date-format (:date post))]
+                [:category [:-cdata (-> post :category :name)]]
+                [:guid {:isPermaLink "false"} (:disqus-id post)]]))]))))
 
