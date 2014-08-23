@@ -129,7 +129,7 @@
   (wrap-utf8
     (optimus/wrap (stasis/serve-pages get-pages)
                   get-assets
-                  optimizations/all
+                  (fn [assets _] (optimizations/concatenate-bundles assets))
                   serve-live-assets)))
 
 (defn export []
