@@ -4,6 +4,7 @@
               clone-for do-> replace-vars text-node append html-snippet
               sniptest select pred wrap]]
             [net.cgrand.reload]
+            [me.raynes.cegdown :as markdown]
             [clojure.data.json :as json]
             [clojure.data.xml :as xml]
             [clj-time.core :as t]
@@ -41,12 +42,10 @@
     (reverse 
       (sort-by :date posts))))
 
-(defn post-shortened-content [post]
-  (let [content (:content post)
-        idx (.indexOf content "<!--more-->")]
-    (if (= idx -1)
-      content ;; separator not found, so use whole content
-      (.substring content 0 idx))))
+(defn markdown-code-block? [node]
+  (and (= 1 (-> node :content count)) ;; one child
+       (= :code (-> node :content first :tag)) ;; the child is <code> tag
+       (-> node :content first :attrs :class))) ;; the child must have a class
 
 (defn highlight-code [pre-node]
   (let [code-node (-> pre-node :content first)
@@ -55,18 +54,26 @@
     (assoc (first (html-snippet (clygments/highlight code lang :html)))
            :attrs {:class "highlight"})))
 
-(defn markdown-code-block? [node]
-  (and (= 1 (-> node :content count)) ;; one child
-       (= :code (-> node :content first :tag)) ;; the child is <code> tag
-       (-> node :content first :attrs :class))) ;; the child must have a class
-
 (defn xform-post-content [content]
   (sniptest content
     [[:pre (pred markdown-code-block?)]]
     highlight-code
-    
+
     [:table]
     (set-attr :class "table table-hover table-bordered")))
+
+(defn post-content [post]
+  (-> post
+      :content-markdown
+      (markdown/to-html [:autolinks :fenced-code-blocks :strikethrough :tables])
+      xform-post-content))
+
+(defn post-shortened-content [post]
+  (let [content (post-content post)
+        idx (.indexOf content "<!--more-->")]
+    (if (= idx -1)
+      content ;; separator not found, so use whole content
+      (.substring content 0 idx))))
 
 (defsnippet post-single-snippet "templates/post-single.html" [:article] [post]
   [:h1 :a]
@@ -96,7 +103,7 @@
   (content (tformat/unparse-local human-date-formatter (:date post)))
 
   [:.post-content]
-  (html-content (xform-post-content (:content post)))
+  (html-content (post-content post))
 
   [:#disqus_script text-node]
   (replace-vars {:disqus-id (json/write-str (:disqus-id post))
