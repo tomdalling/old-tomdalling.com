@@ -121,7 +121,8 @@
 (defn wrap-utf8 [handler]
   (fn [request]
     (let [response (handler request)]
-      (if (= "text/html" (get-in response [:headers "Content-Type"]))
+      (if (or (= "text/html" (get-in response [:headers "Content-Type"]))
+              (.endsWith (:uri request) ".xml"))
         (ring.util.response/charset response "UTF-8")
         response))))
 
