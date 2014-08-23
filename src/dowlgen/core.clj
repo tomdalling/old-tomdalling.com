@@ -133,7 +133,10 @@
                   serve-live-assets)))
 
 (defn export []
-  (let [assets (optimizations/all (get-assets) {})]
+  (let [assets (as-> (get-assets) a
+                     (optimizations/all a {})
+                     (remove :bundled a)
+                     (remove #(not (:outdated %)) a))]
     (stasis/empty-directory! output-dir)
     (optimus.export/save-assets assets output-dir)
     (stasis/export-pages (get-pages) output-dir {:optimus-assets assets})))
