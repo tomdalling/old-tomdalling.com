@@ -190,9 +190,8 @@
                      all-posts))))
 
 (defn rss-date-format [date]
-  (fn [_]
-    (tformat/unparse (tformat/formatters :rfc822)
-                     (tcoerce/from-long (tcoerce/to-long date)))))
+  (tformat/unparse (tformat/formatters :rfc822)
+                   (tcoerce/from-long (tcoerce/to-long date))))
 
 (defn render-rss [post-list uri-base]
   (fn [_] 
