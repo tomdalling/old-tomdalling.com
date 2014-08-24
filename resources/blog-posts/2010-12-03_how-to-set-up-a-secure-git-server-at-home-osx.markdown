@@ -42,7 +42,9 @@ DHCP with manual address*. Set the *IPv4 Address* option to an address that
 won't conflict with the DHCP addresses from the router. I'm going to use
 192.168.1.150 as an example of the server's static IP address.
 
-<img src="/images/posts/git-server-osx/static_ip.png" />
+<figure class="naked">
+  <img src="/images/posts/git-server-osx/static_ip.png" />
+</figure>
 
 Remember the *IPv4 Address* setting and the *Router* setting, as these will be
 needed in the next step.
@@ -67,7 +69,9 @@ that you will remember; I'm going to use port 12345 as an example.
 Configure the router so that the external port 12345 is forwarded to the
 internal port 22 of the servers static IP address (set in Step 1), like so:
 
-<img src="/images/posts/git-server-osx/router_config.png" />
+<figure class="naked">
+  <img src="/images/posts/git-server-osx/router_config.png" />
+</figure>
 
 Save the settings on the router.
 
@@ -106,7 +110,9 @@ each client if you wanted, but it's by no means necessary.
 
 Open up *System Preferences &raquo; Accounts* and add a standard user like so:
 
-<img src="/images/posts/git-server-osx/git_user.png" />
+<figure class="naked">
+  <img src="/images/posts/git-server-osx/git_user.png" />
+</figure>
 
 Log into the new *git* user account. Open *Terminal.app* and type the
 following:
@@ -146,7 +152,9 @@ cp my_git_key.pub ~/Desktop
 
 You should see something like this:
 
-<img src="/images/posts/git-server-osx/ssh_key_terminal.png" />
+<figure class="naked">
+  <img src="/images/posts/git-server-osx/ssh_key_terminal.png" />
+</figure>
 
 When it asks you to type in a passphrase I advise you to do so, even though
 it's optional. If someone steals your computer, the passphrase on the key
@@ -170,7 +178,9 @@ First, open up *System Preferences &raquo; Sharing* and turn on *Remote Login*
 (this is ssh). Set *Allow access for* to *Only these users*, and add the *git*
 user to the list. It should look like this:
 
-<img src="/images/posts/git-server-osx/ssh_preferences.png" />
+<figure class="naked">
+  <img src="/images/posts/git-server-osx/ssh_preferences.png" />
+</figure>
 
 Now open *Terminal.app* and type in `sudo open /etc/sshd_config`. When it asks
 you for a password, type in your login password for the account you are
