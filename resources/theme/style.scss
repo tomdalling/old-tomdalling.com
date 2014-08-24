@@ -71,6 +71,13 @@ body {
                 height: auto;
             }
 
+            .MathJax_Display {
+                text-align: center;
+                display: block;
+                font-size: 120%;
+                margin: 1em 0;
+            }
+
             figcaption {
                 margin-top: 1em;
                 padding: 1em;
@@ -93,13 +100,6 @@ body {
                 background: none;
                 border: none;
             }
-        }
-
-        .mathjax-block {
-            text-align: center;
-            display: block;
-            font-size: 120%;
-            margin: 1em 0;
         }
     }
 
