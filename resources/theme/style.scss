@@ -35,7 +35,7 @@ body {
         pre code { white-space: pre; }
         div.highlight pre { color: inherit; } //bootstrap is clobbering this color
 
-        div.highlight, table.table, figure {
+        div.highlight, table.table, figure, div.alert {
             margin: 2em 1em;
         }
 
