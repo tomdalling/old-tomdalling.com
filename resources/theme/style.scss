@@ -28,77 +28,79 @@ body {
     overflow: auto;
 
     .meta { color: #999; }
-    h2 { margin-top: 1.5em; }
 
-    code { white-space: nowrap; }
-    pre code { white-space: pre; }
-    .highlight pre { color: inherit; } //bootstrap is clobbering this color
+    .post-content {
+        h2 { margin-top: 1.5em; }
+        code { white-space: nowrap; }
+        pre code { white-space: pre; }
+        div.highlight pre { color: inherit; } //bootstrap is clobbering this color
 
-    .highlight, table, figure {
-        margin: 2em 1em;
-    }
-
-    .footnote-ref {
-        font-size: 0.83em;
-        vertical-align: super;
-    }
-
-    blockquote.pull-right {
-        width: 40%;
-        background: #ffe9aa;
-        padding: 0.5em;
-        margin-left:1em;
-        clear: right;
-    }
-
-    table {
-        background: white;
-        width: auto;
-    }
-
-    figure {
-        clear: both;
-
-        border-radius: 5px;
-        border: 1px solid #CCDDE6;
-        background: white;
-        text-align: center;
-
-        img {
-            margin: 1em;
-            max-width: 100%;
-            height: auto;
+        div.highlight, table.table, figure {
+            margin: 2em 1em;
         }
 
-        figcaption {
-            margin-top: 1em;
-            padding: 1em;
-            border-top: 1px solid #CCDDE6;
-            background: #EEEEF3;
-            font-style: italic;
-            font-size: small;
+        .footnote-ref {
+            font-size: 0.83em;
+            vertical-align: super;
         }
 
-        &.nopadding img {
-            margin: 0;
+        blockquote.pull-right {
+            width: 40%;
+            background: #ffe9aa;
+            padding: 0.5em;
+            margin-left:1em;
+            clear: right;
         }
 
-        &.black {
-            background: black;
-            border: none;
+        table.table {
+            background: white;
+            width: auto;
         }
 
-        &.naked {
-            background: none;
-            border: none;
-        }
-    }
+        figure {
+            clear: both;
 
-    .mathjax-block {
-        text-align: center;
-        display: block;
-        font-size: 120%;
-        margin: 1em 0;
+            border-radius: 5px;
+            border: 1px solid #CCDDE6;
+            background: white;
+            text-align: center;
+
+            img {
+                margin: 1em;
+                max-width: 100%;
+                height: auto;
+            }
+
+            figcaption {
+                margin-top: 1em;
+                padding: 1em;
+                border-top: 1px solid #CCDDE6;
+                background: #EEEEF3;
+                font-style: italic;
+                font-size: small;
+            }
+
+            &.nopadding img {
+                margin: 0;
+            }
+
+            &.black {
+                background: black;
+                border: none;
+            }
+
+            &.naked {
+                background: none;
+                border: none;
+            }
+        }
+
+        .mathjax-block {
+            text-align: center;
+            display: block;
+            font-size: 120%;
+            margin: 1em 0;
+        }
     }
 
     .subscribe-bait {

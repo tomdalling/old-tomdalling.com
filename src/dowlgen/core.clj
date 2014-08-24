@@ -23,7 +23,8 @@
                  :coding-styleconventions "Coding Style/Conventions"
                  :software-processes "Software Processes"
                  :web "Web"
-                 :modern-opengl "Modern OpenGL Series"})
+                 :modern-opengl "Modern OpenGL Series"
+                 :random-stuff "Miscellaneous"})
 
 (defn get-category [kw]
   (let [found (kw categories)]
