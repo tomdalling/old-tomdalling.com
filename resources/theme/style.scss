@@ -29,8 +29,9 @@ body {
 
     .meta { color: #999; }
     h2 { margin-top: 1.5em; }
+
     code { white-space: nowrap; }
-    pre code { white-space: pre; }
+    .highlight { margin: 2em 1em; }
     .highlight pre { color: inherit; } //bootstrap is clobbering this color
 
     .footnote-ref {
@@ -52,7 +53,7 @@ body {
 
     figure {
         clear: both;
-        margin: 2em 0;
+        margin: 2em 1em;
 
         border-radius: 5px;
         border: 1px solid #CCDDE6;
@@ -65,6 +66,15 @@ body {
             height: auto;
         }
 
+        figcaption {
+            margin-top: 1em;
+            padding: 1em;
+            border-top: 1px solid #CCDDE6;
+            background: #EEEEF3;
+            font-style: italic;
+            font-size: small;
+        }
+
         &.nopadding img {
             margin: 0;
         }
@@ -74,13 +84,9 @@ body {
             border: none;
         }
 
-        figcaption {
-            margin-top: 1em;
-            padding: 1em;
-            border-top: 1px solid #CCDDE6;
-            background: #EEEEF3;
-            font-style: italic;
-            font-size: small;
+        &.naked {
+            background: none;
+            border: none;
         }
     }
 
