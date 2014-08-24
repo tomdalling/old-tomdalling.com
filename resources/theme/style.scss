@@ -2,7 +2,7 @@
 @import 'pygments-solarized-dark.css';
 
 body {
-    background: white url(theme/bg-pattern.png);
+    background: white url(images/bg-pattern.png);
 
     pre {
         white-space: pre;
@@ -207,15 +207,5 @@ h1, h2, h3, h4 {
 
 h1 {
     font-weight: bold;
-}
-
-.hero-unit {
-    background: url(theme/front-banner.jpg) left center no-repeat;
-}
-
-.amp {
-    font-family: Baskerville, 'Goudy Old Style', Palatino, 'Book Antiqua', serif;
-    font-style: italic;
-    font-weight: normal;
 }
 

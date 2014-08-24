@@ -84,11 +84,9 @@
            (stasis/slurp-directory input-dir #"^/blog-posts/.*\.markdown$")))))
 
 (defn get-assets []
-  (concat (assets/load-assets "." ["/style.scss"])
+  (concat (assets/load-assets "theme" ["/style.scss"])
           (assets/load-assets "static" [#"^/images/.*(png|jpg|gif)$"])
-          (assets/load-bundle "." "all.js"
-                              ["/jquery-1.11.1.js"
-                               "/bootstrap/js/bootstrap.js"])))
+          (assets/load-bundle "js" "all.js" ["/jquery-1.11.1.js" #".*\.js"])))
 
 (defn post-archive-pages [all-posts]
   (for [[ym posts] (templates/archived-posts all-posts)]
