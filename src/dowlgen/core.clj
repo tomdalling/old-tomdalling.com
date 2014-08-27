@@ -60,6 +60,9 @@
          :uri (str "/blog/category/" (name kw) "/")}
         (throw (Exception. (str "Category not found: " kw)))))))
 
+(defn all-categories []
+  (map get-category (keys categories)))
+
 (defn frontmatter-date [date-str]
   (let [datetime (tformat/parse frontmatter-date-formatter date-str)]
     (t/local-date (t/year datetime) (t/month datetime) (t/day datetime))))
@@ -135,12 +138,22 @@
                                  (:uri category)
                                  all-posts)]))
 
+(defn category-filter [category posts]
+  (filter #(= category (:category %)) posts))
+
+(defn category-rss-feeds [all-categories posts]
+  (for [category all-categories]
+    [(str (:uri category) "feed/index.xml")
+     (templates/render-rss (take 10 (category-filter category posts))
+                           "http://www.tomdalling.com")]))
+
 (defn get-pages []
   (let [all-posts (get-posts)]
     (into {}
       (concat
         (post-category-pages all-posts)
         (post-archive-pages all-posts)
+        (category-rss-feeds (all-categories) all-posts)
         (for [post all-posts]
           [(:uri post) (templates/render-post post all-posts)])
         [["/blog/" (templates/render-post-list all-posts "All Posts" "/blog/" all-posts)]
