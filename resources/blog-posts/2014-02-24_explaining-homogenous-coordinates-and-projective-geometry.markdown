@@ -1,8 +1,8 @@
 {:title "Explaining Homogenous Coordinates & Projective Geometry"
  :disqus-id "1388 http://tomdalling.com/?p=1388"
  :main-image {:uri "/images/posts/explaining-homogenous-coordinates/main-image.png"
-              :artist "Joachim Baecker"
-              :artist-url "http://commons.wikimedia.org/wiki/File:Zentralprojektion.jpg"}
+              :artist {:name "Joachim Baecker"
+                       :url "http://commons.wikimedia.org/wiki/File:Zentralprojektion.jpg"}}
  :category :modern-opengl}
 
 In this article I'm going to explain homogenous coordinates (a.k.a. 4D

@@ -1,7 +1,7 @@
 {:title "SOLID Class Design: The Open Closed Principle"
  :main-image {:uri "/images/posts/ocp.jpg"
-              :artist "Derick Bailey"
-              :artist-url "http://www.lostechies.com/blogs/derickbailey/archive/2009/02/11/solid-development-principles-in-motivational-pictures.aspx"}
+              :artist {:name "Derick Bailey"
+                       :url "http://www.lostechies.com/blogs/derickbailey/archive/2009/02/11/solid-development-principles-in-motivational-pictures.aspx"}}
  :disqus-id "245 http://tomdalling.com/?p=245"
  :category :software-design}
 

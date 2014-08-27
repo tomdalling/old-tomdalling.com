@@ -92,8 +92,8 @@
   (set-attr :src (-> post :main-image :uri))
 
   [:header :.main-image :a.artist]
-  (do-> (content (-> post :main-image :artist))
-        (set-attr :href (-> post :main-image :artist-url)))
+  (do-> (content (-> post :main-image :artist :name))
+        (set-attr :href (-> post :main-image :artist :url)))
 
   [:header :a.category]
   (do-> (set-attr :href (-> post :category :uri))

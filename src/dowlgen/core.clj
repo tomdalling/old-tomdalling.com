@@ -33,6 +33,11 @@
    :name schema/Str
    :uri schema/Str})
 
+(def Artist
+  "schema for artists of main images"
+  {:name schema/Str
+   :url schema/Str})
+
 (def Post
   "A schema for blog posts"
   {:title schema/Str
@@ -41,8 +46,7 @@
    :disqus-id schema/Str
    :draft schema/Bool
    :main-image (schema/maybe {:uri schema/Str
-                              (schema/optional-key :artist) schema/Str
-                              (schema/optional-key :artist-url) schema/Str})
+                              (schema/optional-key :artist) Artist})
    :content-markdown schema/Str
    :uri schema/Str
    :full-url schema/Str})
