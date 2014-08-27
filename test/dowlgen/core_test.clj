@@ -18,3 +18,10 @@
   (change-extension "moo.jpg" "exe")      => "moo.exe"
   (change-extension "moo.tar.bz2" "blam") => "moo.tar.blam"
   (change-extension "moo" "cat")          => "moo.cat")
+
+(facts "about get-posts"
+  (let [posts (get-posts)]
+    (fact "each post has a unique :disqus-id"
+      (->> posts (map :disqus-id) set count) => (count posts))
+    (fact "each post has a unique :uri"
+      (->> posts (map :uri) set count) => (count posts))))
