@@ -24,4 +24,7 @@
     (fact "each post has a unique :disqus-id"
       (->> posts (map :disqus-id) set count) => (count posts))
     (fact "each post has a unique :uri"
-      (->> posts (map :uri) set count) => (count posts))))
+      (->> posts (map :uri) set count) => (count posts))
+    (fact "each post has a <!--more--> separator"
+      (doseq [p posts]
+        [(:uri p) (-> p :content-markdown (.indexOf "<!--more-->") (= -1))] => [(:uri p) false]))))

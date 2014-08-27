@@ -29,3 +29,4 @@ Don't feel bad. It's a common mistake. I used to do it until Rob Napier
 
 [schooled me]: http://stackoverflow.com/questions/1937685/static-nsstring-usage-vs-inline-nsstring-constants/1937727#1937727 "Static NSString usage vs inline NSString constants"
 
+<!--more-->
