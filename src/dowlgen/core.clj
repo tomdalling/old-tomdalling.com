@@ -4,6 +4,7 @@
             [net.cgrand.enlive-html :as enlive]
             [net.cgrand.reload]
             [stasis.core :as stasis]
+            [schema.core :as schema]
             [optimus.export]
             [optimus.assets :as assets]
             [optimus.optimizations :as optimizations]
@@ -26,13 +27,34 @@
                  :modern-opengl "Modern OpenGL Series"
                  :random-stuff "Miscellaneous"})
 
+(def Category
+  "schema for categories"
+  {:keyword schema/Keyword
+   :name schema/Str
+   :uri schema/Str})
+
+(def Post
+  "A schema for blog posts"
+  {:title schema/Str
+   :date org.joda.time.LocalDate
+   :category Category
+   :disqus-id schema/Str
+   :draft schema/Bool
+   :main-image (schema/maybe {:uri schema/Str
+                              (schema/optional-key :artist) schema/Str
+                              (schema/optional-key :artist-url) schema/Str})
+   :content-markdown schema/Str
+   :uri schema/Str
+   :full-url schema/Str})
+
 (defn get-category [kw]
-  (let [found (kw categories)]
-    (if found
-      {:keyword kw 
-       :name found
-       :uri (str "/blog/category/" (name kw) "/")}
-      (throw (Exception. (str "Category not found: " kw))))))
+  (schema/validate Category
+    (let [found (kw categories)]
+      (if found
+        {:keyword kw
+         :name found
+         :uri (str "/blog/category/" (name kw) "/")}
+        (throw (Exception. (str "Category not found: " kw)))))))
 
 (defn frontmatter-date [date-str]
   (let [datetime (tformat/parse frontmatter-date-formatter date-str)]
@@ -67,16 +89,20 @@
     [(frontmatter-date date-str) (remove-extension uri-name)]))
 
 (defn build-post [path file-content]
-  (let [[frontmatter md] (read-split-frontmatter file-content)
-        [date uri-name] (split-post-filename path)
-        category (get-category (:category frontmatter))]
-    (as-> {} post
-      (merge post frontmatter)
-      (assoc post :uri (str "/blog/" (name (:keyword category)) "/" uri-name "/"))
-      (assoc post :full-url (str site-url (:uri post)))
-      (assoc post :content-markdown md)
-      (assoc post :date date)
-      (assoc post :category category))))
+  (schema/validate Post
+    (let [[frontmatter md] (read-split-frontmatter file-content)
+          [date uri-name] (split-post-filename path)
+          category (get-category (:category frontmatter))]
+      (as-> {} post
+        (assoc post :title (:title frontmatter))
+        (assoc post :disqus-id (:disqus-id frontmatter))
+        (assoc post :main-image (:main-image frontmatter))
+        (assoc post :draft (boolean (:draft frontmatter)))
+        (assoc post :uri (str "/blog/" (name (:keyword category)) "/" uri-name "/"))
+        (assoc post :full-url (str site-url (:uri post)))
+        (assoc post :content-markdown md)
+        (assoc post :date date)
+        (assoc post :category category)))))
 
 (defn get-posts []
   (reverse
