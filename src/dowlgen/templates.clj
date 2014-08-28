@@ -201,7 +201,7 @@
   (tformat/unparse (tformat/formatters :rfc822)
                    (tcoerce/from-long (tcoerce/to-long date))))
 
-(defn render-rss [post-list uri-base]
+(defn render-rss [post-list uri-base feed-uri]
   (fn [_] 
     (xml/emit-str
       (xml/sexp-as-element
@@ -209,8 +209,10 @@
           (conj
             [:channel
               [:title "Tom Dalling"]
-              [:link "http://www.tomdalling.com/"]
-              [:atom:link {:href "http://www.tomdalling.com/feed/" :rel "self" :type "application/rss+xml"}]
+              [:link (str uri-base "/?utm_source=rss&utm_medium=rss")]
+              [:atom:link {:href (str uri-base feed-uri)
+                           :rel "self"
+                           :type "application/rss+xml"}]
               [:description "Web & software developer"]
               [:language "en"]
               [:generator "Tom Dalling's fingertips"]

@@ -150,7 +150,8 @@
   (for [category all-categories]
     [(str (:uri category) "feed/index.xml")
      (templates/render-rss (take 10 (category-filter category posts))
-                           "http://www.tomdalling.com")]))
+                           "http://www.tomdalling.com"
+                           (str (:uri category) "feed/"))]))
 
 (defn strict-get [m k]
   (if-let [[k v] (find m k)]
@@ -173,7 +174,7 @@
           [(:uri post) (templates/render-post post all-posts)])
         [["/blog/" (templates/render-post-list (take 10 all-posts) "Recent Posts" "/blog/" "/blog/feed/" all-posts)]
          ["/" (templates/render-page-html (slurp "resources/pages/home.html") "Home" "/" all-posts)]
-         ["/blog/feed/index.xml" (templates/render-rss (take 10 all-posts) "http://www.tomdalling.com")]]))))
+         ["/blog/feed/index.xml" (templates/render-rss (take 10 all-posts) "http://www.tomdalling.com" "/blog/feed/")]]))))
 
 (defn get-pages []
   (duplicate-pages (get-original-pages)
