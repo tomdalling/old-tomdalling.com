@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>Archives: May 2010 — Tom Dalling</title>
+    <link href="/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  <link rel="canonical" href="/blog/2010/05/" /></head>
+
+  <body>
+
+    <div class="container">
+
+      <div class="row">
+        <div class="col-md-12">
+          <nav role="navigation" class="navbar navbar-default">
+            <div class="container-fluid">
+              <div class="navbar-header">
+                <button data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" class="navbar-toggle" type="button">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+                <a href="/" class="navbar-brand">Tom Dalling</a>
+              </div>
+
+              <div id="bs-example-navbar-collapse-1" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                  <li><a href="/">Home</a></li>
+                  <li><a href="/blog/">Blog</a></li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <main class="col-md-8"><div class="post-list">
+  <h1>
+    <span class="title">Archives: May 2010</span>
+    <a title="RSS feed" class="rss" href="/blog/feed/">
+      <i class="fa fa-rss"></i>
+    </a>
+  </h1>
+
+  <article class="post post-listed">
+    <header>
+      <h2><a href="/blog/cocoa/why-performselector-is-more-dangerous-than-i-thought/">Why performSelector: Is More Dangerous Than I Thought</a></h2>
+      <small class="meta">
+        <span class="post-date">14 May, 2010</span>
+        —
+        Category: <a href="/blog/category/cocoa/" class="category">Cocoa</a>
+      </small>
+    </header>
+
+    <img src="" class="listed-main-image" />
+
+    <div class="post-content"><p>I fixed a rather nasty bug today in <a href="http://github.com/tomdalling/AspectObjectiveC">AspectObjectiveC</a>. One particular unit test would crash with <code>EXC_BAD_ACCESS</code> every time. After learning far more about registers and ABIs than I ever wanted to know (thanks, <a href="http://www.sealiesoftware.com/blog/archive/2008/10/30/objc_explain_objc_msgSend_stret.html" title="[objc explain]: objc_msgSend_stret">Greg Parker</a>), it dawned on me that <code>performSelector:</code> <strong>was corrupting memory</strong>. It was particularly hard to track down because the crash would happen a couple of lines <em>after</em> the call to <code>performSelector:</code>, when the corrupted memory was actually accessed.</p><p>I've never had a problem with <code>performSelector:</code> before, but this time I was using it a little differently. The return value of the selector was an <code>NSRect</code>. </p><p>Now for the gory explanation.</p>
+</div>
+
+    <footer>
+      <a href="/blog/cocoa/why-performselector-is-more-dangerous-than-i-thought/" class="btn btn-default more">
+        Read full post <i class="fa fa-angle-double-right"></i>
+      </a>
+    </footer>
+  </article>
+</div></main>
+
+        <div class="col-md-4 sidebar">
+
+          <div class="panel panel-default">
+            <div class="panel-heading">Subscribe</div>
+            <ul class="list-group">
+              <li class="list-group-item">
+                <a href="/blog/feed/">
+                  <i class="fa fa-rss"></i> RSS
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="https://twitter.com/tom_dalling">
+                  <i class="fa fa-twitter"></i> Twitter
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">Recent Posts</div>
+            <ul class="list-group recent-posts">
+              <li class="list-group-item">
+                <a href="/blog/modern-opengl/explaining-homogenous-coordinates-and-projective-geometry/">Explaining Homogenous Coordinates &amp; Projective Geometry</a>
+              </li><li class="list-group-item">
+                <a href="/blog/modern-opengl/07-more-lighting-ambient-specular-attenuation-gamma/">Modern OpenGL 07 – More Lighting: Ambient, Specular, Attenuation, Gamma</a>
+              </li><li class="list-group-item">
+                <a href="/blog/modern-opengl/06-diffuse-point-lighting/">Modern OpenGL 06 – Diffuse Point Lighting</a>
+              </li><li class="list-group-item">
+                <a href="/blog/modern-opengl/05-model-assets-and-instances/">Modern OpenGL 05 – Model Assets &amp; Instances</a>
+              </li><li class="list-group-item">
+                <a href="/blog/modern-opengl/04-cameras-vectors-and-input/">Modern OpenGL 04 - Cameras, Vectors &amp; Input</a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">Blog Categories</div>
+            <ul class="list-group categories">
+              <li class="list-group-item">
+                <a class="category" href="/blog/category/cocoa/">Cocoa</a>
+                (<span class="post-count">5</span>
+                <a href="/blog/category/cocoa/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li><li class="list-group-item">
+                <a class="category" href="/blog/category/coding-styleconventions/">Coding Style/Conventions</a>
+                (<span class="post-count">3</span>
+                <a href="/blog/category/coding-styleconventions/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li><li class="list-group-item">
+                <a class="category" href="/blog/category/coding-tips/">Coding Tips</a>
+                (<span class="post-count">4</span>
+                <a href="/blog/category/coding-tips/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li><li class="list-group-item">
+                <a class="category" href="/blog/category/random-stuff/">Miscellaneous</a>
+                (<span class="post-count">1</span>
+                <a href="/blog/category/random-stuff/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li><li class="list-group-item">
+                <a class="category" href="/blog/category/modern-opengl/">Modern OpenGL Series</a>
+                (<span class="post-count">8</span>
+                <a href="/blog/category/modern-opengl/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li><li class="list-group-item">
+                <a class="category" href="/blog/category/software-design/">Software Design</a>
+                (<span class="post-count">8</span>
+                <a href="/blog/category/software-design/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li><li class="list-group-item">
+                <a class="category" href="/blog/category/software-processes/">Software Processes</a>
+                (<span class="post-count">1</span>
+                <a href="/blog/category/software-processes/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li><li class="list-group-item">
+                <a class="category" href="/blog/category/web/">Web</a>
+                (<span class="post-count">1</span>
+                <a href="/blog/category/web/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li>
+            </ul>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">Blog Archives</div>
+            <ul class="list-group archives">
+              <li class="list-group-item">
+                <a class="month" href="/blog/2014/02/">February 2014</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2013/04/">April 2013</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2013/03/">March 2013</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2013/02/">February 2013</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2013/01/">January 2013</a>
+                (<span class="post-count">2</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2012/12/">December 2012</a>
+                (<span class="post-count">2</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2012/11/">November 2012</a>
+                (<span class="post-count">2</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2012/07/">July 2012</a>
+                (<span class="post-count">2</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2012/05/">May 2012</a>
+                (<span class="post-count">2</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2012/03/">March 2012</a>
+                (<span class="post-count">2</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2011/12/">December 2011</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2010/12/">December 2010</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2010/11/">November 2010</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2010/05/">May 2010</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2010/04/">April 2010</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2010/02/">February 2010</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2009/12/">December 2009</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2009/11/">November 2009</a>
+                (<span class="post-count">3</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2009/10/">October 2009</a>
+                (<span class="post-count">2</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2009/07/">July 2009</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2009/06/">June 2009</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2009/05/">May 2009</a>
+                (<span class="post-count">1</span>)
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <footer class="page-footer">
+        <p>© 2009 – <span class="current-year">2014</span> Tom Dalling</p>
+
+        <p class="social">
+          <a href="https://twitter.com/tom_dalling">
+            <i class="fa fa-lg fa-twitter"></i>
+          </a>
+          <a href="https://github.com/tomdalling">
+            <i class="fa fa-lg fa-github"></i>
+          </a>
+          <a href="https://stackoverflow.com/users/108105/tom-dalling">
+            <i class="fa fa-lg fa-stack-overflow"></i>
+          </a>
+          <a href="mailto:tom at tomdalling com">
+            <i class="fa fa-lg fa-envelope"></i>
+          </a>
+        </p>
+      </footer>
+
+      <script src="/bundles/all.js"></script>
+      <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [['$$','$$']],
+            displayMath: [['[blockmath]', '[/blockmath]']]
+          }
+        });
+      </script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </div></body>
+
+</html>

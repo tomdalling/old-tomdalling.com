@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>SOLID Class Design: The Open Closed Principle — Tom Dalling</title>
+    <link href="/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  <link rel="canonical" href="/blog/software-design/solid-class-design-the-open-closed-principle/" /></head>
+
+  <body>
+
+    <div class="container">
+
+      <div class="row">
+        <div class="col-md-12">
+          <nav role="navigation" class="navbar navbar-default">
+            <div class="container-fluid">
+              <div class="navbar-header">
+                <button data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" class="navbar-toggle" type="button">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+                <a href="/" class="navbar-brand">Tom Dalling</a>
+              </div>
+
+              <div id="bs-example-navbar-collapse-1" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                  <li><a href="/">Home</a></li>
+                  <li><a href="/blog/">Blog</a></li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <main class="col-md-8"><article class="post post-single">
+      
+  <header>
+    <h1><a href="/blog/software-design/solid-class-design-the-open-closed-principle/">SOLID Class Design: The Open Closed Principle</a></h1>
+    <small class="meta">
+      <span class="post-date">14 Nov, 2009</span>
+      —
+      Category: <a href="/blog/category/software-design/" class="category">Software Design</a>
+    </small>
+    <div class="main-image">
+      <img class="img-responsive" src="/images/posts/ocp.jpg" />
+      <span class="credit">Image courtesy of <a href="http://www.lostechies.com/blogs/derickbailey/archive/2009/02/11/solid-development-principles-in-motivational-pictures.aspx" class="artist">Derick Bailey</a>.</span>
+    </div>
+  </header>
+
+  <div class="post-content"><p>This is part two of a five part series about <a href="http://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod" title="Principles of OOD">SOLID class design principles</a> by <a href="http://www.objectmentor.com/omTeam/martin_r.html">Robert C. Martin</a>. The SOLID principles focus on achieving code that is maintainable, robust, and reusable. In this post, I will discuss the Open Closed Principle.</p>
+<blockquote><p><strong>The Open Closed Principle (OCP)</strong>: <em>You should be able to extend a classes behavior, without modifying it</em>.</p>
+</blockquote>
+<!--more--><p>The OCP is sometimes alternatively defined as:</p>
+<blockquote><p><em>A class should be open to extension, but closed to modification.</em></p>
+</blockquote><p>Robert Martin sums up the rationale for the OCP like this:</p>
+<blockquote><p>"When a single change to a program results in a cascade of changes to dependent modules, that program exhibits the undesirable attributes that we have come to associate with 'bad' design. The program becomes fragile, rigid, unpredictable and unreusable. The open-closed principle attacks this in a very straightforward way. It says that you should design modules that never change. When requirements change, you extend the behavior of such modules by adding new code, not by changing old code that already works." — Robert Martin</p>
+</blockquote><p>At first, the OCP can sound contradictory. How can you change the behavior of a class without modifying it? In a nutshell, the answer is the cornerstone of object oriented design: <a href="http://en.wikipedia.org/wiki/Polymorphism_in_object-oriented_programming">polymorphism</a>. The example later in the article will show how polymorphism is used to achieve classes that are "closed" to changes.</p><h2>The Benefits</h2><p>As stated by Robert Martin, classes that must be modified to accommodate new changes are fragile, rigid, unpredictable and unreusable. By insulating the class from changes, the class becomes robust, flexible, and reusable. Also as no modifications are made to the code no bugs can be introduced, leading to code that only becomes more stable over time through testing. The ability to reuse a class that has been working for years without modification is clearly preferable to modifying the class every time requirements change.</p><h2>An Example</h2><p>Continuing on from the example in the previous post about <a href="http://tomdalling.com/software-design/solid-class-design-the-single-responsibility-principle">the Single Responsibility Principle</a>, I'm going to modify the code to allow for multiple export file formats.</p>
+<div class="highlight"><pre><span class="cm">/********* XMLConverter ************/</span>
+<span class="k">class</span> <span class="nc">XMLConverter</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">String</span> <span class="n">convertDocumentToXML</span><span class="p">(</span><span class="n">Document</span> <span class="n">doc</span><span class="p">);</span>
+<span class="p">}</span>
+ 
+<span class="c1">// ... (code ommitted)</span>
+
+<span class="cm">/********* BinaryConverter *********/</span>
+<span class="k">class</span> <span class="nc">BinaryConverter</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">Data</span> <span class="n">convertDocumentToBinary</span><span class="p">(</span><span class="n">Document</span> <span class="n">doc</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// ... (code ommitted)</span>
+ 
+<span class="cm">/********* DocumentExporter ************/</span>
+
+<span class="k">enum</span> <span class="n">ConverterType</span> <span class="p">{</span>
+    <span class="n">XMLConverterType</span><span class="p">,</span>
+    <span class="n">BinaryConverterType</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">DocumentExporter</span> <span class="p">{</span>
+<span class="nl">private:</span>
+    <span class="n">URL</span> <span class="n">_runSaveDialog</span><span class="p">();</span>
+    <span class="kt">void</span> <span class="n">_showSuccessDialog</span><span class="p">;</span>
+    <span class="n">ConverterType</span> <span class="n">_converterType</span><span class="p">;</span>
+<span class="nl">public:</span>
+    <span class="kt">void</span> <span class="nf">setConverterType</span><span class="p">(</span><span class="n">ConverterType</span> <span class="n">converterType</span><span class="p">);</span>
+    <span class="kt">void</span> <span class="nf">exportDocument</span><span class="p">(</span><span class="n">Document</span> <span class="n">doc</span><span class="p">);</span>
+<span class="p">};</span>
+ 
+<span class="kt">void</span> <span class="n">DocumentExporter</span><span class="o">::</span><span class="n">exportDocument</span><span class="p">(</span><span class="n">Document</span> <span class="n">doc</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">URL</span> <span class="n">fileURL</span> <span class="o">=</span> <span class="n">_runSaveDialog</span><span class="p">();</span>
+    
+    <span class="k">switch</span><span class="p">(</span><span class="n">_converterType</span><span class="p">){</span>
+        <span class="k">case</span> <span class="n">XMLConverterType</span>:<span class="p">{</span>
+            <span class="n">XMLConverter</span> <span class="n">xmlConverter</span><span class="p">;</span>
+            <span class="n">String</span> <span class="n">xmlFileContent</span> <span class="o">=</span> <span class="n">xmlConverter</span><span class="p">.</span><span class="n">convertDocumentToXML</span><span class="p">(</span><span class="n">doc</span><span class="p">);</span>
+            <span class="n">xmlFileContent</span><span class="p">.</span><span class="n">writeToURL</span><span class="p">(</span><span class="n">fileURL</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+            
+        <span class="k">case</span> <span class="n">BinaryConverterType</span>:<span class="p">{</span>
+            <span class="n">BinaryConverter</span> <span class="n">binaryConverter</span><span class="p">;</span>
+            <span class="n">Data</span> <span class="n">binaryFileContent</span> <span class="o">=</span> <span class="n">binaryConverter</span><span class="p">.</span><span class="n">convertDocumentToBinary</span><span class="p">(</span><span class="n">doc</span><span class="p">);</span>
+            <span class="n">binaryFileContent</span><span class="p">.</span><span class="n">writeToURL</span><span class="p">(</span><span class="n">fileURL</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="nl">default:</span>
+            <span class="n">LogError</span><span class="p">(</span><span class="s">"Unrecognised converter type"</span><span class="p">);</span>
+            <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="n">_showSuccessDialog</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="c1">// ... (code ommitted)</span>
+</pre></div><p>The <code>DocumentExporter</code> class is <strong>not</strong> closed to change. Every time a new export format must be supported, the <code>DocumentExporter</code> class must be modified. <strong>Enums and switch statements are strong indicators that a class is not closed to changes</strong>. If the enum changes, then every related switch statement must also be changed.</p><p>The way to close <code>DocumentExporter</code> to changes, in this case, is to make an abstract base class for all the converters. Then, the converter can be supplied to <code>DocumentExporter</code> via a technique called <a href="http://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a>. The solution is as follows:</p>
+<div class="highlight"><pre><span class="cm">/********* Converter ************/</span>
+
+<span class="k">class</span> <span class="nc">Converter</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">virtual</span> <span class="n">Data</span> <span class="n">convertDocumentToData</span><span class="p">(</span><span class="n">Document</span> <span class="n">doc</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cm">/********* XMLConverter ************/</span>
+
+<span class="k">class</span> <span class="nc">XMLConverter</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Converter</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">Data</span> <span class="n">convertDocumentToData</span><span class="p">(</span><span class="n">Document</span> <span class="n">doc</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="n">Data</span> <span class="n">XMLConverter</span><span class="o">::</span><span class="n">convertDocumentToData</span><span class="p">(</span><span class="n">Document</span> <span class="n">doc</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">//convert to xml here</span>
+<span class="p">}</span>
+
+<span class="cm">/********* BinaryConverter ************/</span>
+
+<span class="k">class</span> <span class="nc">BinaryConverter</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Converter</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">Data</span> <span class="n">convertDocumentToData</span><span class="p">(</span><span class="n">Document</span> <span class="n">doc</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="n">Data</span> <span class="n">BinaryConverter</span><span class="o">::</span><span class="n">convertDocumentToData</span><span class="p">(</span><span class="n">Document</span> <span class="n">doc</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">//convert to binary here</span>
+<span class="p">}</span>
+ 
+<span class="cm">/********* DocumentExporter ************/</span>
+
+<span class="k">class</span> <span class="nc">DocumentExporter</span> <span class="p">{</span>
+<span class="nl">private:</span>
+    <span class="n">URL</span> <span class="n">_runSaveDialog</span><span class="p">();</span>
+    <span class="kt">void</span> <span class="n">_showSuccessDialog</span><span class="p">;</span>
+    <span class="n">Converter</span><span class="o">*</span> <span class="n">_converter</span><span class="p">;</span>
+<span class="nl">public:</span>
+    <span class="kt">void</span> <span class="nf">setConverter</span><span class="p">(</span><span class="n">Converter</span><span class="o">*</span> <span class="n">converter</span><span class="p">);</span> <span class="c1">//Here is the dependency injection function</span>
+    <span class="kt">void</span> <span class="nf">exportDocument</span><span class="p">(</span><span class="n">Document</span> <span class="n">doc</span><span class="p">);</span>
+<span class="p">};</span>
+ 
+<span class="kt">void</span> <span class="n">DocumentExporter</span><span class="o">::</span><span class="n">exportDocument</span><span class="p">(</span><span class="n">Document</span> <span class="n">doc</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">URL</span> <span class="n">fileURL</span> <span class="o">=</span> <span class="n">_runSaveDialog</span><span class="p">();</span>
+    <span class="n">Data</span> <span class="n">fileContent</span> <span class="o">=</span> <span class="n">_converter</span><span class="p">.</span><span class="n">convertDocumentToData</span><span class="p">(</span><span class="n">doc</span><span class="p">);</span>
+    <span class="n">fileContent</span><span class="p">.</span><span class="n">writeToURL</span><span class="p">(</span><span class="n">fileURL</span><span class="p">);</span>
+    <span class="n">_showSuccessDialog</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="c1">// ... (code ommitted)</span>
+</pre></div><p>In the above example, <code>DocumentExporter</code> is closed to change in respect to new export formats. To support a new export format, a new class is created that inherits from <code>Converter</code>. The new converter is injected into <code>DocumentExporter</code> via the <code>setConverter</code> method, and <strong><code>DocumentExporter</code> is not modified in any way</strong>.</p><p>Note that a class can never be <em>completely</em> closed. There will always be unforeseen changes that require a class to be modified. However, if changes can be foreseen, such as different export formats, then you have a perfect opportunity to apply the OCP to make your life easier when those change requests come rolling in.</p></div>
+
+  <footer>
+    <div class="alert alert-info subscribe-bait">
+      <p><strong>Enjoy this post?</strong></p>
+      <a class="btn btn-success" href="/feed/">
+        Subscribe via RSS
+      </a>
+      <a data-size="large" data-show-count="false" class="twitter-follow-button" href="https://twitter.com/tom_dalling">Follow @tom_dalling</a>
+      <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+    </div>
+
+    <h2>Comments</h2>
+    <div id="disqus_thread"></div>
+    <script id="disqus_script" type="text/javascript">
+      var disqus_shortname = "tomdalling";
+      var disqus_identifier = "245 http:\/\/tomdalling.com\/?p=245";
+      var disqus_title = "SOLID Class Design: The Open Closed Principle";
+      var disqus_url = "http:\/\/www.tomdalling.com\/blog\/software-design\/solid-class-design-the-open-closed-principle\/";
+
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments.</a></noscript>
+  </footer>
+
+</article></main>
+
+        <div class="col-md-4 sidebar">
+
+          <div class="panel panel-default">
+            <div class="panel-heading">Subscribe</div>
+            <ul class="list-group">
+              <li class="list-group-item">
+                <a href="/blog/feed/">
+                  <i class="fa fa-rss"></i> RSS
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="https://twitter.com/tom_dalling">
+                  <i class="fa fa-twitter"></i> Twitter
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">Recent Posts</div>
+            <ul class="list-group recent-posts">
+              <li class="list-group-item">
+                <a href="/blog/modern-opengl/explaining-homogenous-coordinates-and-projective-geometry/">Explaining Homogenous Coordinates &amp; Projective Geometry</a>
+              </li><li class="list-group-item">
+                <a href="/blog/modern-opengl/07-more-lighting-ambient-specular-attenuation-gamma/">Modern OpenGL 07 – More Lighting: Ambient, Specular, Attenuation, Gamma</a>
+              </li><li class="list-group-item">
+                <a href="/blog/modern-opengl/06-diffuse-point-lighting/">Modern OpenGL 06 – Diffuse Point Lighting</a>
+              </li><li class="list-group-item">
+                <a href="/blog/modern-opengl/05-model-assets-and-instances/">Modern OpenGL 05 – Model Assets &amp; Instances</a>
+              </li><li class="list-group-item">
+                <a href="/blog/modern-opengl/04-cameras-vectors-and-input/">Modern OpenGL 04 - Cameras, Vectors &amp; Input</a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">Blog Categories</div>
+            <ul class="list-group categories">
+              <li class="list-group-item">
+                <a class="category" href="/blog/category/cocoa/">Cocoa</a>
+                (<span class="post-count">5</span>
+                <a href="/blog/category/cocoa/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li><li class="list-group-item">
+                <a class="category" href="/blog/category/coding-styleconventions/">Coding Style/Conventions</a>
+                (<span class="post-count">3</span>
+                <a href="/blog/category/coding-styleconventions/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li><li class="list-group-item">
+                <a class="category" href="/blog/category/coding-tips/">Coding Tips</a>
+                (<span class="post-count">4</span>
+                <a href="/blog/category/coding-tips/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li><li class="list-group-item">
+                <a class="category" href="/blog/category/random-stuff/">Miscellaneous</a>
+                (<span class="post-count">1</span>
+                <a href="/blog/category/random-stuff/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li><li class="list-group-item">
+                <a class="category" href="/blog/category/modern-opengl/">Modern OpenGL Series</a>
+                (<span class="post-count">8</span>
+                <a href="/blog/category/modern-opengl/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li><li class="list-group-item">
+                <a class="category" href="/blog/category/software-design/">Software Design</a>
+                (<span class="post-count">8</span>
+                <a href="/blog/category/software-design/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li><li class="list-group-item">
+                <a class="category" href="/blog/category/software-processes/">Software Processes</a>
+                (<span class="post-count">1</span>
+                <a href="/blog/category/software-processes/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li><li class="list-group-item">
+                <a class="category" href="/blog/category/web/">Web</a>
+                (<span class="post-count">1</span>
+                <a href="/blog/category/web/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li>
+            </ul>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">Blog Archives</div>
+            <ul class="list-group archives">
+              <li class="list-group-item">
+                <a class="month" href="/blog/2014/02/">February 2014</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2013/04/">April 2013</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2013/03/">March 2013</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2013/02/">February 2013</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2013/01/">January 2013</a>
+                (<span class="post-count">2</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2012/12/">December 2012</a>
+                (<span class="post-count">2</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2012/11/">November 2012</a>
+                (<span class="post-count">2</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2012/07/">July 2012</a>
+                (<span class="post-count">2</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2012/05/">May 2012</a>
+                (<span class="post-count">2</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2012/03/">March 2012</a>
+                (<span class="post-count">2</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2011/12/">December 2011</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2010/12/">December 2010</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2010/11/">November 2010</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2010/05/">May 2010</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2010/04/">April 2010</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2010/02/">February 2010</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2009/12/">December 2009</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2009/11/">November 2009</a>
+                (<span class="post-count">3</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2009/10/">October 2009</a>
+                (<span class="post-count">2</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2009/07/">July 2009</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2009/06/">June 2009</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2009/05/">May 2009</a>
+                (<span class="post-count">1</span>)
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <footer class="page-footer">
+        <p>© 2009 – <span class="current-year">2014</span> Tom Dalling</p>
+
+        <p class="social">
+          <a href="https://twitter.com/tom_dalling">
+            <i class="fa fa-lg fa-twitter"></i>
+          </a>
+          <a href="https://github.com/tomdalling">
+            <i class="fa fa-lg fa-github"></i>
+          </a>
+          <a href="https://stackoverflow.com/users/108105/tom-dalling">
+            <i class="fa fa-lg fa-stack-overflow"></i>
+          </a>
+          <a href="mailto:tom at tomdalling com">
+            <i class="fa fa-lg fa-envelope"></i>
+          </a>
+        </p>
+      </footer>
+
+      <script src="/bundles/all.js"></script>
+      <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [['$$','$$']],
+            displayMath: [['[blockmath]', '[/blockmath]']]
+          }
+        });
+      </script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </div></body>
+
+</html>

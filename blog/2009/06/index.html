@@ -45,23 +45,53 @@
       <div class="row">
 
         <main class="col-md-8"><div class="post-list">
-  <h1>Archives: June 2009</h1>
+  <h1>
+    <span class="title">Archives: June 2009</span>
+    <a title="RSS feed" class="rss" href="/blog/feed/">
+      <i class="fa fa-rss"></i>
+    </a>
+  </h1>
 
   <article class="post post-listed">
     <header>
-      <h2><a href="/blog/software-design/model-view-controller-mechanisms/">Model View Controller Mechanisms</a></h2>
+      <h2><a href="/blog/coding-tips/coding-tip-have-a-single-exit-point/">Coding Tip: Have A Single Exit Point</a></h2>
       <small class="meta">
-        <span class="post-date">07 Jun, 2009</span>
+        <span class="post-date">30 Jun, 2009</span>
         —
-        Category: <a href="/blog/category/software-design/" class="category">Software Design</a>
+        Category: <a href="/blog/category/coding-tips/" class="category">Coding Tips</a>
       </small>
     </header>
 
-    <div class="post-content"><p>The previous article, <a title="Model View Controller Explained" href="/software-design/model-view-controller-explained">Model View Controller Explained</a>, explained what MVC is and why it's such a good design pattern. The model view controller design pattern has a flow. Actions flow from the view to the model via certain pathways. Conversely, changes to the model flow through to the view. This article will dive into finer detail about these pathways, and discuss some of the specific mechanisms and design patterns used to implement the flows.</p>
+    <img src="" class="listed-main-image" />
+
+    <div class="post-content"><p>Having one exit point (return) from a function is a good thing. Here is an example of a single exit point:</p>
+<div class="highlight"><pre><span class="kt">int</span> <span class="n">MyArray</span><span class="o">::</span><span class="n">indexOfElement</span><span class="p">(</span><span class="kt">int</span> <span class="n">elementToFind</span><span class="p">){</span>
+  <span class="kt">int</span> <span class="n">foundIndex</span> <span class="o">=</span> <span class="n">ELEMENT_NOT_FOUND</span><span class="p">;</span>
+
+  <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">m_numberOfElements</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">elementAtIndex</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">==</span> <span class="n">elementToFind</span><span class="p">){</span>
+      <span class="n">foundIndex</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+      <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="n">foundIndex</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div><p>Having multiple exit points can be bad. Here is an example of multiple exit points:</p>
+<div class="highlight"><pre><span class="kt">int</span> <span class="n">MyArray</span><span class="o">::</span><span class="n">indexOfElement</span><span class="p">(</span><span class="kt">int</span> <span class="n">elementToFind</span><span class="p">){</span>
+  <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">m_numberOfElements</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">elementAtIndex</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">==</span> <span class="n">elementToFind</span><span class="p">){</span>
+      <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="n">ELEMENT_NOT_FOUND</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div><p>The main reason multiple exit points are bad is that they complicate control flow. The more complicated the control flow is, the harder the code is to understand. The harder the code is to understand, the greater the change of introduction bugs whenever the code is modified.</p>
 </div>
 
     <footer>
-      <a href="/blog/software-design/model-view-controller-mechanisms/" class="btn btn-default more">
+      <a href="/blog/coding-tips/coding-tip-have-a-single-exit-point/" class="btn btn-default more">
         Read full post <i class="fa fa-angle-double-right"></i>
       </a>
     </footer>
@@ -74,7 +104,7 @@
             <div class="panel-heading">Subscribe</div>
             <ul class="list-group">
               <li class="list-group-item">
-                <a href="/feed/">
+                <a href="/blog/feed/">
                   <i class="fa fa-rss"></i> RSS
                 </a>
               </li>
@@ -90,22 +120,15 @@
             <div class="panel-heading">Recent Posts</div>
             <ul class="list-group recent-posts">
               <li class="list-group-item">
-                <a href="/blog/software-design/model-view-controller-mechanisms/">Model View Controller Mechanisms</a>
+                <a href="/blog/modern-opengl/explaining-homogenous-coordinates-and-projective-geometry/">Explaining Homogenous Coordinates &amp; Projective Geometry</a>
               </li><li class="list-group-item">
-                <a href="/blog/software-design/model-view-controller-explained/">Model View Controller Explained</a>
-              </li>
-            </ul>
-          </div>
-
-          <div class="panel panel-default">
-            <div class="panel-heading">Blog Archives</div>
-            <ul class="list-group archives">
-              <li class="list-group-item">
-                <a class="month" href="/blog/2009/06/">June 2009</a>
-                (<span class="post-count">1</span>)
+                <a href="/blog/modern-opengl/07-more-lighting-ambient-specular-attenuation-gamma/">Modern OpenGL 07 – More Lighting: Ambient, Specular, Attenuation, Gamma</a>
               </li><li class="list-group-item">
-                <a class="month" href="/blog/2009/05/">May 2009</a>
-                (<span class="post-count">1</span>)
+                <a href="/blog/modern-opengl/06-diffuse-point-lighting/">Modern OpenGL 06 – Diffuse Point Lighting</a>
+              </li><li class="list-group-item">
+                <a href="/blog/modern-opengl/05-model-assets-and-instances/">Modern OpenGL 05 – Model Assets &amp; Instances</a>
+              </li><li class="list-group-item">
+                <a href="/blog/modern-opengl/04-cameras-vectors-and-input/">Modern OpenGL 04 - Cameras, Vectors &amp; Input</a>
               </li>
             </ul>
           </div>
@@ -114,8 +137,110 @@
             <div class="panel-heading">Blog Categories</div>
             <ul class="list-group categories">
               <li class="list-group-item">
+                <a class="category" href="/blog/category/cocoa/">Cocoa</a>
+                (<span class="post-count">5</span>
+                <a href="/blog/category/cocoa/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li><li class="list-group-item">
+                <a class="category" href="/blog/category/coding-styleconventions/">Coding Style/Conventions</a>
+                (<span class="post-count">3</span>
+                <a href="/blog/category/coding-styleconventions/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li><li class="list-group-item">
+                <a class="category" href="/blog/category/coding-tips/">Coding Tips</a>
+                (<span class="post-count">4</span>
+                <a href="/blog/category/coding-tips/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li><li class="list-group-item">
+                <a class="category" href="/blog/category/random-stuff/">Miscellaneous</a>
+                (<span class="post-count">1</span>
+                <a href="/blog/category/random-stuff/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li><li class="list-group-item">
+                <a class="category" href="/blog/category/modern-opengl/">Modern OpenGL Series</a>
+                (<span class="post-count">8</span>
+                <a href="/blog/category/modern-opengl/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li><li class="list-group-item">
                 <a class="category" href="/blog/category/software-design/">Software Design</a>
+                (<span class="post-count">8</span>
+                <a href="/blog/category/software-design/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li><li class="list-group-item">
+                <a class="category" href="/blog/category/software-processes/">Software Processes</a>
+                (<span class="post-count">1</span>
+                <a href="/blog/category/software-processes/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li><li class="list-group-item">
+                <a class="category" href="/blog/category/web/">Web</a>
+                (<span class="post-count">1</span>
+                <a href="/blog/category/web/feed/" class="feed"><i class="fa fa-rss"></i></a>)
+              </li>
+            </ul>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">Blog Archives</div>
+            <ul class="list-group archives">
+              <li class="list-group-item">
+                <a class="month" href="/blog/2014/02/">February 2014</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2013/04/">April 2013</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2013/03/">March 2013</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2013/02/">February 2013</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2013/01/">January 2013</a>
                 (<span class="post-count">2</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2012/12/">December 2012</a>
+                (<span class="post-count">2</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2012/11/">November 2012</a>
+                (<span class="post-count">2</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2012/07/">July 2012</a>
+                (<span class="post-count">2</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2012/05/">May 2012</a>
+                (<span class="post-count">2</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2012/03/">March 2012</a>
+                (<span class="post-count">2</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2011/12/">December 2011</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2010/12/">December 2010</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2010/11/">November 2010</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2010/05/">May 2010</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2010/04/">April 2010</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2010/02/">February 2010</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2009/12/">December 2009</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2009/11/">November 2009</a>
+                (<span class="post-count">3</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2009/10/">October 2009</a>
+                (<span class="post-count">2</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2009/07/">July 2009</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2009/06/">June 2009</a>
+                (<span class="post-count">1</span>)
+              </li><li class="list-group-item">
+                <a class="month" href="/blog/2009/05/">May 2009</a>
+                (<span class="post-count">1</span>)
               </li>
             </ul>
           </div>
@@ -143,15 +268,15 @@
       </footer>
 
       <script src="/bundles/all.js"></script>
-      <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-        ga('create', 'UA-2797451-1', 'auto');
-        ga('send', 'pageview');
+      <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [['$$','$$']],
+            displayMath: [['[blockmath]', '[/blockmath]']]
+          }
+        });
       </script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </div></body>
 
 </html>
