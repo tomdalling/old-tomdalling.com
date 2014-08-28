@@ -31,7 +31,8 @@
   "schema for categories"
   {:keyword schema/Keyword
    :name schema/Str
-   :uri schema/Str})
+   :uri schema/Str
+   :feed-uri schema/Str})
 
 (def Artist
   "schema for artists of main images"
@@ -53,11 +54,13 @@
 
 (defn get-category [kw]
   (schema/validate Category
-    (let [found (kw categories)]
+    (let [found (kw categories)
+          uri (str "/blog/category/" (name kw) "/")]
       (if found
         {:keyword kw
          :name found
-         :uri (str "/blog/category/" (name kw) "/")}
+         :uri uri
+         :feed-uri (str uri "feed/")}
         (throw (Exception. (str "Category not found: " kw)))))))
 
 (defn all-categories []
@@ -128,6 +131,7 @@
       [uri (templates/render-post-list posts
                                        (str "Archives: " (templates/unparse-yearmonth ym))
                                        uri
+                                       nil ;;no feed for archives
                                        all-posts)])))
 
 (defn post-category-pages [all-posts]
@@ -136,6 +140,7 @@
      (templates/render-post-list posts
                                  (str "Category: " (:name category))
                                  (:uri category)
+                                 (:feed-uri category)
                                  all-posts)]))
 
 (defn category-filter [category posts]
@@ -156,7 +161,7 @@
         (category-rss-feeds (all-categories) all-posts)
         (for [post all-posts]
           [(:uri post) (templates/render-post post all-posts)])
-        [["/blog/" (templates/render-post-list (take 10 all-posts) "Recent Posts" "/blog/" all-posts)]
+        [["/blog/" (templates/render-post-list (take 10 all-posts) "Recent Posts" "/blog/" "/blog/feed/" all-posts)]
          ["/" (templates/render-page-html (slurp "resources/pages/home.html") "Home" "/" all-posts)]
          ["/feed/index.xml" (templates/render-rss (take 10 all-posts) "http://www.tomdalling.com")]]))))
 

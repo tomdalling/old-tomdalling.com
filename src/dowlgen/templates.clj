@@ -110,9 +110,13 @@
                  :disqus-title (json/write-str (:title post))
                  :disqus-url (json/write-str (:full-url post))}))
 
-(defsnippet post-list-snippet "templates/post-list.html" [:.post-list] [listed-posts title]
-  [:h1]
+(defsnippet post-list-snippet "templates/post-list.html" [:.post-list] [listed-posts title feed-uri]
+  [:h1 :.title]
   (content title)
+
+  [:h1 :a.feed]
+  (when feed-uri
+    (set-attr :href feed-uri))
 
   [:article]
   (clone-for [post listed-posts]
@@ -161,8 +165,9 @@
 
   [:ul.categories :li]
   (clone-for [[category posts] (categorized-posts all-posts)]
-             [:a] (set-attr :href (:uri category))
-             [:.category] (content (:name category))
+             [:a.category] (do-> (set-attr :href (:uri category))
+                                 (content (:name category)))
+             [:a.feed] (set-attr :href (:feed-uri category))
              [:.post-count] (content (str (count posts))))
 
   [:.current-year]
@@ -176,12 +181,12 @@
                       :content (post-single-snippet post)}
                      all-posts))))
 
-(defn render-post-list [listed-posts title uri all-posts]
+(defn render-post-list [listed-posts title uri feed-uri all-posts]
   (fn [_]
     (apply str
       (page-template {:uri uri
                       :title title
-                      :content (post-list-snippet listed-posts title)}
+                      :content (post-list-snippet listed-posts title feed-uri)}
                      all-posts))))
 
 (defn render-page-html [page-html title uri all-posts]
