@@ -29,6 +29,23 @@ body {
 
     .meta { color: #999; }
 
+    //make the image full-width for small devices
+    .listed-main-image {
+        display: block;
+        margin: 1em auto;
+        max-width: 100%;
+        height: auto;
+    }
+
+    //on larger screens, float image to the right
+    @media (min-width: 700px) {
+        .listed-main-image {
+            float: right;
+            width: 50%;
+            margin: 0 0 1em 1em;
+        }
+    }
+
     .post-content {
         h2 { margin-top: 1.5em; }
         code { white-space: nowrap; }

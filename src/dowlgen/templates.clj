@@ -123,6 +123,9 @@
              [:header :a.category]
              (do-> (set-attr :href (-> post :category :uri))
                    (content (-> post :category :name)))
+
+             [:.listed-main-image]
+             (set-attr :src (-> post :main-image :uri))
  
              [:.post-date]
              (content (tformat/unparse-local human-date-formatter (:date post)))
