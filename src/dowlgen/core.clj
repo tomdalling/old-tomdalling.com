@@ -177,7 +177,11 @@
 
 (defn get-pages []
   (duplicate-pages (get-original-pages)
-                   {"/feed/index.xml" "/blog/feed/index.xml"}))
+                   (into {"/feed/index.xml" "/blog/feed/index.xml"}
+                         ;; categories can be accessed from "/blog/X" or "/blog/category/X"
+                         (for [cat (all-categories)]
+                           [(str "/blog/" (name (:keyword cat)) "/")
+                            (:uri cat)]))))
 
 (defn wrap-utf8 [handler]
   (fn [request]
