@@ -152,7 +152,17 @@
      (templates/render-rss (take 10 (category-filter category posts))
                            "http://www.tomdalling.com")]))
 
-(defn get-pages []
+(defn strict-get [m k]
+  (if-let [[k v] (find m k)]
+    v
+    (throw (Exception. (str "key not found: " k)))))
+
+(defn duplicate-pages [pages dup-pairs]
+  (into pages
+    (for [[dup-uri original-uri] dup-pairs]
+      [dup-uri (strict-get pages original-uri)])))
+
+(defn get-original-pages []
   (let [all-posts (get-posts)]
     (into {}
       (concat
@@ -163,7 +173,11 @@
           [(:uri post) (templates/render-post post all-posts)])
         [["/blog/" (templates/render-post-list (take 10 all-posts) "Recent Posts" "/blog/" "/blog/feed/" all-posts)]
          ["/" (templates/render-page-html (slurp "resources/pages/home.html") "Home" "/" all-posts)]
-         ["/feed/index.xml" (templates/render-rss (take 10 all-posts) "http://www.tomdalling.com")]]))))
+         ["/blog/feed/index.xml" (templates/render-rss (take 10 all-posts) "http://www.tomdalling.com")]]))))
+
+(defn get-pages []
+  (duplicate-pages (get-original-pages)
+                   {"/feed/index.xml" "/blog/feed/index.xml"}))
 
 (defn wrap-utf8 [handler]
   (fn [request]
