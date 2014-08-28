@@ -221,7 +221,7 @@
             (for [post post-list]
               [:item
                 [:title (:title post)]
-                [:link (str uri-base (:uri post))]
+                [:link (str uri-base (:uri post) "?utm_source=rss&utm_medium=rss")]
                 [:description [:-cdata (post-shortened-content post)]]
                 [:pubDate (rss-date-format (:date post))]
                 [:category [:-cdata (-> post :category :name)]]
