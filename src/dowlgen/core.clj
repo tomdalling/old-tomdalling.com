@@ -99,17 +99,17 @@
   (schema/validate Post
     (let [[frontmatter md] (read-split-frontmatter file-content)
           [date uri-name] (split-post-filename path)
-          category (get-category (:category frontmatter))]
-      (as-> {} post
-        (assoc post :title (:title frontmatter))
-        (assoc post :disqus-id (:disqus-id frontmatter))
-        (assoc post :main-image (:main-image frontmatter))
-        (assoc post :draft (boolean (:draft frontmatter)))
-        (assoc post :uri (str "/blog/" (name (:keyword category)) "/" uri-name "/"))
-        (assoc post :full-url (str site-url (:uri post)))
-        (assoc post :content-markdown md)
-        (assoc post :date date)
-        (assoc post :category category)))))
+          category (get-category (:category frontmatter))
+          uri (str "/blog/" (name (:keyword category)) "/" uri-name "/")]
+      {:title (:title frontmatter)
+       :disqus-id (:disqus-id frontmatter)
+       :main-image (:main-image frontmatter)
+       :draft (boolean (:draft frontmatter))
+       :uri uri
+       :full-url (str site-url uri)
+       :content-markdown md
+       :date date
+       :category category})))
 
 (defn get-posts []
   (reverse
