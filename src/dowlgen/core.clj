@@ -156,7 +156,7 @@
         (category-rss-feeds (all-categories) all-posts)
         (for [post all-posts]
           [(:uri post) (templates/render-post post all-posts)])
-        [["/blog/" (templates/render-post-list all-posts "All Posts" "/blog/" all-posts)]
+        [["/blog/" (templates/render-post-list (take 10 all-posts) "Recent Posts" "/blog/" all-posts)]
          ["/" (templates/render-page-html (slurp "resources/pages/home.html") "Home" "/" all-posts)]
          ["/feed/index.xml" (templates/render-rss (take 10 all-posts) "http://www.tomdalling.com")]]))))
 
