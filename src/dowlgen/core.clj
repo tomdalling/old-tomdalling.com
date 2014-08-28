@@ -114,11 +114,12 @@
        :date date
        :category category})))
 
-(defn get-posts []
+(defn get-posts [include-drafts]
   (reverse
     (sort-by :date
-      (map #(apply build-post %)
-           (stasis/slurp-directory input-dir #"^/blog-posts/.*\.markdown$")))))
+      (filter (if include-drafts (fn [_] true) #(not (:draft %)))
+              (map #(apply build-post %)
+                   (stasis/slurp-directory input-dir #"^/blog-posts/.*\.markdown$"))))))
 
 (defn get-assets []
   (concat (assets/load-assets "theme" ["/style.scss"])
@@ -163,8 +164,8 @@
     (for [[dup-uri original-uri] dup-pairs]
       [dup-uri (strict-get pages original-uri)])))
 
-(defn get-original-pages []
-  (let [all-posts (get-posts)]
+(defn get-original-pages [include-drafts]
+  (let [all-posts (get-posts include-drafts)]
     (into {}
       (concat
         (post-category-pages all-posts)
@@ -176,8 +177,8 @@
          ["/" (templates/render-page-html (slurp "resources/pages/home.html") "Home" "/" all-posts)]
          ["/blog/feed/index.xml" (templates/render-rss (take 10 all-posts) "http://www.tomdalling.com" "/blog/feed/")]]))))
 
-(defn get-pages []
-  (duplicate-pages (get-original-pages)
+(defn get-pages [include-drafts]
+  (duplicate-pages (get-original-pages include-drafts)
                    (into {"/feed/index.xml" "/blog/feed/index.xml"}
                          ;; categories can be accessed from "/blog/X" or "/blog/category/X"
                          (for [cat (all-categories)]
@@ -194,7 +195,7 @@
 
 (def app
   (wrap-utf8
-    (optimus/wrap (stasis/serve-pages get-pages)
+    (optimus/wrap (stasis/serve-pages #(get-pages true))
                   get-assets
                   (fn [assets _] (optimizations/concatenate-bundles assets))
                   serve-live-assets)))
@@ -206,5 +207,5 @@
                      (remove #(not (:outdated %)) a))]
     (stasis/empty-directory! output-dir)
     (optimus.export/save-assets assets output-dir)
-    (stasis/export-pages (get-pages) output-dir {:optimus-assets assets})))
+    (stasis/export-pages (get-pages false) output-dir {:optimus-assets assets})))
 

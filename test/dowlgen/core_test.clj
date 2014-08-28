@@ -20,7 +20,7 @@
   (change-extension "moo" "cat")          => "moo.cat")
 
 (facts "about get-posts"
-  (let [posts (get-posts)]
+  (let [posts (get-posts true)]
     (fact "each post has a unique :disqus-id"
       (->> posts (map :disqus-id) set count) => (count posts))
     (fact "each post has a unique :uri"
