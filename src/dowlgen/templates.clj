@@ -16,16 +16,11 @@
 
 (net.cgrand.reload/auto-reload *ns*)
 
-(def human-date-formatter (tformat/formatter "dd MMM, yyyy"))
-(def archive-month-formatter (tformat/formatter "MMMM yyyy"))
+(def human-date-formatter (tformat/formatter config/date-format))
+(def archive-month-formatter (tformat/formatter config/month-format))
 
 (defn unparse-yearmonth [yearmonth]
   (tformat/unparse-local archive-month-formatter (tcoerce/to-local-date yearmonth)))
-
-(defn recent-posts [posts n]
-  (take n
-    (reverse 
-      (sort-by :date posts))))
 
 (defn markdown-code-block? [node]
   (and (= 1 (-> node :content count)) ;; one child
@@ -141,7 +136,7 @@
   (content (:content page))
 
   [:ul.recent-posts :li]
-  (clone-for [post (recent-posts all-posts 5)]
+  (clone-for [post (take 5 all-posts)]
              [:a] (do-> (set-attr :href (:uri post))
                         (content (:title post))))
 
@@ -161,7 +156,7 @@
   [:.current-year]
   (content (-> (t/today) t/year str)))
 
-(defn render-post [post all-posts]
+(defn renderfn-post [post all-posts]
   (fn [_]
     (apply str
       (page-template {:uri (:uri post)
@@ -169,7 +164,7 @@
                       :content (post-single-snippet post)}
                      all-posts))))
 
-(defn render-post-list [listed-posts title uri feed-uri all-posts]
+(defn renderfn-post-list [listed-posts title uri feed-uri all-posts]
   (fn [_]
     (apply str
       (page-template {:uri uri
@@ -177,7 +172,7 @@
                       :content (post-list-snippet listed-posts title feed-uri)}
                      all-posts))))
 
-(defn render-page-html [page-html title uri all-posts]
+(defn renderfn-page-html [page-html title uri all-posts]
   (fn [_]
     (apply str
       (page-template {:uri uri
@@ -189,7 +184,7 @@
   (tformat/unparse (tformat/formatters :rfc822)
                    (tcoerce/from-long (tcoerce/to-long date))))
 
-(defn render-rss [post-list feed-uri]
+(defn renderfn-rss [post-list feed-uri]
   (fn [_] 
     (xml/emit-str
       (xml/sexp-as-element

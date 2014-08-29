@@ -1,6 +1,8 @@
 (ns dowlgen.config)
 
 (def base-url "http://www.tomdalling.com")
+(def date-format "dd MMM, yyyy")
+(def month-format "MMMM yyyy")
 
 (def categories
   {:software-design "Software Design"

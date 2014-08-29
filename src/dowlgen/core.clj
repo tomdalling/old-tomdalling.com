@@ -21,49 +21,49 @@
 (defn archive-pages [all-posts]
   (for [[ym posts] (post/archived all-posts)]
     (let [uri (post/archive-uri ym)]
-      [uri (templates/render-post-list posts
-                                       (str "Archives: " (templates/unparse-yearmonth ym))
-                                       uri
-                                       nil ;;no feed for archives
-                                       all-posts)])))
+      [uri (templates/renderfn-post-list posts
+                                         (str "Archives: " (templates/unparse-yearmonth ym))
+                                         uri
+                                         nil ;;no feed for archives
+                                         all-posts)])))
 
 (defn category-pages [all-posts]
   (for [[cat posts] (post/categorized all-posts)]
     [(category/uri cat)
-     (templates/render-post-list posts
-                                 (str "Category: " (:name cat))
-                                 (category/uri cat)
-                                 (category/feed-uri cat)
-                                 all-posts)]))
+     (templates/renderfn-post-list posts
+                                   (str "Category: " (:name cat))
+                                   (category/uri cat)
+                                   (category/feed-uri cat)
+                                   all-posts)]))
 
 (defn category-rss-feeds [posts]
   (for [cat category/all]
     [(str (category/feed-uri cat) "index.xml")
-     (templates/render-rss (take 10 (post/in-category posts cat))
-                           (category/feed-uri cat))]))
+     (templates/renderfn-rss (take 10 (post/in-category posts cat))
+                             (category/feed-uri cat))]))
 
 (defn post-pages [all-posts]
   (for [p all-posts]
-    [(:uri p) (templates/render-post p all-posts)]))
+    [(:uri p) (templates/renderfn-post p all-posts)]))
 
 (defn blog-index-page [all-posts]
   ["/blog/"
-   (templates/render-post-list (take 10 all-posts)
-                               "Recent Posts"
-                               "/blog/"
-                               "/blog/feed/"
-                               all-posts)])
+   (templates/renderfn-post-list (take 10 all-posts)
+                                 "Recent Posts"
+                                 "/blog/"
+                                 "/blog/feed/"
+                                 all-posts)])
 
 (defn home-page [all-posts]
   ["/"
-   (templates/render-page-html (slurp "resources/pages/home.html")
-                               "Home"
-                               "/"
-                               all-posts)])
+   (templates/renderfn-page-html (slurp "resources/pages/home.html")
+                                 "Home"
+                                 "/"
+                                 all-posts)])
 
 (defn blog-rss-feed [all-posts]
   ["/blog/feed/index.xml"
-   (templates/render-rss (take 10 all-posts) "/blog/feed/")])
+   (templates/renderfn-rss (take 10 all-posts) "/blog/feed/")])
 
 (defn get-original-pages [include-drafts]
   (let [all-posts (get-posts include-drafts)]
