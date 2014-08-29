@@ -50,7 +50,8 @@
 
 (defn- split-post-filename [fname]
   (let [[date-str uri-name] (clojure.string/split (last-path-component fname) #"_" 2)]
-    [(frontmatter-date date-str) (remove-extension uri-name)]))
+    [(when (not= date-str "draft") (frontmatter-date date-str))
+     (remove-extension uri-name)]))
 
 (defn- build [path file-content]
   (s/validate schema
@@ -58,13 +59,13 @@
           [date uri-name] (split-post-filename path)
           cat (category/for-keyword (:category frontmatter))
           uri (str "/blog/" (category/uri-name cat) "/" uri-name "/")]
-      {:title (:title frontmatter)
+      {:title (str (when-not date "Draft: ") (:title frontmatter))
        :disqus-id (:disqus-id frontmatter)
        :main-image (:main-image frontmatter)
-       :draft (boolean (:draft frontmatter))
+       :draft (nil? date)
        :uri uri
        :content-markdown md
-       :date date
+       :date (or date (t/today))
        :category cat})))
 
 (defn- yearmonth [post]
@@ -96,3 +97,4 @@
 
 (defn remove-drafts [posts]
   (filter (comp not :draft) posts))
+
