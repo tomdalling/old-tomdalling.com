@@ -1,7 +1,4 @@
-dowlgen
-=======
-
-Site generator for tomdalling.com
+Site generator for http://www.tomdalling.com/
 
 Commonly Used Commands
 ----------------------
