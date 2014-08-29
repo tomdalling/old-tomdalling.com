@@ -12,10 +12,9 @@ echo "www.tomdalling.com" > "${OUTDIR}CNAME"
 echo "Build output. See 'generator' branch for source." > "${OUTDIR}README.md"
 
 rm -Rf "$TMPOUTDIR"
-mv "$OUTDIR" "$TMPOUTDIR"
+cp -R "$OUTDIR" "$TMPOUTDIR"
 git checkout master
 rm -Rf ./*
 cp -R "${TMPOUTDIR}"* ./
-rm -Rf "$TMPOUTDIR"
 
 gitx
