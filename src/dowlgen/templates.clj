@@ -5,6 +5,7 @@
               sniptest select pred wrap]]
             [net.cgrand.reload]
             [dowlgen.post :as post]
+            [dowlgen.category :as category]
             [dowlgen.config :as config]
             [me.raynes.cegdown :as markdown]
             [clojure.data.json :as json]
@@ -79,7 +80,7 @@
         (set-attr :href (-> post :main-image :artist :url)))
 
   [:header :a.category]
-  (do-> (set-attr :href (-> post :category :uri))
+  (do-> (set-attr :href (category/uri (:category post)))
         (content (-> post :category :name)))
 
   [:.post-date]
@@ -108,7 +109,7 @@
                    (set-attr :href (:uri post)))
 
              [:header :a.category]
-             (do-> (set-attr :href (-> post :category :uri))
+             (do-> (set-attr :href (category/uri (:category post)))
                    (content (-> post :category :name)))
 
              [:.listed-main-image]
@@ -147,10 +148,10 @@
              [:.post-count] (content (str (count posts))))
 
   [:ul.categories :li]
-  (clone-for [[category posts] (post/categorized all-posts)]
-             [:a.category] (do-> (set-attr :href (:uri category))
-                                 (content (:name category)))
-             [:a.feed] (set-attr :href (:feed-uri category))
+  (clone-for [[cat posts] (post/categorized all-posts)]
+             [:a.category] (do-> (set-attr :href (category/uri cat))
+                                 (content (:name cat)))
+             [:a.feed] (set-attr :href (:feed-uri cat))
              [:.post-count] (content (str (count posts))))
 
   [:.current-year]
