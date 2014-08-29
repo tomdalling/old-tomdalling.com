@@ -28,3 +28,4 @@
     (fact "each post has a <!--more--> separator"
       (doseq [p posts]
         [(:uri p) (-> p :content-markdown (.indexOf "<!--more-->") (= -1))] => [(:uri p) false]))))
+

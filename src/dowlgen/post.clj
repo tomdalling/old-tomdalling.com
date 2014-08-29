@@ -1,8 +1,10 @@
 (ns dowlgen.post
   (:require [schema.core :as s]
             [dowlgen.category :as category]
+            [stasis.core :as stasis]
             [clj-time.core :as t]
-            [clj-time.format :as tf]))
+            [clj-time.format :as tf]
+            [clj-time.coerce :as tc]))
 
 (def Artist
   "schema for artists of main images"
@@ -19,8 +21,7 @@
    :main-image (s/maybe {:uri s/Str
                          (s/optional-key :artist) Artist})
    :content-markdown s/Str
-   :uri s/Str
-   :full-url s/Str})
+   :uri s/Str})
 
 (defn- frontmatter-date [date-str]
   (let [datetime (tf/parse (tf/formatter "yyyy-MM-dd") date-str)]
@@ -51,7 +52,7 @@
   (let [[date-str uri-name] (clojure.string/split (last-path-component fname) #"_" 2)]
     [(frontmatter-date date-str) (remove-extension uri-name)]))
 
-(defn build-post [site-url path file-content]
+(defn- build [path file-content]
   (s/validate schema
     (let [[frontmatter md] (read-split-frontmatter file-content)
           [date uri-name] (split-post-filename path)
@@ -62,7 +63,36 @@
        :main-image (:main-image frontmatter)
        :draft (boolean (:draft frontmatter))
        :uri uri
-       :full-url (str site-url uri)
        :content-markdown md
        :date date
        :category cat})))
+
+(defn- yearmonth [post]
+  (let [d (:date post)]
+    (t/year-month (t/year d) (t/month d))))
+
+(defn archive-uri [yearmonth]
+  (str "/blog/"
+       (tf/unparse-local (tf/formatter "yyyy/MM") (tc/to-local-date yearmonth))
+       "/"))
+
+(defn from-map [posts-map]
+  (reverse
+    (sort-by :date
+      (map #(apply build %) posts-map))))
+
+(defn archived [posts]
+  (reverse
+    (sort-by first
+      (group-by yearmonth posts))))
+
+(defn categorized [posts]
+  (sort-by (comp :name first)
+    (group-by :category posts)))
+
+(defn in-category [posts cat]
+  (filter #(= cat (:category %))
+          posts))
+
+(defn remove-drafts [posts]
+  (filter (comp not :draft) posts))

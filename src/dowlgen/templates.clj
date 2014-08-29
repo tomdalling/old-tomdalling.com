@@ -4,6 +4,8 @@
               clone-for do-> replace-vars text-node append html-snippet
               sniptest select pred wrap]]
             [net.cgrand.reload]
+            [dowlgen.post :as post]
+            [dowlgen.config :as config]
             [me.raynes.cegdown :as markdown]
             [clojure.data.json :as json]
             [clojure.data.xml :as xml]
@@ -16,26 +18,9 @@
 
 (def human-date-formatter (tformat/formatter "dd MMM, yyyy"))
 (def archive-month-formatter (tformat/formatter "MMMM yyyy"))
-(def archive-uri-formatter (tformat/formatter "yyyy/MM"))
-
-(defn post-yearmonth [post]
-  (let [d (:date post)]
-    (t/year-month (t/year d) (t/month d))))
-
-(defn archive-uri [yearmonth]
-  (str "/blog/" (tformat/unparse-local archive-uri-formatter (tcoerce/to-local-date yearmonth)) "/"))
 
 (defn unparse-yearmonth [yearmonth]
   (tformat/unparse-local archive-month-formatter (tcoerce/to-local-date yearmonth)))
-
-(defn archived-posts [posts]
-  (reverse
-    (sort-by first
-      (group-by post-yearmonth posts))))
-
-(defn categorized-posts [posts]
-  (sort-by #(:name (first %))
-    (group-by :category posts)))
 
 (defn recent-posts [posts n]
   (take n
@@ -75,6 +60,9 @@
       content ;; separator not found, so use whole content
       (.substring content 0 idx))))
 
+(defn full-url [& uris]
+  (apply str config/base-url uris))
+
 (defsnippet post-single-snippet "templates/post-single.html" [:article] [post]
   [:h1 :a]
   (do-> (content (:title post))
@@ -108,7 +96,7 @@
   [:#disqus_script text-node]
   (replace-vars {:disqus-id (json/write-str (:disqus-id post))
                  :disqus-title (json/write-str (:title post))
-                 :disqus-url (json/write-str (:full-url post))}))
+                 :disqus-url (json/write-str (full-url (:uri post)))}))
 
 (defsnippet post-list-snippet "templates/post-list.html" [:.post-list] [listed-posts title feed-uri]
   [:h1 :.title]
@@ -158,13 +146,13 @@
                         (content (:title post))))
 
   [:ul.archives :li]
-  (clone-for [[yearmonth posts] (archived-posts all-posts)]
-             [:a] (set-attr :href (archive-uri yearmonth))
+  (clone-for [[yearmonth posts] (post/archived all-posts)]
+             [:a] (set-attr :href (post/archive-uri yearmonth))
              [:.month] (content (str (unparse-yearmonth yearmonth)))
              [:.post-count] (content (str (count posts))))
 
   [:ul.categories :li]
-  (clone-for [[category posts] (categorized-posts all-posts)]
+  (clone-for [[category posts] (post/categorized all-posts)]
              [:a.category] (do-> (set-attr :href (:uri category))
                                  (content (:name category)))
              [:a.feed] (set-attr :href (:feed-uri category))
@@ -201,7 +189,7 @@
   (tformat/unparse (tformat/formatters :rfc822)
                    (tcoerce/from-long (tcoerce/to-long date))))
 
-(defn render-rss [post-list uri-base feed-uri]
+(defn render-rss [post-list feed-uri]
   (fn [_] 
     (xml/emit-str
       (xml/sexp-as-element
@@ -209,8 +197,8 @@
           (conj
             [:channel
               [:title "Tom Dalling"]
-              [:link (str uri-base "/?utm_source=rss&utm_medium=rss")]
-              [:atom:link {:href (str uri-base feed-uri)
+              [:link (full-url "/?utm_source=rss&utm_medium=rss")]
+              [:atom:link {:href (full-url feed-uri)
                            :rel "self"
                            :type "application/rss+xml"}]
               [:description "Web & software developer"]
@@ -221,7 +209,7 @@
             (for [post post-list]
               [:item
                 [:title (:title post)]
-                [:link (str uri-base (:uri post) "?utm_source=rss&utm_medium=rss")]
+                [:link (full-url (:uri post) "?utm_source=rss&utm_medium=rss")]
                 [:description [:-cdata (post-shortened-content post)]]
                 [:pubDate (rss-date-format (:date post))]
                 [:category [:-cdata (-> post :category :name)]]
