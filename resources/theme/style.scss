@@ -48,12 +48,31 @@ body {
 
     .post-content {
         h2 { margin-top: 1.5em; }
+        code, pre { font-family: 'Source Code Pro', monospace; }
         code { white-space: nowrap; }
         pre code { white-space: pre; }
         div.highlight pre { color: inherit; } //bootstrap is clobbering this color
 
         div.highlight, table.table, figure, div.alert {
-            margin: 2em 1em;
+            margin: 2em 0;
+        }
+
+        span.MathJax, code {
+            background: #DDD;
+            background: rgba(0,0,0,0.1);
+            border-radius: 5px;
+            padding: 2px 5px;
+            color: inherit;
+        }
+        pre code {
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        .MathJax_Display .MathJax {
+            padding: inherit;
+            background: inherit;
         }
 
         .footnote-ref {
@@ -62,11 +81,33 @@ body {
         }
 
         blockquote.pull-right {
-            width: 40%;
-            background: #ffe9aa;
-            padding: 0.5em;
-            margin-left:1em;
             clear: right;
+
+            font-style: italic;
+            padding: 0.5em;
+            text-align: center;
+            color: rgb(162, 7, 7);
+
+            border-color: rgb(162, 7, 7);
+            border-top: 1px dashed;
+            border-right: none;
+            border-bottom: 1px dashed;
+
+            em { font-weight: bold; }
+        }
+
+        @media (min-width: 500px) {
+            blockquote.pull-right {
+                max-width: 40%;
+                text-align: right;
+
+                padding-top: 0;
+                padding-bottom: 0;
+
+                border-top: none;
+                border-right: 2px solid;
+                border-bottom: none;
+            }
         }
 
         table.table {
@@ -106,6 +147,7 @@ body {
 
             &.nopadding img {
                 padding: 0;
+                border-radius: 5px;
             }
 
             &.black {
