@@ -151,7 +151,7 @@
   (clone-for [[cat posts] (post/categorized all-posts)]
              [:a.category] (do-> (set-attr :href (category/uri cat))
                                  (content (:name cat)))
-             [:a.feed] (set-attr :href (:feed-uri cat))
+             [:a.feed] (set-attr :href (category/feed-uri cat))
              [:.post-count] (content (str (count posts))))
 
   [:.current-year]
