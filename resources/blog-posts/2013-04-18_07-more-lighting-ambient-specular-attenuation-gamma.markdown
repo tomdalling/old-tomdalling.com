@@ -303,7 +303,7 @@ slightly to get this:
   </figcaption>
 </figure>
 
-Now, if $$distance$$ is zero, then $$attenuation$$ will be 1, which means that
+Now, if $$d$$ is zero, then $$a$$ will be 1, which means that
 the light is at maximum intensity.
 
 Secondly, we might want to control how fast the intensity decreases over
