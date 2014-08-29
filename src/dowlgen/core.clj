@@ -1,10 +1,11 @@
 (ns dowlgen.core
   (:require [dowlgen.templates :as templates]
+            [dowlgen.category :as category]
             [ring.util.response]
             [net.cgrand.enlive-html :as enlive]
             [net.cgrand.reload]
             [stasis.core :as stasis]
-            [schema.core :as schema]
+            [schema.core :as s]
             [optimus.export]
             [optimus.assets :as assets]
             [optimus.optimizations :as optimizations]
@@ -14,60 +15,28 @@
             [clj-time.core :as t]
             [clj-time.format :as tformat]))
 
-(def input-dir "resources")
-(def output-dir "dist")
-(def site-url "http://www.tomdalling.com")
-(def frontmatter-date-formatter (tformat/formatter "yyyy-MM-dd"))
-(def categories {:software-design "Software Design"
-                 :coding-tips "Coding Tips"
-                 :cocoa "Cocoa"
-                 :coding-styleconventions "Coding Style/Conventions"
-                 :software-processes "Software Processes"
-                 :web "Web"
-                 :modern-opengl "Modern OpenGL Series"
-                 :random-stuff "Miscellaneous"})
-
-(def Category
-  "schema for categories"
-  {:keyword schema/Keyword
-   :name schema/Str
-   :uri schema/Str
-   :feed-uri schema/Str})
-
 (def Artist
   "schema for artists of main images"
-  {:name schema/Str
-   :url schema/Str})
+  {:name s/Str
+   :url s/Str})
 
 (def Post
   "A schema for blog posts"
-  {:title schema/Str
+  {:title s/Str
    :date org.joda.time.LocalDate
-   :category Category
-   :disqus-id schema/Str
-   :draft schema/Bool
-   :main-image (schema/maybe {:uri schema/Str
-                              (schema/optional-key :artist) Artist})
-   :content-markdown schema/Str
-   :uri schema/Str
-   :full-url schema/Str})
+   :category category/schema
+   :disqus-id s/Str
+   :draft s/Bool
+   :main-image (s/maybe {:uri s/Str
+                         (s/optional-key :artist) Artist})
+   :content-markdown s/Str
+   :uri s/Str
+   :full-url s/Str})
 
-(defn get-category [kw]
-  (schema/validate Category
-    (let [found (kw categories)
-          uri (str "/blog/category/" (name kw) "/")]
-      (if found
-        {:keyword kw
-         :name found
-         :uri uri
-         :feed-uri (str uri "feed/")}
-        (throw (Exception. (str "Category not found: " kw)))))))
-
-(defn all-categories []
-  (map get-category (keys categories)))
+(def site-url "http://www.tomdalling.com")
 
 (defn frontmatter-date [date-str]
-  (let [datetime (tformat/parse frontmatter-date-formatter date-str)]
+  (let [datetime (tformat/parse (tformat/formatter "yyyy-MM-dd") date-str)]
     (t/local-date (t/year datetime) (t/month datetime) (t/day datetime))))
 
 (defn last-path-component [path]
@@ -99,11 +68,11 @@
     [(frontmatter-date date-str) (remove-extension uri-name)]))
 
 (defn build-post [path file-content]
-  (schema/validate Post
+  (s/validate Post
     (let [[frontmatter md] (read-split-frontmatter file-content)
           [date uri-name] (split-post-filename path)
-          category (get-category (:category frontmatter))
-          uri (str "/blog/" (name (:keyword category)) "/" uri-name "/")]
+          cat (category/for-keyword (:category frontmatter))
+          uri (str "/blog/" (category/uri-name cat) "/" uri-name "/")]
       {:title (:title frontmatter)
        :disqus-id (:disqus-id frontmatter)
        :main-image (:main-image frontmatter)
@@ -112,14 +81,14 @@
        :full-url (str site-url uri)
        :content-markdown md
        :date date
-       :category category})))
+       :category cat})))
 
 (defn get-posts [include-drafts]
   (reverse
     (sort-by :date
       (filter (if include-drafts (fn [_] true) #(not (:draft %)))
               (map #(apply build-post %)
-                   (stasis/slurp-directory input-dir #"^/blog-posts/.*\.markdown$"))))))
+                   (stasis/slurp-directory "resources" #"^/blog-posts/.*\.markdown$"))))))
 
 (defn get-assets []
   (concat (assets/load-assets "theme" ["/style.scss"])
@@ -136,23 +105,23 @@
                                        all-posts)])))
 
 (defn post-category-pages [all-posts]
-  (for [[category posts] (group-by :category all-posts)]
-    [(:uri category)
+  (for [[cat posts] (group-by :category all-posts)]
+    [(category/uri cat)
      (templates/render-post-list posts
-                                 (str "Category: " (:name category))
-                                 (:uri category)
-                                 (:feed-uri category)
+                                 (str "Category: " (:name cat))
+                                 (category/uri cat)
+                                 (category/feed-uri cat)
                                  all-posts)]))
 
-(defn category-filter [category posts]
-  (filter #(= category (:category %)) posts))
+(defn category-filter [cat posts]
+  (filter #(= cat (:category %)) posts))
 
 (defn category-rss-feeds [all-categories posts]
-  (for [category all-categories]
-    [(str (:uri category) "feed/index.xml")
-     (templates/render-rss (take 10 (category-filter category posts))
-                           "http://www.tomdalling.com"
-                           (str (:uri category) "feed/"))]))
+  (for [cat all-categories]
+    [(str (category/feed-uri cat) "index.xml")
+     (templates/render-rss (take 10 (category-filter cat posts))
+                           site-url
+                           (category/feed-uri cat))]))
 
 (defn strict-get [m k]
   (if-let [[k v] (find m k)]
@@ -170,20 +139,20 @@
       (concat
         (post-category-pages all-posts)
         (post-archive-pages all-posts)
-        (category-rss-feeds (all-categories) all-posts)
+        (category-rss-feeds category/all all-posts)
         (for [post all-posts]
           [(:uri post) (templates/render-post post all-posts)])
         [["/blog/" (templates/render-post-list (take 10 all-posts) "Recent Posts" "/blog/" "/blog/feed/" all-posts)]
          ["/" (templates/render-page-html (slurp "resources/pages/home.html") "Home" "/" all-posts)]
-         ["/blog/feed/index.xml" (templates/render-rss (take 10 all-posts) "http://www.tomdalling.com" "/blog/feed/")]]))))
+         ["/blog/feed/index.xml" (templates/render-rss (take 10 all-posts) site-url "/blog/feed/")]]))))
 
 (defn get-pages [include-drafts]
   (duplicate-pages (get-original-pages include-drafts)
                    (into {"/feed/index.xml" "/blog/feed/index.xml"}
                          ;; categories can be accessed from "/blog/X" or "/blog/category/X"
-                         (for [cat (all-categories)]
-                           [(str "/blog/" (name (:keyword cat)) "/")
-                            (:uri cat)]))))
+                         (for [cat category/all]
+                           [(str "/blog/" (category/uri-name cat) "/")
+                            (category/uri cat)]))))
 
 (defn wrap-utf8 [handler]
   (fn [request]
@@ -193,7 +162,7 @@
         (ring.util.response/charset response "UTF-8")
         response))))
 
-(def app
+#_(def app
   (wrap-utf8
     (optimus/wrap (stasis/serve-pages #(get-pages true))
                   get-assets
@@ -201,7 +170,8 @@
                   serve-live-assets)))
 
 (defn export []
-  (let [assets (as-> (get-assets) a
+  (let [output-dir "dist"
+        assets (as-> (get-assets) a
                      (optimizations/all a {})
                      (remove :bundled a)
                      (remove #(not (:outdated %)) a))]
