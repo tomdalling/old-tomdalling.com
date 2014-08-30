@@ -55,11 +55,16 @@
                                  all-posts)])
 
 (defn home-page [all-posts]
-  ["/"
-   (templates/renderfn-page-html (slurp "resources/pages/home.html")
-                                 "Home"
-                                 "/"
-                                 all-posts)])
+  ["/" (templates/renderfn-page-html (slurp "resources/pages/home.html")
+                                     "Home"
+                                     "/"
+                                     all-posts)])
+
+(defn page-not-found-page [all-posts]
+  ["/404.html" (templates/renderfn-page-html (slurp "resources/pages/404.html")
+                                             "Page not found"
+                                             nil
+                                             all-posts)])
 
 (defn blog-rss-feed [all-posts]
   ["/blog/feed/index.xml"
@@ -75,7 +80,8 @@
         (category-rss-feeds all-posts)
         [(blog-index-page all-posts)
          (home-page all-posts)
-         (blog-rss-feed all-posts)]))))
+         (blog-rss-feed all-posts)
+         (page-not-found-page all-posts)]))))
 
 (defn strict-get [m k]
   (if-let [[k v] (find m k)]

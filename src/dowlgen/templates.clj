@@ -126,9 +126,10 @@
 
 (deftemplate page-template "templates/page.html" [page all-posts]
   [:head]
-  (when (:uri page)
+  (if (:uri page)
     (append {:tag :link
-             :attrs {:rel "canonical" :href (:uri page)}}))
+             :attrs {:rel "canonical" :href (:uri page)}})
+    identity)
 
   [:title]
   (content (:title page) (html-snippet " &mdash; Tom Dalling"))
