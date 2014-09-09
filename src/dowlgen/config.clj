@@ -17,6 +17,7 @@
 (def page-duplicates
   "Map from duplicate uri to canonical/original uri"
   {"/feed/index.xml" "/blog/feed/index.xml"
+
    ;; /blog/X <= /blog/category/X
    "/blog/software-design/" "/blog/category/software-design/"
    "/blog/coding-tips/" "/blog/category/coding-tips/"
@@ -25,5 +26,9 @@
    "/blog/software-processes/" "/blog/category/software-processes/"
    "/blog/web/" "/blog/category/web/"
    "/blog/modern-opengl/" "/blog/category/modern-opengl/"
-   "/blog/random-stuff/" "/blog/category/random-stuff/"})
+   "/blog/random-stuff/" "/blog/category/random-stuff/"
+   
+   ;; posts without the /blog/ prefix 
+   "/software-design/model-view-controller-explained/" "/blog/software-design/model-view-controller-explained/"
+   })
 
