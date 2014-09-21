@@ -22,7 +22,7 @@ Steam. In late 2013, Valve further announced their new Linux-based operating
 system [SteamOS][].
 
 On Linux, OpenGL is the only API available for hardware accellerated 3D.
-Therefor, an investment in Linux necessarily means an investment in OpenGL.
+Therefore, an investment in Linux necessarily means an investment in OpenGL.
 While porting Left 4 Dead 2 to Linux, Valve stated: ["We've been working with
 Nvidia, AMD, and Intel to improve graphic driver performance on
 Linux"][left4dead2_port].

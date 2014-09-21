@@ -235,7 +235,7 @@ scalar multiplication, then use that to calculate the new position. The code
 would look something like this:
 
 ```cpp
-// `gCamera.right()` returns a unit vector, therefor `leftDirection` will also be a unit vector.
+// `gCamera.right()` returns a unit vector, therefore `leftDirection` will also be a unit vector.
 // Negation only affects the direction, not the magnitude.
 glm::vec3 leftDirection = -gCamera.right();
 //`displacement` will have a magnitude of 12

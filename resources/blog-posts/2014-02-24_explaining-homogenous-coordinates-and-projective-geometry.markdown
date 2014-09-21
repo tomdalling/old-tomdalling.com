@@ -217,7 +217,7 @@ Perspective is implemented in 3D computer graphics by using a transformation
 matrix that changes the $$W$$ element of each vertex. After the the
 camera matrix is applied to each vertex, but before the projection matrix is
 applied, the $$Z$$ element of each vertex represents the distance away
-from the camera. Therefor, the larger $$Z$$ is, the more the vertex
+from the camera. Therefore, the larger $$Z$$ is, the more the vertex
 should be scaled down. The $$W$$ dimension affects the scale, so the
 projection matrix just changes the $$W$$ value based on the
 $$Z$$ value. Here is an example of a perspective projection matrix

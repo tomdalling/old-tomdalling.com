@@ -136,7 +136,7 @@ are responsible for comforming to it."* The opposite of this is when the
 `ExportController` directly creates and uses `XMLExporter` and `CSVExporter`.
 In that situation, `XMLExporter` and `CSVExporter` say *"this is my interface.
 Every other class is responsible for conforming to it."*  The higher level
-classes control the flow of the application, and therefor the user experience.
+classes control the flow of the application, and therefore the user experience.
 You don't want some insignificant implementation detail dictating the flow of
 the application.
 

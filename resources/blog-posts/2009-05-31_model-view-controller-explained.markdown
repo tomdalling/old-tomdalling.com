@@ -28,7 +28,7 @@ The MVC pattern, in a nutshell, is this:
 
     - <p>be independent of both the model and the controller; or</p>
 
-    - <p>actually <strong>be</strong> the controller, and therefor depend on the model.</p>
+    - <p>actually <strong>be</strong> the controller, and therefore depend on the model.</p>
 
 3.  The **controller** provides model data to the view, and
     interprets user actions such as button clicks. The controller depends on
