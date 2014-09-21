@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta content="IE=edge" http-equiv="X-UA-Compatible" />
     <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <title>SOLID Class Design: The Liskov Substitution Principle — Tom Dalling</title>
+    <title>OpenGL in 2014 — Tom Dalling</title>
     <link href="/style.css" rel="stylesheet" />
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
     <link type="text/css" rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro" />
@@ -12,7 +12,7 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-  <link rel="canonical" href="/blog/software-design/solid-class-design-the-liskov-substitution-principle/" /></head>
+  <link rel="canonical" href="/blog/modern-opengl/opengl-in-2014/" /></head>
 
   <body>
 
@@ -48,66 +48,37 @@
         <main class="col-md-8"><article class="post post-single">
       
   <header>
-    <h1><a href="/blog/software-design/solid-class-design-the-liskov-substitution-principle/">SOLID Class Design: The Liskov Substitution Principle</a></h1>
+    <h1><a href="/blog/modern-opengl/opengl-in-2014/">OpenGL in 2014</a></h1>
     <small class="meta">
-      <span class="post-date">21 Nov, 2009</span>
+      <span class="post-date">21 Sep, 2014</span>
       —
-      Category: <a href="/blog/category/software-design/" class="category">Software Design</a>
+      Category: <a href="/blog/category/modern-opengl/" class="category">Modern OpenGL Series</a>
     </small>
     <div class="main-image">
-      <img class="img-responsive" src="/images/posts/lsp.jpg" />
-      <span class="credit">Image courtesy of <a href="http://www.lostechies.com/blogs/derickbailey/archive/2009/02/11/solid-development-principles-in-motivational-pictures.aspx" class="artist">Derick Bailey</a>.</span>
+      <img class="img-responsive" src="/images/posts/opengl-in-2014/main-image.png" />
+      <span class="credit">Image courtesy of <a href="http://commons.wikimedia.org/wiki/File:Utah_teapot_simple_2.png" class="artist">Dhatfield</a>.</span>
     </div>
   </header>
 
-  <div class="post-content"><p>This is part three of a five part series about <a href="http://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod" title="Principles of OOD">SOLID class design principles</a> by <a href="http://www.objectmentor.com/omTeam/martin_r.html">Robert C. Martin</a>. The SOLID principles focus on achieving code that is maintainable, robust, and reusable. In this post, I will discuss the Liskov Substitution Principle.</p>
-<blockquote><p><strong>The Liskov Substitution Principle (LSP)</strong>: <em>functions that use pointers to base classes must be able to use objects of derived classes without knowing it</em>.</p>
-</blockquote>
-<!--more--><p>When first learning about object oriented programming, inheritance is usually described as an "is a" relationship. If a penguin "is a" bird, then the <code>Penguin</code> class should inherit from the <code>Bird</code> class. The "is a" technique of determining inheritance relationships is simple and useful, but occasionally results in bad use of inheritance.</p><p>The <a href="http://en.wikipedia.org/wiki/Liskov_substitution_principle">Liskov Substitution Principle</a> is a way of ensuring that inheritance is used correctly.</p><h2>Tom's Penguin Problem</h2><p>The classic example of the "is a" technique causing problems is the <a href="http://en.wikipedia.org/wiki/Circle-ellipse_problem">circle-elipse problem</a> (a.k.a the rectangle-square problem). However, I'm going use penguins.</p><p>First, consider an application that shows birds flying around in patterns in the sky. There will be multiple types of birds, so the developer decides to use the <a href="/blog/software-design/solid-class-design-the-open-closed-principle" title="SOLID Class Design: the Open Closed Principle">Open Closed Principle</a> to "close" the code to the addition of new types of birds. To do this, the following abstract <code>Bird</code> base class is created:</p>
-<div class="highlight"><pre><span class="k">class</span> <span class="nc">Bird</span> <span class="p">{</span>
-<span class="nl">public:</span>
-    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">setLocation</span><span class="p">(</span><span class="kt">double</span> <span class="n">longitude</span><span class="p">,</span> <span class="kt">double</span> <span class="n">latitude</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">setAltitude</span><span class="p">(</span><span class="kt">double</span> <span class="n">altitude</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">draw</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">};</span>
-</pre></div><p>Version one of BirdsFlyingAroundApp is a huge success. Version two adds another 12 different types of birds with ease, and is also a success. Hooray for the Open Closed Principle. However, version three of the app is required to support penguins. The developer makes a new <code>Penguin</code> class that inherits from the <code>Bird</code> class, but there is a problem:</p>
-<div class="highlight"><pre><span class="kt">void</span> <span class="n">Penguin</span><span class="o">::</span><span class="n">setAltitude</span><span class="p">(</span><span class="kt">double</span> <span class="n">altitude</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="c1">//altitude can't be set because penguins can't fly</span>
-    <span class="c1">//this function does nothing</span>
-<span class="p">}</span>
-</pre></div><p><strong>If an override method does nothing or just throws an exception, then you're probably violating the LSP.</strong></p><p>When the app is run, all the flying patterns look wrong because the <code>Penguin</code> objects ignore the <code>setAltitude</code> method. The penguins are just flopping around on the ground. Even though the developer tried to follow the OCP, they failed. Existing code must be modified to accommodate the <code>Penguin</code> class.</p><p>While a penguin <em>technically</em> "is a" bird, the <code>Bird</code> class makes the assumption that all birds can fly. Because the <code>Penguin</code> subclass violates the flying assumption, it does not satisfy the Liskov Substitution Principle for the <code>Bird</code> superclass.</p><h2>Why Violating The LSP is Bad</h2><p>The whole point of using an abstract base class is so that, in the future, you can write a new subclass and insert it into existing, working, tested code. This is the essence of the <a href="/blog/software-design/solid-class-design-the-open-closed-principle" title="SOLID Class Design: the Open Closed Principle">Open Closed Principle</a>. However, when the subclasses don't adhere properly to the interface of the abstract base class, you have to go through the existing code and account for the special cases involving the delinquent subclasses. This is a blatant violation of the <a href="/blog/software-design/solid-class-design-the-open-closed-principle" title="SOLID Class Design: the Open Closed Principle">Open Closed Principle</a>. </p><p>For example, take a look at this fragment of code:</p>
-<div class="highlight"><pre><span class="c1">//Solution 1: The wrong way to do it</span>
-<span class="kt">void</span> <span class="nf">ArrangeBirdInPattern</span><span class="p">(</span><span class="n">Bird</span><span class="o">*</span> <span class="n">aBird</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="n">Pengiun</span><span class="o">*</span> <span class="n">aPenguin</span> <span class="o">=</span> <span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="n">Pengiun</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">aBird</span><span class="p">);</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">aPenguin</span><span class="p">)</span>
-        <span class="n">ArrangeBirdOnGround</span><span class="p">(</span><span class="n">aPenguin</span><span class="p">);</span>
-    <span class="k">else</span>
-        <span class="n">ArrangeBirdInSky</span><span class="p">(</span><span class="n">aBird</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div><p>The LSP says that <em>the code should work without knowing the actual class of the <code>Bird</code> object</em>. What if you want to add another type of flightless bird, like an emu? Then you have to go through all your existing code and check if the <code>Bird</code> pointers are actually <code>Emu</code> pointers. You should be wrinkling your nose at the moment, because there is definitely a code smell in the air.</p><h2>Two Possible Solutions</h2><p>We want to be able to add the <code>Penguin</code> class without modifying existing code. This can be achieved by fixing the bad inheritance hierarchy so that it satisfies the LSP.</p><p>One not-so-great way of fixing the problem is to add a method to the <code>Bird</code> class named <code>isFlightless</code>. This way, at least additional flightless bird classes can be added without violating the OCP. This would result in code like so:</p>
-<div class="highlight"><pre><span class="c1">//Solution 2: An OK way to do it</span>
-<span class="kt">void</span> <span class="nf">ArrangeBirdInPattern</span><span class="p">(</span><span class="n">Bird</span><span class="o">*</span> <span class="n">aBird</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">aBird</span><span class="o">-&gt;</span><span class="n">isFlightless</span><span class="p">())</span>
-        <span class="n">ArrangeBirdOnGround</span><span class="p">(</span><span class="n">aBird</span><span class="p">);</span>
-    <span class="k">else</span>
-        <span class="n">ArrangeBirdInSky</span><span class="p">(</span><span class="n">aBird</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div><p>This is really a band-aid solution. It hasn't fixed the underlying problem. It just provides a way to check whether the problem exists for a particular object.</p><p>A better solution would be to make sure flightless bird classes don't inherit flying functionality from their superclasses. This could be done like so:</p>
-<div class="highlight"><pre><span class="c1">//Solution 3: Proper inheritance</span>
-<span class="k">class</span> <span class="nc">Bird</span> <span class="p">{</span>
-<span class="nl">public:</span>
-    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">draw</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">setLocation</span><span class="p">(</span><span class="kt">double</span> <span class="n">longitude</span><span class="p">,</span> <span class="kt">double</span> <span class="n">latitude</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">};</span>
-
-<span class="k">class</span> <span class="nc">FlightfulBird</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Bird</span> <span class="p">{</span>
-<span class="nl">public:</span>
-    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">setAltitude</span><span class="p">(</span><span class="kt">double</span> <span class="n">altitude</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">};</span>
-</pre></div><p>I don't think the English language has a word that means the opposite of "flightless", but let's be Shakespearian and invent the word "flightful" to fill the position. In the above solution the <code>Bird</code> base class does not contain any flying functionality, and the <code>FlightfulBird</code> subclass adds that functionality. This allows some functions to be applied to both <code>Bird</code> and <code>FlightfulBird</code> objects; drawing for example. However, the <code>Bird</code> objects, which may be flightless, can not be shoved into functions that take <code>FlightfulBird</code> objects.</p></div>
+  <div class="post-content"><p>Valve is investing in OpenGL to hedge themselves against Microsoft. Some well-known developers have written about the deficiencies in the API. A few competing, proprietary APIs have popped up. In an effort to remain competitive, Khronos announces glnext: a ground-up rethinking of the OpenGL and OpenGL ES APIs. This post will look at developments in the OpenGL ecosystem over the last couple of years.</p>
+<!--more--><h2>Valve</h2><p>In July of 2012, Valve announced that they were developing a Linux version of Steam. In late 2013, Valve further announced their new Linux-based operating system <a href="http://store.steampowered.com/livingroom/SteamOS/">SteamOS</a>.</p><p>On Linux, OpenGL is the only API available for hardware accellerated 3D. Therefor, an investment in Linux necessarily means an investment in OpenGL. While porting Left 4 Dead 2 to Linux, Valve stated: <a href="http://blogs.valvesoftware.com/linux/faster-zombies/">"We've been working with Nvidia, AMD, and Intel to improve graphic driver performance on Linux"</a>.</p><p>On top of that, Valve have developed and open-sourced a couple of OpenGL tools. <a href="https://github.com/ValveSoftware/ToGL">ToGL</a> is a Direct3D to OpenGL translation layer, including a HLSL to GLSL converter. <a href="https://github.com/ValveSoftware/vogl">Vogl</a> provides some sorely-needed debugging facilities. These two projects were dumped onto github in a somewhat hasty manner. Nevertheless, these are welcome additions, considering the historical lack of tooling in the OpenGL ecosystem.</p><p>On top of <em>that</em>, Valve are also <a href="http://lunarg.com/glassymesa/">funding some development</a> of Mesa, an open-source implementation of OpenGL.</p><p>This is all great news for OpenGL in general. Everyone benefits from such a large and influential company pushing for better performance, tooling, and stability. As long a Valve's long-term strategy continues to involves Linux, they will be a boon to OpenGL.</p><h2>Criticism</h2><p>It's wasn't all roses from Valve, though. <a href="http://richg42.blogspot.com/">Rich Geldreich</a>, who developed Vogl as a Valve employee, started a storm with his blog post: <a href="http://richg42.blogspot.hu/2014/05/things-that-drive-me-nuts-about-opengl.html">Things that drive me nuts about OpenGL</a>. His post is a laundry list of OpenGL criticisms, compared to other modern graphics APIs. It set off a <a href="http://www.dayonepatch.com/index.php?/topic/107633-a-pretty-huge-debate-about-opengl-has-erupted-in-the-dev-community-involving-devs-from-valve-epic-firaxis-and-amd/">cascade of reactions</a>. The pains that Rich identified resonated with a lot of OpenGL developers, although some dismissed them with a <a href="https://twitter.com/grahamsellers/status/472418068660887553">big middle finger</a>.</p><p>In June of 2014, <a href="http://richg42.blogspot.co.uk/2014/06/article-directx-creator-says-apples.html">Rich wrote</a>:</p>
+<blockquote><p>BTW - I'm no longer at Valve or working on vogl. And no, I'm not being paid by, nor do I know anyone still at Apple, lol. </p>
+</blockquote><p>To me, Vogl represented real progress in an ecosystem that was maybe a bit stagnant, so it's a little disheartening to see Rich leaving so soon.</p><h2>Mantle, Metal, and DirectX 12</h2><p>In September of 2013, AMD announced a new, low-level graphics API called <a href="http://www.amd.com/en-gb/innovations/software-technologies/mantle">Mantle</a>, designed to be an alternative to OpenGL and Direct3D. The idea with Mantle was to allow direct access to AMD hardware with an absolute minimum of driver overhead, something that OpenGL and DirectX didn't really offer at the time. AMD boasted that Mantle offered large performance gains compared to "other APIs." A few large names, such as Crytek and DICE, jumped on board, and implemented Mantle in their game engines. AMD also claimed that Mantle would eventually be an open standard, but currently, a year after its announcement, we are still yet to see any progress towards this.</p><p>A few months later, Microsoft announces DirectX 12, which sounds a lot like Mantle. The main difference from DX11 is the significantly reduced driver overhead, and more direct access to hardware.</p><p>Then, in July of 2014, Apple follows suit and releases it's own low-level graphics API called <a href="https://developer.apple.com/metal/">Metal</a>. Prior to Metal, OpenGL ES was the only option for iOS devices. In fact, Apple's use of OpenGL ES in their iPhones was one of the major factors contributing to the OpenGL renaissance that we see today. And now, having been such an ally, Apple turns around and creates a competitor. Some speculate that Apple dislikes the cross-platform nature of OpenGL, and would prefer to lock developers into the iOS ecosystem. Others say that Metal is just a better API, and OpenGL was ripe for replacement.</p><p>With three cutting-edge competitors announced within a year of eachother, while OpenGL still carries 20 years of baggage along with it, it's not unreasonable to beleive that OpenGL may be fighting for it's survival over the next few years.</p><p>Joshua Barczak explains this new taste for low-level graphics APIs in his excellent blog post: <a href="http://www.joshbarczak.com/blog/?p=99">The Race to the Metal</a>.</p><h2>AZDO</h2><p>At GDC 2014, back in March, developers from AMD, Nvidia, and Intel came together to give a presentation called <a href="http://gdcvault.com/play/1020791/">Approaching Zero Driver Overhead</a> (AZDO). The premise of the presentation is that OpenGL 4.4 does actually provide low-level functionality, sort of like Mantle, if you know where to find it. This presentation is a fantastic overview of the cutting-edge features of OpenGL.</p><h2>glnext</h2><p>Last month, in a <a href="https://www.khronos.org/assets/uploads/developers/library/2014-siggraph-bof/OpenGL-Ecosystem-BOF_Aug14.pdf">presentation at SIGGRAPH 2014</a>, Khronos announced the "Next Generation OpenGL Initiative" (which I'm going to refer to as "glnext" here).</p><p><figure>  <img src="/images/posts/opengl-in-2014/glnext.png" />  <figcaption>  Source: <a href="https://www.khronos.org/assets/uploads/developers/library/2014-siggraph-bof/OpenGL-Ecosystem-BOF_Aug14.pdf">Khronos SIGGRAPH 2014 presentation</a>  </figcaption> </figure></p><p>Here are a few excerpts from the presentation, relating to glnext:</p>
+<ul>
+  <li>After twenty two years -- need ground up design of API for high-efficiency  access to graphics and compute on modern GPUs.</li>
+  <li>Incremental change is not enough. GL has a good track record of adaptive  evolution... but structural problems can’t be fixed by accretion.</li>
+  <li>Who's on board: Valve, Apple, AMD, Intel, Nvidia, and others.</li>
+  <li>Fast-paced work on detailed proposals and designs are already underway</li>
+  <li>NOT your father’s multi-year design-by-committee process</li>
+  <li>Goals:
+  <ul>
+    <li>Clean, modern architecture</li>
+    <li>Greatly reduced CPU overhead</li>
+    <li>Multi-thread / multicore-friendly</li>
+    <li>Improved reliability and consistency between implementations</li>
+    <li>Unify OpenGL and OpenGL ES</li>
+  </ul></li>
+</ul><p>In the presentation, Khronos directly mentions <a href="http://richg42.blogspot.hu/2014/05/things-that-drive-me-nuts-about-opengl.html">Rich Gelrich's criticisms</a> under the heading "OpenGL needs to change", and I think that this is a great indication that we will see some real improvements baked into glnext. John McDonald from Valve states that "glnext is shaping up to be <em>amazing</em>."</p><p>Richard Huddy <a href="http://techreport.com/news/26922/amd-hopes-to-put-a-little-mantle-in-opengl-next">says</a> that AMD is giving Khronos full access to Mantle, and will impose no restrictions or licensing fees if glnext takes ideas from the architecture of Mantle.</p><h2>OpenGL 4.5 And The Current Ecosystem</h2><p>But wait, there's more! While we wait for glnext, OpenGL development rolls on. In the same SIGGRAPH 2014 presentation, Khronos announced OpenGL 4.5, and gave an overview of the whole OpenGL ecosystem.</p><p>Among other things, 4.5 finally, <strong>finally</strong>, brings Direct State Access (DSA) into core. It's my personal opinion that a lot of the perceived cruft in OpenGL stems from being forced to constantly manipulate the state machine, which is basically a huge collection of mutable global variables, and DSA alleviates a lot of this pain. In addition to the developer-frendliness that DSA brings, it also enables a set of possible performance improvements.</p><p><figure>  <img src="/images/posts/opengl-in-2014/dsa.png" />  <figcaption>  Source: <a href="https://www.khronos.org/assets/uploads/developers/library/2014-siggraph-bof/OpenGL-Ecosystem-BOF_Aug14.pdf">Khronos SIGGRAPH 2014 presentation</a>  </figcaption> </figure></p><p>In tooling news, Vogl development continues, and it now runs on Windows. AMD, Nvidia, and Intel are all improving performance profiling through their own proprietary tools. The GLSL reference validator is getting better, helping to fix headaches around cross-platform shader compilation.</p><p>Conformance testing is also being ramped up. One of OpenGL's uglier problems is driver conformance, but it appears that this situation is improving.</p><h2>Conclusion</h2><p>The AZDO presentation showed that OpenGL is still competitive when compared to Mantle, Metal, and DirectX 12. Also, glnext is poised to clean up a lot of the crusty parts, and unify OpenGL and OpenGL ES into a single, modern, ultra-cross-platform API.</p><p>I think this slide from the SIGGRAPH presentation sums up why OpenGL is, and will remain to be, relevant:</p><p><figure>  <img src="/images/posts/opengl-in-2014/cross-platform.png" />  <figcaption>  Source: <a href="https://www.khronos.org/assets/uploads/developers/library/2014-siggraph-bof/OpenGL-Ecosystem-BOF_Aug14.pdf">Khronos SIGGRAPH 2014 presentation</a>  </figcaption> </figure></p><p>Mantle only currently works with certain AMD hardware on Windows. Metal only works on iOS. DirectX 12 will only work on Windows. <strong>OpenGL is the only truly cross-platform option</strong>. It's the only option that works on all hardware across Windows, OSX, Linux, Android and iOS. It's the <em>only</em> option on Linux, so if Valve's vision for Linux comes to fruition, OpenGL will be more relevant than ever.</p><p>I'm optimistic about the future of OpenGL/glnext. We just have to wait and see if the vendors play nice together.</p></div>
 
   <footer>
     <div class="alert alert-info subscribe-bait">
@@ -123,9 +94,9 @@
     <div id="disqus_thread"></div>
     <script id="disqus_script" type="text/javascript">
       var disqus_shortname = "tomdalling";
-      var disqus_identifier = "267 http:\/\/tomdalling.com\/?p=267";
-      var disqus_title = "SOLID Class Design: The Liskov Substitution Principle";
-      var disqus_url = "http:\/\/www.tomdalling.com\/blog\/software-design\/solid-class-design-the-liskov-substitution-principle\/";
+      var disqus_identifier = "com.tomdalling.blog.opengl-in-2014";
+      var disqus_title = "OpenGL in 2014";
+      var disqus_url = "http:\/\/www.tomdalling.com\/blog\/modern-opengl\/opengl-in-2014\/";
 
       (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
