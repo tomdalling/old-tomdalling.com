@@ -179,7 +179,7 @@ For those transformations, we don't need 4D coordinates because 3D will work.
 However, translation requires at least a 4x3 matrix, and perspective projection
 requires a 4x4 matrix, and we need both of those, so we are forced to use 4D.
 
-These are called [homogenous coordinates][]. In a later article, when we cover
+These are called [homogeneous coordinates][]. In a later article, when we cover
 directional lighting, we will learn about what the 'W' dimension actually
 represents. At this point, however, we only need to know how to convert from 3D
 to 4D. When you convert a 3D coordinate into 4D, always set the 4<sup>th</sup>
@@ -829,7 +829,7 @@ Additional Resources
 [`windows/03_matrices`]: https://github.com/tomdalling/opengl-series/tree/master/windows/03_matrices
 [a better way to do time-based updates]: http://gafferongames.com/game-physics/fix-your-timestep/
 [code samples]: http://glm.g-truc.net/code.html
-[homogenous coordinates]: http://en.wikipedia.org/wiki/Homogeneous_coordinates
+[homogeneous coordinates]: http://en.wikipedia.org/wiki/Homogeneous_coordinates
 [http://imgur.com/a/x8q7R]: http://imgur.com/a/x8q7R
 [https://github.com/tomdalling/opengl-series/archive/master.zip]: https://github.com/tomdalling/opengl-series/archive/master.zip
 [https://github.com/tomdalling/opengl-series]: https://github.com/tomdalling/opengl-series

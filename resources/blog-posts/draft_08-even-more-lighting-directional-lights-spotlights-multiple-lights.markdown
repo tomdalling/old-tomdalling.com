@@ -38,7 +38,7 @@ Sun radiates light in all directions, much like a point light. However, over an
 enormous distance, the tiny fraction of light rays that make it to earth appear
 to be almost parallel.
 
-As we saw in the previous article on homogenous coordinates, directional lights
+As we saw in the previous article on homogeneous coordinates, directional lights
 can be thought of as point lights that are infinitely far away. This causes an
 unfortunate interaction with attenuation. Attenuation is the reduction of light
 intensity over distance – the greater the distance, the dimmer the light is. If
