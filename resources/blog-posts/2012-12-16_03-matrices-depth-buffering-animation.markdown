@@ -804,7 +804,7 @@ Additional Resources
  -  [Tutorial 3 : Matrices][] is a great explanation of matrices from opengl-tutorial.org
  -  [Scaling][scaling_wiki], [rotation][], [translation][], and [transformation matrices][] on Wikipedia
  -  [Basic 3D Math: Matrices][] 
- -  [Homogeneous coordinates][] by Lawrence Kesteloot
+ -  [Homogeneous coordinates][lawrence_homogeneous] by Lawrence Kesteloot
  -  [Viewing][] chapter of the OpenGL red book. Uses old version of OpenGL in code examples, but the theory is still the same.
  -  GLM [code samples][] and[manual (pdf)][] 
  -  [Z-buffering (depth buffering)][] on Wikipedia
@@ -814,7 +814,8 @@ Additional Resources
 [Basic 3D Math: Matrices]: http://www.matrix44.net/cms/notes/opengl-3d-graphics/basic-3d-math-matrices
 [Fix Your Timestep!]: http://gafferongames.com/game-physics/fix-your-timestep/
 [Getting Started in Xcode, Visual C++, and Linux]: http://tomdalling.com/blog/modern-opengl/01-getting-started-in-xcode-and-visual-cpp/
-[Homogeneous coordinates]: http://www.teamten.com/lawrence/graphics/homogeneous/
+[lawrence_homogeneous]: http://www.teamten.com/lawrence/graphics/homogeneous/
+[homogeneous coordinates]: http://en.wikipedia.org/wiki/Homogeneous_coordinates
 [Overlap and Depth Buffering]: http://www.arcsynthesis.org/gltut/Positioning/Tut05%20Overlap%20and%20Depth%20Buffering.html
 [Perspective/orthogonal projection]: http://imgur.com/a/x8q7R#0
 [Rotation]: http://imgur.com/a/x8q7R#2
@@ -829,7 +830,6 @@ Additional Resources
 [`windows/03_matrices`]: https://github.com/tomdalling/opengl-series/tree/master/windows/03_matrices
 [a better way to do time-based updates]: http://gafferongames.com/game-physics/fix-your-timestep/
 [code samples]: http://glm.g-truc.net/code.html
-[homogeneous coordinates]: http://en.wikipedia.org/wiki/Homogeneous_coordinates
 [http://imgur.com/a/x8q7R]: http://imgur.com/a/x8q7R
 [https://github.com/tomdalling/opengl-series/archive/master.zip]: https://github.com/tomdalling/opengl-series/archive/master.zip
 [https://github.com/tomdalling/opengl-series]: https://github.com/tomdalling/opengl-series
