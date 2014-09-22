@@ -45,7 +45,7 @@ they will be a boon to OpenGL.
 Criticism
 ---------
 
-It's wasn't all roses from Valve, though. [Rich Geldreich][], who developed
+It wasn't all roses from Valve, though. [Rich Geldreich][], who developed
 Vogl as a Valve employee, started a storm with his blog post: [Things that
 drive me nuts about OpenGL][rich_first_post]. His post is a laundry list
 of OpenGL criticisms, compared to other modern graphics APIs. It set off
@@ -78,7 +78,7 @@ A few months later, Microsoft announces DirectX 12, which sounds a lot like
 Mantle. The main difference from DX11 is the significantly reduced driver
 overhead, and more direct access to hardware.
 
-Then, in July of 2014, Apple follows suit and releases it's own low-level
+Then, in July of 2014, Apple follows suit and releases its own low-level
 graphics API called [Metal][].  Prior to Metal, OpenGL ES was the only option
 for iOS devices. In fact, Apple's use of OpenGL ES in their iPhones was one of
 the major factors contributing to the OpenGL renaissance that we see today. And
@@ -89,7 +89,7 @@ is just a better API, and OpenGL was ripe for replacement.
 
 With three cutting-edge competitors announced within a year of eachother, while
 OpenGL still carries 20 years of baggage along with it, it's not unreasonable
-to beleive that OpenGL may be fighting for it's survival over the next few
+to beleive that OpenGL may be fighting for its survival over the next few
 years.
 
 Joshua Barczak explains this new taste for low-level graphics APIs in his
