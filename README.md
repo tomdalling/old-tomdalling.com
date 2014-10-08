@@ -12,6 +12,7 @@ Commonly Used Commands
 TODO
 ----
 
+ - Update OpenGL article 02 to include section about glBlendFunc
  - Don't load disqus in development. It's remembering incorrect post titles
    before they are published
  - Proper titles for category RSS feeds
