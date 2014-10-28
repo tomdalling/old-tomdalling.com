@@ -12,7 +12,7 @@ cube. The end result will look like this:
 
 Now that we're finally getting something interesting on the screen, I can
 include more pictures! An album of animated gifs is available here:
-[http://imgur.com/a/x8q7R][] 
+http://imgur.com/a/x8q7R
 
 In order to make this spinning cube, we will learn a bit about matrix math, and
 how it is used to create perspective projections, rotation, translation, and
@@ -22,23 +22,7 @@ over time, such as animation.
 
 <!--more-->
 
-Accessing The Code
-------------------
-
-Download all lessons as a zip from
-here:[https://github.com/tomdalling/opengl-series/archive/master.zip][] 
-
-Setup instructions are available in the first article: [Getting Started in
-Xcode, Visual C++, and Linux][].
-
-This article builds on the code from the previous article.
-
-All the code in this series of articles is available from github:
-[https://github.com/tomdalling/opengl-series][]. You can download a zip of all
-the files from that page, or you can clone the repository if you are familiar
-with git. The code for this article can be found in the
-[`windows/03_matrices`][], [`osx/03_matrices`][], and[`linux/03_matrices`][]
-directories.
+<widget type="modern-opengl-preamble">03_matrices</widget>
 
 
 Matrix Theory
@@ -419,7 +403,7 @@ direction of the Y axis. If the camera was upside down, or tilted sideways,
 then this would be different.
 
 After we've generated the camera matrix, we set the `camera` shader variable
-with `gProgram&#8209;>setUniform("camera", camera);`. The `setUniform` method
+with `gProgram->setUniform("camera", camera);`. The `setUniform` method
 is part of the `tdogl::Program` class, and it calls `glUniformMatrix4fv` to set
 the shader variable.
 
@@ -483,7 +467,7 @@ we did for the `camera` variable. Inside the `LoadShaders` function, add the
 following code just above the camera matrix code:
 
 ```cpp
-glm::mat4 projection = glm::perspective<float>(50.0, SCREEN_SIZE.x/SCREEN_SIZE.y, 0.1, 10.0);
+glm::mat4 projection = glm::perspective(glm::radians(50.0f), SCREEN_SIZE.x/SCREEN_SIZE.y, 0.1f, 10.0f);
 gProgram->setUniform("projection", projection);
 ```
 
@@ -493,20 +477,21 @@ removed from recent versions of OpenGL. Fortunately `glm::perspective` can be
 used as a replacement.
 
 The first argument to `glm::perspective` is the "field of view" argument. This
-is an angle, in degrees, that specifies how wide the camera's vision is. A
-large field of view means the camera can see a lot of the scene, so the camera
-appears to be zoomed out. A small field of view means the camera can only see a
-small portion of the scene, so it appears to be zoomed in. The second argument
-is the "aspect" argument, which specifies the aspect ratio of the view. This is
-almost always set to `width/height` of the window. The second last argument is
-the "near plane." The near plane is the front of the clip volume, and the value
-`0.1` says that the near plane is 0.1 units away from the camera. Anything that
-is closer to the camera than `0.1` it will not be visible. The near plane must
-be a value greater than zero. The last argument is the "far plane", which is
-the back of the clip volume. The value `10.0` says that the camera will display
-everything that is within 10 units of the camera. Anything further than 10
-units away will not be visible. Our cube is about three units away, so it will
-be visible.
+is an angle, in radians, that specifies how wide the camera's vision is.
+Instead of specifying radians directly, I'm using the `glm::radians` to convert
+50 degrees into radians. A large field of view means the camera can see a lot
+of the scene, so the camera appears to be zoomed out. A small field of view
+means the camera can only see a small portion of the scene, so it appears to be
+zoomed in. The second argument is the "aspect" argument, which specifies the
+aspect ratio of the view. This is almost always set to `width/height` of the
+window. The second last argument is the "near plane." The near plane is the
+front of the clip volume, and the value `0.1` says that the near plane is 0.1
+units away from the camera. Anything that is closer to the camera than `0.1` it
+will not be visible. The near plane must be a value greater than zero. The last
+argument is the "far plane", which is the back of the clip volume. The value
+`10.0` says that the camera will display everything that is within 10 units of
+the camera. Anything further than 10 units away will not be visible. Our cube
+is about three units away, so it will be visible.
 
 `glm::perspective` effectively fits a [viewing frustum][] inside the clip
 volume. A frustum is like a pyramid with the top cut off. The flat base of the
@@ -541,8 +526,8 @@ Unfortunately, the screenshot above shows that some of the back sides of the
 cube are being rendered *over the top* of the front sides. We obviously don't
 want this to happen, so we will enable **depth buffering** to fix the problem.
 
-Depth Bufferring
-----------------
+Depth Buffering
+---------------
 
 <blockquote class="pull-right">
   Depth buffering is one way to stop things in the background from being drawn
@@ -570,18 +555,6 @@ pixel is closer to the camera. This is called "depth testing."
 
 Implementing Depth Buffering
 ----------------------------
-
-Enabling depth buffering is pretty easy in OpenGL. First we need to request a
-depth buffer when we create our window with `glfwOpenWindow`. The new call to
-`glfwOpenWindow` looks like this:
-
-```cpp
-glfwOpenWindow((int)SCREEN_SIZE.x, (int)SCREEN_SIZE.y, 8, 8, 8, 8, 16, 0, GLFW_WINDOW)
-```
-
-The only difference is that the depth buffer argument is now `16` instead of
-`0`. This means that each pixel stores its distance to the camera as a 16 bit
-number. The more bits the depth buffer has, the more accurate it is.
 
 Inside the `AppMain` function, after the call to `glewInit`, we add this code:
 
@@ -662,7 +635,7 @@ will set it inside the `Render` function. Just after the call to
 `gProgram->use()` add this code:
 
 ```cpp
-gProgram->setUniform("model", glm::rotate(glm::mat4(), 45.0f, glm::vec3(0,1,0)));
+gProgram->setUniform("model", glm::rotate(glm::mat4(), glm::radians(45.0f), glm::vec3(0,1,0)));
 ```
 
 We are using the `glm::rotate` function to create a rotation transformation
@@ -717,6 +690,9 @@ add it to the loop in `AppMain`, just before the call to `Render`.
 
 ```cpp
 while(glfwGetWindowParam(GLFW_OPENED)){
+    // process pending events
+    glfwPollEvents();
+
     // update the rotation animation
     Update();
     
@@ -730,7 +706,7 @@ variable. Inside the `Render` function we'll modify the code to set the model
 matrix:
 
 ```cpp
-gProgram->setUniform("model", glm::rotate(glm::mat4(), gDegreesRotated, glm::vec3(0,1,0)));
+gProgram->setUniform("model", glm::rotate(glm::mat4(), glm::radians(gDegreesRotated), glm::vec3(0,1,0)));
 ```
 
 The only difference is that we are using the variable `gDegreesRotated` instead
@@ -768,9 +744,12 @@ the last update. The new loop looks like this:
 ```cpp
 double lastTime = glfwGetTime();
 while(glfwGetWindowParam(GLFW_OPENED)){
+    // process pending events
+    glfwPollEvents();
+
     // update the scene based on the time elapsed since last update
     double thisTime = glfwGetTime();
-    Update(thisTime - lastTime);
+    Update((float)(thisTime - lastTime));
     lastTime = thisTime;
     
     // draw one frame
@@ -830,9 +809,6 @@ Additional Resources
 [`windows/03_matrices`]: https://github.com/tomdalling/opengl-series/tree/master/windows/03_matrices
 [a better way to do time-based updates]: http://gafferongames.com/game-physics/fix-your-timestep/
 [code samples]: http://glm.g-truc.net/code.html
-[http://imgur.com/a/x8q7R]: http://imgur.com/a/x8q7R
-[https://github.com/tomdalling/opengl-series/archive/master.zip]: https://github.com/tomdalling/opengl-series/archive/master.zip
-[https://github.com/tomdalling/opengl-series]: https://github.com/tomdalling/opengl-series
 [manual (pdf)]: http://glm.g-truc.net/glm-0.9.4.pdf
 [mey-tri-seez]: http://static.sfdict.com/dictstatic/dictionary/audio/luna/M02/M0208400.mp3
 [rotation]: http://en.wikipedia.org/wiki/Rotation_matrix
