@@ -3,12 +3,12 @@
  :main-image {:uri "/images/posts/modern-opengl-01.png"}
  :category :modern-opengl}
 
-Welcome to the first of a series of articles about modern OpenGL, with a focus
-on making games. All the code will be open source, and downloadable from
-github: [https://github.com/tomdalling/opengl-series][].
+Welcome to the first of a series of articles about modern OpenGL.  All the code
+will be open source, and downloadable from github:
+https://github.com/tomdalling/opengl-series.
 
 By the end of this article, you will have a working OpenGL 3.2 project in
-Visual C++ on Windows, Xcode on OSX, and Linux. The app will have a vertex
+Visual Studio 2013 on Windows, and Xcode on OSX. The app will have a vertex
 shader, a fragment shader, and will display a single triangle using a VAO and a
 VBO. The project will use [GLEW][] to access the OpenGL API, [GLFW][] to handle
 window creation and input, and [GLM][] for matrix/vector math.
@@ -24,9 +24,9 @@ Table of Contents
 
  -  [Accessing The Code](#accessing_the_code)
  -  [A Note On Compatibility](#a_note_on_compatibility)
- -  [Visual C++ Setup Instructions](#visual_cpp_setup)
- -  [Xcode Setup Instructions](#xcode_setup)
- -  [Linux Setup Instructions](#linux_setup)
+ -  [Visual Studio Setup](#visual_cpp_setup)
+ -  [Xcode Setup](#xcode_setup)
+ -  [Linux Setup](#linux_setup)
  -  [Introducing GLEW, GLFW, and GLM](#introducing_glew_glfw_glm)
  -  [What Are Shaders?](#what_are_shaders)
     -  [Vertex Shaders](#vertex_shaders)
@@ -42,22 +42,23 @@ Table of Contents
 
 <h2><a name="accessing_the_code">Accessing The Code</a></h2>
 
-Download all lessons as a zip from
-here:[https://github.com/tomdalling/opengl-series/archive/master.zip][] 
+Download all the code as a zip from here:
+https://github.com/tomdalling/opengl-series/archive/master.zip
 
 All the code in this series of articles is available from github:
-[https://github.com/tomdalling/opengl-series][]. You can download a zip of all
-the files from that page, or you can clone the repository if you are familiar
-with git.
+https://github.com/tomdalling/opengl-series. You can download a zip of all the
+files from that page, or you can clone the repository if you are familiar with
+git.
 
 The code for this article can be found in the
-[`windows/01_project_skeleton`][], [`osx/01_project_skeleton`][], and
-[`linux/01_project_skeleton`][] directories. Setup instructions for Xcode,
-Visual C++, and Linux are coming up later in the article.
+[`source/01_project_skeleton`][01_project_skeleton] folder. On OS X, open
+the `opengl-series.xcodeproj` file in the root folder, and select the target
+that corresponds with this article. On Windows, open the `opengl-series.sln`
+file in Visual Studio 2013, and open the project that corresponds with this
+article.
 
-I would like to get an iOS version of these articles working, but I don't have
-the time at the moment. If you would like to contribute an iOS port, I would be
-happy to include it in the github repository.
+The project includes all of its dependencies, so you shouldn't have to install
+or configure anything extra.
 
 
 <h2><a name="a_note_on_compatibility">A Note On Compatibility</a></h2>
@@ -71,43 +72,35 @@ These articles use OpenGL 3.2, but I will try to keep the code compatible with:
 Because there are so many different versions of OpenGL and GLSL, the code won't
 be 100% compatible with all the versions mentioned above. I hope for it to be
 99% compatible, requiring only very minor changes when switching between
-versions. If you would like to tweak the project to run on a different version
-of OpenGL, I would be happy to include it in the github repository.
+versions.
 
 Too see the differences between the versions of OpenGL and GLSL, [good
 compatibility tables are available here][].
 
 
-<h2><a name="visual_cpp_setup">Visual C++ Setup Instructions</a></h2>
+<h2><a name="visual_cpp_setup">Visual Studio Setup</a></h2>
 
-The VC++ project was created and tested on Windows 7 32bit, in [Visual C++
-Express 2010][] (which is available for free). You should be able to just open
-the project and build it successfully, but if you can't then please let me
-know, or send me a fix and I will update the project. The project comes with
-32bit versions of GLFW, GLEW, and GLM, so you shouldn't need to install
-anything extra.
+The code was created and tested on Windows 7 32bit, in [Visual Studio Express
+2013][] (which is available for free). You should be able to just open the
+solution and build all of the projects successfully, but if you can't then
+please let me know, or send me a fix and I will update the project.
 
 
-<h2><a name="xcode_setup">Xcode Setup Instructions</a></h2>
+<h2><a name="xcode_setup">Xcode Setup</a></h2>
 
-The Xcode project was created and tested on OSX 10.8.3, in Xcode 4.6.1. You
-should be able to open each Xcode project and build it successfully, without
-any additional setup steps. GLM, GLEW, and GLFW are included in the directory
-`osx/thirdparty`. Please let me know if the Xcode project does not build
-successfully for you.
-
-The projects are configured for 64-bit builds, which should be fine if your mac
-was purchased within the last five years or so. If you have a 32-bit-only mac
-that won't build the project, send me a message and I'll see what I can do.
+The Xcode project was created and tested on OSX 10.10, in Xcode 6.1. You should
+be able to open the Xcode project and build all of the targets successfully,
+without any additional setup steps. Please let me know if the Xcode project
+does not build successfully for you.
 
 
-<h2><a name="xcode_setup">Linux Setup Instructions</a></h2>
+<h2><a name="linux_setup">Linux Setup</a></h2>
 
 The linux port of this article was kindly provided by [SpartanJ][]. I tested it
 quickly on Ubuntu 12.04.
 
  -  Install GLM, GLFW, and GLEW with: `sudo aptitude install libglm-dev libglew-dev libglfw-dev`
- -  Change into the directory of the project with: `cd ~/Desktop/opengl-series/linux/01_project_skeleton`
+ -  Change into the directory of the project with: `cd platforms/linux/01_project_skeleton`
  -  Run the makefile with: `make`
  -  Run the executable with: `bin/01_project_skeleton-debug`
 
@@ -117,11 +110,11 @@ quickly on Ubuntu 12.04.
 Now that you have a working project, let's start by introducing the open-source
 libraries that the project uses, and why they are necessary.
 
-[The OpenGL Extension Wrangler (GLEW)][] is what we will be using to give us
-access to the OpenGL 3.2 API functions. Unfortunately, accessing OpenGL
+[The OpenGL Extension Wrangler (GLEW)][GLEW] is what we will be using to give
+us access to the OpenGL 3.2 API functions. Unfortunately, accessing OpenGL
 functions isn't as simple as `#include <GL/gl.h>` unless you want to use an
 ancient version of OpenGL. In modern OpenGL, the API functions are determined
-at *run time*, not *compile time*. GLEW will handle the run time loading of the
+at *run time*, not *compile time*. GLEW will handle the run time loading of the
 OpenGL API.
 
 [GLFW][] will allow us to create a window, and receive mouse and keyboard input
@@ -397,7 +390,7 @@ VAO, it's just that you're modifying the default VAO instead of one you created
 yourself.
 
 There is a bit more of a discussion here:
-[http://www.opengl.org/discussion_boards/showthread.php/174577-Questions-on-VAOs][] 
+http://www.opengl.org/discussion_boards/showthread.php/174577-Questions-on-VAOs
 
 
 <h2><a name="explaining_the_code">Explaining The Code</a></h2>
@@ -410,27 +403,46 @@ are doing well.
 Open the file `main.cpp` (`main.mm` on OSX), and we will walk through the code
 starting at the `main()` function.
 
-First, we initialise GLFW.
+First, we initialise GLFW:
 
 ```cpp
+glfwSetErrorCallback(OnError);
 if(!glfwInit())
     throw std::runtime_error("glfwInit failed");
 ```
 
-Next, we use GLFW to create a window. The window will contain an OpenGL 3.2
-core profile context. This is the most "modern" version of OpenGL I can use on
-my hardware. According to [the latest Steam hardware survey][], over 80% of
-Steam users have a graphics card capable of OpenGL 3.2. If `glfwOpenWindow` is
-failing for you, then you may need to lower the OpenGL version.
+The `glfwSetErrorCallback(OnError)` line tells GLFW to call the `OnError`
+function whenever an error occurs. The `OnError` function throws an exception
+that contains the error message, so we can see what went wrong.
+
+Next, we use GLFW to create a window:
 
 ```cpp
-glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
-glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 2);
-glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, GL_TRUE);
-if(!glfwOpenWindow(SCREEN_SIZE.x, SCREEN_SIZE.y, 8, 8, 8, 8, 0, 0, GLFW_WINDOW))
-    throw std::runtime_error("glfwOpenWindow failed. Can your hardware handle OpenGL 3.2?");
+glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+gWindow = glfwCreateWindow((int)SCREEN_SIZE.x, (int)SCREEN_SIZE.y, "OpenGL Tutorial", NULL, NULL);
+if(!gWindow)
+    throw std::runtime_error("glfwCreateWindow failed. Can your hardware handle OpenGL 3.2?");
 ```
+
+The window contains a forward-compatible OpenGL 3.2 core profile context. If
+`glfwCreateWindow` is failing for you, then you may need to lower the OpenGL
+version.
+
+As the last step of window creation, we have to set the "current" OpenGL
+context to the one in the window we just created:
+
+```cpp
+glfwMakeContextCurrent(gWindow);
+```
+
+Whenever we call an OpenGL function, that function affects the "current
+context." We will only be using a single context, so we set this once and
+forget about it. Theoretically, however, we could have multiple windows, and
+each window would have its own context.
 
 Now that we have an OpenGL context available in our window, we initialise GLEW
 so that we get access to the OpenGL API functions.
@@ -584,7 +596,7 @@ The last thing that needs to be done before we can see the triangle is to swap
 the frame buffers:
 
 ```cpp
-glfwSwapBuffers();
+glfwSwapBuffers(gWindow);
 ```
 
 Before the frame buffers were swapped, we were drawing to an off-screen frame
@@ -622,27 +634,20 @@ these fine modern OpenGL resources:
  -  [The official OpenGL SDK documentation][] 
  -  [Compatibility tables for OpenGL, OpenGL ES, GLSL, and GLSL ES][] by Sugih Jamin
 
-[https://github.com/tomdalling/opengl-series]: https://github.com/tomdalling/opengl-series
 [GLEW]: http://glew.sourceforge.net/
-[The OpenGL Extension Wrangler (GLEW)]: http://glew.sourceforge.net/
 [GLFW]: http://www.glfw.org/
 [GLM]: http://glm.g-truc.net/
 [OpenGL Mathematics (GLM)]: http://glm.g-truc.net/
-[https://github.com/tomdalling/opengl-series/archive/master.zip]: https://github.com/tomdalling/opengl-series/archive/master.zip
-[https://github.com/tomdalling/opengl-series]: https://github.com/tomdalling/opengl-series
-[`windows/01_project_skeleton`]: https://github.com/tomdalling/opengl-series/tree/master/windows/01_project_skeleton
-[`osx/01_project_skeleton`]: https://github.com/tomdalling/opengl-series/tree/master/osx/01_project_skeleton
-[`linux/01_project_skeleton`]: https://github.com/tomdalling/opengl-series/tree/master/linux/01_project_skeleton
+[01_project_skeleton]: https://github.com/tomdalling/opengl-series/tree/master/source/01_project_skeleton
 [good compatibility tables are available here]: http://web.eecs.umich.edu/~sugih/courses/eecs487/common/notes/APITables.xml "OpenGL, OpenGL ES, WebGL, GLSL, GLSL ES API Tables"
 [Compatibility tables for OpenGL, OpenGL ES, GLSL, and GLSL ES]: http://web.eecs.umich.edu/~sugih/courses/eecs487/common/notes/APITables.xml
-[Visual C++ Express 2010]: http://www.microsoft.com/visualstudio/eng/products/visual-studio-2010-express
+[Visual Studio Express 2013]: http://www.visualstudio.com/en-us/downloads/download-visual-studio-vs#DownloadFamilies_2
 [SpartanJ]: http://www.reddit.com/user/SpartanJ
 [OpenGL Shading Language (GLSL)]: http://en.wikipedia.org/wiki/GLSL
 [The Graphics Pipeline chapter]: http://duriansoftware.com/joe/An-intro-to-modern-OpenGL.-Chapter-1:-The-Graphics-Pipeline.html
 [ver-tuh-seez]: http://static.sfdict.com/dictstatic/dictionary/audio/luna/V00/V0096700.mp3
 [3.2 core profile spec]: http://www.opengl.org/registry/doc/glspec32.core.20091207.pdf
 [OpenGL 3.2 core profile specification]: http://www.opengl.org/registry/doc/glspec32.core.20091207.pdf
-[http://www.opengl.org/discussion_boards/showthread.php/174577-Questions-on-VAOs]: http://www.opengl.org/discussion_boards/showthread.php/174577-Questions-on-VAOs
 [the latest Steam hardware survey]: http://store.steampowered.com/hwsurvey "Steam Hardware & Software Survey"
 [An intro to modern OpenGL]: http://duriansoftware.com/joe/An-intro-to-modern-OpenGL.-Table-of-Contents.html
 [Learning Modern 3D Graphics Programming]: http://www.arcsynthesis.org/gltut/
