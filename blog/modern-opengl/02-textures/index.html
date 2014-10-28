@@ -60,8 +60,44 @@
     </div>
   </header>
 
-  <div class="post-content"><p>In this article, we will be adding a texture to the triangle. This will involve adding new variables to the vertex and fragment shaders, creating and using texture objects, and learning a bit about texture units and texture coordinates.</p><p>As with every article, we will be adding to the small library of reusable code in the <code>tdogl</code> namespace. This article introduces two new classes: <code>tdogl::Bitmap</code> and <code>tdogl::Texture</code>. These two new classes will allow us to load an image from a jpg, png, or bmp file into video memory, for use in the shaders. Also, the <code>tdogl::Program</code> class has some new methods for setting shader variables.</p>
-<!--more--><h2>Accessing The Code</h2><p>Download all lessons as a zip from here:<a href="https://github.com/tomdalling/opengl-series/archive/master.zip">https://github.com/tomdalling/opengl-series/archive/master.zip</a> </p><p>Setup instructions are available in the first article: <a href="http://tomdalling.com/blog/modern-opengl/01-getting-started-in-xcode-and-visual-cpp/">Getting Started in Xcode, Visual C++, and Linux</a>.</p><p>This article builds on the code from the previous article.</p><p>All the code in this series of articles is available from github: <a href="https://github.com/tomdalling/opengl-series">https://github.com/tomdalling/opengl-series</a>. You can download a zip of all the files from that page, or you can clone the repository if you are familiar with git. The code for this article can be found in the <a href="https://github.com/tomdalling/opengl-series/tree/master/windows/02_textures"><code>windows/02_textures</code></a>, <a href="https://github.com/tomdalling/opengl-series/tree/master/osx/02_textures"><code>osx/02_textures</code></a>, and <a href="https://github.com/tomdalling/opengl-series/tree/master/linux/02_textures"><code>linux/02_textures</code></a> directories.</p><h2>Uniform vs Attribute Shader Variables</h2><p>All the variables in the previous article were <em>attribute</em> variables. In this article we will be introducing the other kind of variable: uniform variables.</p>
+  <div class="post-content"><p>In this article, we will be adding a texture to the triangle. This will involve adding new variables to the vertex and fragment shaders, creating and using texture objects, and learning a bit about texture units and texture coordinates.</p><p>This article introduces two new classes to the <code>tdogl</code> namespace: <code>tdogl::Bitmap</code> and <code>tdogl::Texture</code>. These will allow us to load an image from a jpg, png, or bmp file into video memory, for use in the shaders. Also, the <code>tdogl::Program</code> class has some new methods for setting shader variables.</p>
+<!--more--><p></p><div class="modern-opengl-preamble">
+  <h2>Accessing The Code</h2>
+
+  <p>
+    Download all the code as a zip from here:
+    <a href="https://github.com/tomdalling/opengl-series/archive/master.zip">
+      https://github.com/tomdalling/opengl-series/archive/master.zip
+    </a>
+  </p>
+
+  <p>
+    All the code in this series of articles is available from github:
+    <a href="https://github.com/tomdalling/opengl-series">https://github.com/tomdalling/opengl-series</a>.
+    You can download a zip of all the files from that page, or you can clone the
+    repository if you are familiar with git.
+  </p>
+
+  <p class="builds-on-previous">
+    This article builds on the code from the previous article.
+  </p>
+
+  <p>
+    The code for this article can be found in the
+    <a class="source_folder" href="https://github.com/tomdalling/opengl-series/tree/master/source/02_textures">
+      <code>source/02_textures</code>
+    </a>
+    folder. On OS X, open the <code>opengl-series.xcodeproj</code> file in the
+    root folder, and select the target that corresponds with this article. On
+    Windows, open the <code>opengl-series.sln</code> file in Visual Studio 2013,
+    and open the project that corresponds with this article.
+  </p>
+
+  <p>
+    The project includes all of its dependencies, so you shouldn't have to
+    install or configure anything extra.
+  </p>
+</div><h2>Uniform vs Attribute Shader Variables</h2><p>All the variables in the previous article were <em>attribute</em> variables. In this article we will be introducing the other kind of variable: uniform variables.</p>
 <blockquote class="pull-right">
   Attribute variables can have a different value for each vertex. Uniform
   variables keep the same value for multiple vertices.
@@ -76,7 +112,7 @@
 </blockquote><p>Textures are basically 2D images that you can apply to your 3D objects. They have other uses, but displaying a 2D image on 3D geometry is the most common use. There are 1D, 2D and 3D textures, but we will only be looking at 2D textures in this article. For a more in-depth look at textures, see the <a href="http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2014.html">Textures are not Pictures</a> chapter of the <a href="http://www.arcsynthesis.org/gltut/">Learning Modern 3D Graphics Programming</a> book.</p><p>Textures live in video memory. That is, you upload the data for the texture to the graphics card before you can use it. This is similar to how we saw VBOs working in the previous article – VBOs are used to store data in video memory before that data gets used.</p>
 <blockquote class="pull-right">
   The pixel width and height of a texture should be a power of two.
-</blockquote><p>The pixel width and height of a texture should be a power of two, for example: 16, 32, 64, 128, 256, 512. In this article we will use the 256x256 image "hazard.png" as a texture, which is shown below.</p><p><figure>  <img src="/images/posts/modern-opengl-02/hazard.png" /> </figure></p><p>We will use the <code>tdogl::Bitmap</code> class to load the raw pixel data from "hazard.png" into memory, with the help of <a href="http://nothings.org/stb_image.c">stb_image</a>. Then we will use <code>tdogl::Texture</code> to upload the raw pixel data into an OpenGL texture object. Fortunately, texture creation in OpenGL has not really changed since it was first introduced, so there are plenty of good articles online that will show you how to create a texture in OpenGL. The way that texture coordinates are sent to the graphics card has changed, but the creation of the texture is the same.</p><p>Below is the constructor code for <code>tdogl::Texture</code>, which handles the creation of an OpenGL texture.</p>
+</blockquote><p>The pixel width and height of a texture should be a power of two, for example: 16, 32, 64, 128, 256, 512. In this article we will use the 256x256 image "hazard.png" as a texture, which is shown below.</p><p><figure>  <img src="/images/posts/modern-opengl-02/hazard.png" /> </figure></p><p>We will use the <code>tdogl::Bitmap</code> class to load the raw pixel data from "hazard.png" into memory, with the help of <a href="https://github.com/nothings/stb">stb_image</a>. Then we will use <code>tdogl::Texture</code> to upload the raw pixel data into an OpenGL texture object. Fortunately, texture creation in OpenGL has not really changed since it was first introduced, so there are plenty of good articles online that will show you how to create a texture. The way that texture coordinates are sent to the graphics card has changed, but the creation of the texture is the same.</p><p>Below is the constructor code for <code>tdogl::Texture</code>, which handles the creation of an OpenGL texture.</p>
 <div class="highlight"><pre><span class="n">Texture</span><span class="o">::</span><span class="n">Texture</span><span class="p">(</span><span class="k">const</span> <span class="n">Bitmap</span><span class="o">&amp;</span> <span class="n">bitmap</span><span class="p">,</span> <span class="n">GLint</span> <span class="n">minMagFiler</span><span class="p">,</span> <span class="n">GLint</span> <span class="n">wrapMode</span><span class="p">)</span> <span class="o">:</span>
     <span class="n">_originalWidth</span><span class="p">((</span><span class="n">GLfloat</span><span class="p">)</span><span class="n">bitmap</span><span class="p">.</span><span class="n">width</span><span class="p">()),</span>
     <span class="n">_originalHeight</span><span class="p">((</span><span class="n">GLfloat</span><span class="p">)</span><span class="n">bitmap</span><span class="p">.</span><span class="n">height</span><span class="p">())</span>
@@ -144,7 +180,7 @@
     
     <span class="n">gl_Position</span> <span class="o">=</span> <span class="n">vec4</span><span class="p">(</span><span class="n">vert</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
 <span class="p">}</span>
-</pre></div><p>This vertex shader takes <code>vertTexCoord</code> as input, and passes it straight into the <code>fragTexCoord</code> attribute of the fragment shader without modifying it.</p><p>The shaders now have two variables we need to set: the <code>vertTexCoord</code> attribute and <code>tex</code> uniform. Let's start by setting the <code>tex</code> variable. Open up main.cpp (main.mm on OSX) and find the <code>Render()</code> function. We will set the <code>tex</code> uniform just before we draw the triangle:</p>
+</pre></div><p>This vertex shader takes <code>vertTexCoord</code> as input, and passes it straight into the <code>fragTexCoord</code> attribute of the fragment shader without modifying it.</p><p>The shaders now have two variables we need to set: the <code>vertTexCoord</code> attribute and <code>tex</code> uniform. Let's start by setting the <code>tex</code> variable. Open up main.cpp and find the <code>Render()</code> function. We will set the <code>tex</code> uniform just before we draw the triangle:</p>
 <div class="highlight"><pre><span class="n">glActiveTexture</span><span class="p">(</span><span class="n">GL_TEXTURE0</span><span class="p">);</span>
 <span class="n">glBindTexture</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">gTexture</span><span class="o">-&gt;</span><span class="n">object</span><span class="p">());</span>
 <span class="n">gProgram</span><span class="o">-&gt;</span><span class="n">setUniform</span><span class="p">(</span><span class="s">"tex"</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span> <span class="c1">//set to 0 because the texture is bound to GL_TEXTURE0</span>

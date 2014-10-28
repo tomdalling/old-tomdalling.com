@@ -217,7 +217,7 @@ A + (-B) = 1.41km northwest
     <span class="c1">// Apply all matrix transformations to vert</span>
     <span class="n">gl_Position</span> <span class="o">=</span> <span class="n">camera</span> <span class="o">*</span> <span class="n">model</span> <span class="o">*</span> <span class="k">vec4</span><span class="p">(</span><span class="n">vert</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
 <span class="p">}</span>
-</pre></div><p>Now we will integrate <code>tdogl::Camera</code> into the code in <code>main.cpp</code> (<code>main.mm</code> on OSX). Let's include the class header:</p>
+</pre></div><p>Now we will integrate <code>tdogl::Camera</code> into the code in <code>main.cpp</code>. Let's include the class header:</p>
 <div class="highlight"><pre><span class="cp">#include "tdogl/Camera.h"</span>
 </pre></div><p>And declare the camera as a global:</p>
 <div class="highlight"><pre><span class="n">tdogl</span><span class="o">::</span><span class="n">Camera</span> <span class="n">gCamera</span><span class="p">;</span>
