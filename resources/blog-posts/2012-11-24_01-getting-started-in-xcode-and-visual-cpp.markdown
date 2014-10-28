@@ -40,25 +40,8 @@ Table of Contents
  -  [Additional Modern OpenGL Resources](#additional_resources)
 
 
-<h2><a name="accessing_the_code">Accessing The Code</a></h2>
-
-Download all the code as a zip from here:
-https://github.com/tomdalling/opengl-series/archive/master.zip
-
-All the code in this series of articles is available from github:
-https://github.com/tomdalling/opengl-series. You can download a zip of all the
-files from that page, or you can clone the repository if you are familiar with
-git.
-
-The code for this article can be found in the
-[`source/01_project_skeleton`][01_project_skeleton] folder. On OS X, open
-the `opengl-series.xcodeproj` file in the root folder, and select the target
-that corresponds with this article. On Windows, open the `opengl-series.sln`
-file in Visual Studio 2013, and open the project that corresponds with this
-article.
-
-The project includes all of its dependencies, so you shouldn't have to install
-or configure anything extra.
+<a name="accessing_the_code"></a>
+<widget type="modern-opengl-preamble">01_project_skeleton</widget>
 
 
 <h2><a name="a_note_on_compatibility">A Note On Compatibility</a></h2>

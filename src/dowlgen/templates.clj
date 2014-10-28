@@ -35,10 +35,24 @@
     (assoc (first (html-snippet (clygments/highlight code lang :html)))
            :attrs {:class "highlight"})))
 
+(defsnippet modern-opengl-preamble-widget "templates/modern-opengl-preamble-widget.html" [:.modern-opengl-preamble] [node]
+  [:.source_folder :code]
+  (fn [code]
+    (update-in code [:content] #(apply str (concat % (:content node)))))
+
+  [:.source_folder]
+  (fn [a]
+    (update-in a [:attrs :href] #(apply str (concat % (:content node))))))
+
 (defn xform-post-content [content]
   (sniptest content
     [[:pre (pred markdown-code-block?)]]
     highlight-code
+
+    [:widget]
+    (fn [node]
+      (case (-> node :attrs :type)
+        "modern-opengl-preamble" (modern-opengl-preamble-widget node)))
 
     [:table]
     (set-attr :class "table table-hover table-bordered")))
