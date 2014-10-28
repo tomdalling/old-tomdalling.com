@@ -41,7 +41,7 @@ Table of Contents
 
 
 <a name="accessing_the_code"></a>
-<widget type="modern-opengl-preamble">01_project_skeleton</widget>
+<widget type="modern-opengl-preamble" first-article="true">01_project_skeleton</widget>
 
 
 <h2><a name="a_note_on_compatibility">A Note On Compatibility</a></h2>
@@ -383,7 +383,7 @@ OpenGL is not very beginner-friendly, but if you understand the concepts that
 have been explained so far in this article (shaders, VBOs, and VAOs) then you
 are doing well.
 
-Open the file `main.cpp` (`main.mm` on OSX), and we will walk through the code
+Open the file `main.cpp`, and we will walk through the code
 starting at the `main()` function.
 
 First, we initialise GLFW:

@@ -583,8 +583,8 @@ texture(tex, fragTexCoord)`, we multiply them by the brightness to get the
 final color. Multiplying by the brightness will darken the reflected
 intensities based on the angle of incidence.
 
-Changes In main.cpp (main.mm)
------------------------------
+Changes In main.cpp
+-------------------
 
 The majority of lighting is done in the fragment shader, so the C++ code
 changes are fairly minor. 

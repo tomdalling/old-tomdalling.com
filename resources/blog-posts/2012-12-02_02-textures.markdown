@@ -8,32 +8,15 @@ adding new variables to the vertex and fragment shaders, creating and using
 texture objects, and learning a bit about texture units and texture
 coordinates.
 
-As with every article, we will be adding to the small library of reusable code
-in the `tdogl` namespace. This article introduces two new classes:
-`tdogl::Bitmap` and `tdogl::Texture`. These two new classes will allow us to
-load an image from a jpg, png, or bmp file into video memory, for use in the
-shaders. Also, the `tdogl::Program` class has some new methods for setting
-shader variables.
+This article introduces two new classes to the `tdogl` namespace:
+`tdogl::Bitmap` and `tdogl::Texture`. These will allow us to load an image from
+a jpg, png, or bmp file into video memory, for use in the shaders. Also, the
+`tdogl::Program` class has some new methods for setting shader variables.
 
 <!--more-->
 
-Accessing The Code
-------------------
+<widget type="modern-opengl-preamble">02_textures</widget>
 
-Download all lessons as a zip from
-here:[https://github.com/tomdalling/opengl-series/archive/master.zip][] 
-
-Setup instructions are available in the first article: [Getting Started in
-Xcode, Visual C++, and Linux][].
-
-This article builds on the code from the previous article.
-
-All the code in this series of articles is available from github:
-[https://github.com/tomdalling/opengl-series][]. You can download a zip of all
-the files from that page, or you can clone the repository if you are familiar
-with git. The code for this article can be found in the
-[`windows/02_textures`][], [`osx/02_textures`][], and [`linux/02_textures`][]
-directories.
 
 Uniform vs Attribute Shader Variables
 -------------------------------------
@@ -110,9 +93,8 @@ We will use the `tdogl::Bitmap` class to load the raw pixel data from
 `tdogl::Texture` to upload the raw pixel data into an OpenGL texture object.
 Fortunately, texture creation in OpenGL has not really changed since it was
 first introduced, so there are plenty of good articles online that will show
-you how to create a texture in OpenGL. The way that texture coordinates are
-sent to the graphics card has changed, but the creation of the texture is the
-same.
+you how to create a texture. The way that texture coordinates are sent to the
+graphics card has changed, but the creation of the texture is the same.
 
 Below is the constructor code for `tdogl::Texture`, which handles the creation
 of an OpenGL texture.
@@ -269,8 +251,8 @@ the `fragTexCoord` attribute of the fragment shader without modifying it.
 
 The shaders now have two variables we need to set: the `vertTexCoord` attribute
 and `tex` uniform. Let's start by setting the `tex` variable. Open up main.cpp
-(main.mm on OSX) and find the `Render()` function. We will set the `tex`
-uniform just before we draw the triangle:
+and find the `Render()` function. We will set the `tex` uniform just before we
+draw the triangle:
 
 ```cpp
 glActiveTexture(GL_TEXTURE0);
@@ -383,7 +365,7 @@ Translations Of This Article
 [glVertexAttrib*]: http://www.opengl.org/sdk/docs/man/xhtml/glVertexAttrib.xml
 [Textures are not Pictures]: http://www.arcsynthesis.org/gltut/Texturing/Tutorial%2014.html
 [Learning Modern 3D Graphics Programming]: http://www.arcsynthesis.org/gltut/
-[stb_image]: http://nothings.org/stb_image.c
+[stb_image]: https://github.com/nothings/stb
 [Serbo-Croatian]: http://science.webhostinggeeks.com/Moderne-OpenGL02%E2%80%93Teksture
 [The texturing example code]: https://github.com/progschj/OpenGL-Examples/blob/master/03texture.cpp
 [Tutorial 16 - Basic Texture Mapping]: http://ogldev.atspace.co.uk/www/tutorial16/tutorial16.html

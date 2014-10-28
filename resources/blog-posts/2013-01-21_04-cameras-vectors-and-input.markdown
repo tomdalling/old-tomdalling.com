@@ -400,8 +400,8 @@ void main() {
 }
 ```
 
-Now we will integrate `tdogl::Camera` into the code in `main.cpp` (`main.mm` on
-OSX). Let's include the class header:
+Now we will integrate `tdogl::Camera` into the code in `main.cpp`.
+Let's include the class header:
 
 ```cpp
 #include "tdogl/Camera.h"

@@ -36,6 +36,10 @@
            :attrs {:class "highlight"})))
 
 (defsnippet modern-opengl-preamble-widget "templates/modern-opengl-preamble-widget.html" [:.modern-opengl-preamble] [node]
+  [:.builds-on-previous]
+  (when-not (-> node :attrs :first-article)
+    identity)
+
   [:.source_folder :code]
   (fn [code]
     (update-in code [:content] #(apply str (concat % (:content node)))))
