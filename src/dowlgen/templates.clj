@@ -108,9 +108,10 @@
   (html-content (post-content post))
 
   [:#disqus_script text-node]
-  (replace-vars {:disqus-id (json/write-str (:disqus-id post))
-                 :disqus-title (json/write-str (:title post))
-                 :disqus-url (json/write-str (full-url (:uri post)))}))
+  (when-not (:draft post)
+    (replace-vars {:disqus-id (json/write-str (:disqus-id post))
+                   :disqus-title (json/write-str (:title post))
+                   :disqus-url (json/write-str (full-url (:uri post)))})))
 
 (defsnippet post-list-snippet "templates/post-list.html" [:.post-list] [listed-posts title feed-uri]
   [:h1 :.title]
