@@ -354,12 +354,6 @@ Translations Of This Article
 ----------------------------
  -  [Serbo-Croatian][] 
 
-[https://github.com/tomdalling/opengl-series/archive/master.zip]: https://github.com/tomdalling/opengl-series/archive/master.zip
-[Getting Started in Xcode, Visual C++, and Linux]: http://tomdalling.com/blog/modern-opengl/01-getting-started-in-xcode-and-visual-cpp/
-[https://github.com/tomdalling/opengl-series]: https://github.com/tomdalling/opengl-series
-[`windows/02_textures`]: https://github.com/tomdalling/opengl-series/tree/master/windows/02_textures
-[`osx/02_textures`]: https://github.com/tomdalling/opengl-series/tree/master/osx/02_textures
-[`linux/02_textures`]: https://github.com/tomdalling/opengl-series/tree/master/linux/02_textures
 [glUniform*]: http://www.opengl.org/sdk/docs/man/xhtml/glUniform.xml
 [glVertexAttribPointer]: http://www.opengl.org/sdk/docs/man/xhtml/glVertexAttribPointer.xml
 [glVertexAttrib*]: http://www.opengl.org/sdk/docs/man/xhtml/glVertexAttrib.xml

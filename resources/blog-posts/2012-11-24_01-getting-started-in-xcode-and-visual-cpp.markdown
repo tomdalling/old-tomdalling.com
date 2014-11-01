@@ -621,7 +621,6 @@ these fine modern OpenGL resources:
 [GLFW]: http://www.glfw.org/
 [GLM]: http://glm.g-truc.net/
 [OpenGL Mathematics (GLM)]: http://glm.g-truc.net/
-[01_project_skeleton]: https://github.com/tomdalling/opengl-series/tree/master/source/01_project_skeleton
 [good compatibility tables are available here]: http://web.eecs.umich.edu/~sugih/courses/eecs487/common/notes/APITables.xml "OpenGL, OpenGL ES, WebGL, GLSL, GLSL ES API Tables"
 [Compatibility tables for OpenGL, OpenGL ES, GLSL, and GLSL ES]: http://web.eecs.umich.edu/~sugih/courses/eecs487/common/notes/APITables.xml
 [Visual Studio Express 2013]: http://www.visualstudio.com/en-us/downloads/download-visual-studio-vs#DownloadFamilies_2
@@ -631,7 +630,6 @@ these fine modern OpenGL resources:
 [ver-tuh-seez]: http://static.sfdict.com/dictstatic/dictionary/audio/luna/V00/V0096700.mp3
 [3.2 core profile spec]: http://www.opengl.org/registry/doc/glspec32.core.20091207.pdf
 [OpenGL 3.2 core profile specification]: http://www.opengl.org/registry/doc/glspec32.core.20091207.pdf
-[the latest Steam hardware survey]: http://store.steampowered.com/hwsurvey "Steam Hardware & Software Survey"
 [An intro to modern OpenGL]: http://duriansoftware.com/joe/An-intro-to-modern-OpenGL.-Table-of-Contents.html
 [Learning Modern 3D Graphics Programming]: http://www.arcsynthesis.org/gltut/
 [A collection of simple single file OpenGL examples]: https://github.com/progschj/OpenGL-Examples

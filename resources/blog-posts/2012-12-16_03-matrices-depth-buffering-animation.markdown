@@ -792,7 +792,6 @@ Additional Resources
 
 [Basic 3D Math: Matrices]: http://www.matrix44.net/cms/notes/opengl-3d-graphics/basic-3d-math-matrices
 [Fix Your Timestep!]: http://gafferongames.com/game-physics/fix-your-timestep/
-[Getting Started in Xcode, Visual C++, and Linux]: http://tomdalling.com/blog/modern-opengl/01-getting-started-in-xcode-and-visual-cpp/
 [lawrence_homogeneous]: http://www.teamten.com/lawrence/graphics/homogeneous/
 [homogeneous coordinates]: http://en.wikipedia.org/wiki/Homogeneous_coordinates
 [Overlap and Depth Buffering]: http://www.arcsynthesis.org/gltut/Positioning/Tut05%20Overlap%20and%20Depth%20Buffering.html
@@ -804,9 +803,6 @@ Additional Resources
 [Tutorial 3 : Matrices]: http://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/
 [Viewing]: http://www.glprogramming.com/red/chapter03.html
 [Z-buffering (depth buffering)]: http://en.wikipedia.org/wiki/Z-buffering
-[`linux/03_matrices`]: https://github.com/tomdalling/opengl-series/tree/master/linux/03_matrices
-[`osx/03_matrices`]: https://github.com/tomdalling/opengl-series/tree/master/osx/03_matrices
-[`windows/03_matrices`]: https://github.com/tomdalling/opengl-series/tree/master/windows/03_matrices
 [a better way to do time-based updates]: http://gafferongames.com/game-physics/fix-your-timestep/
 [code samples]: http://glm.g-truc.net/code.html
 [manual (pdf)]: http://glm.g-truc.net/glm-0.9.4.pdf
