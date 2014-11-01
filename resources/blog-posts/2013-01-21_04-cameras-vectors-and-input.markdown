@@ -768,13 +768,13 @@ Additional Resources
  -  [Vector maths &ndash; a primer for games programmers][] 
  -  [Basic 3D Math: Vectors][] by Egon Rath
  -  [Wikipedia article on vectors][], which isn't very beginner-friendly
- -  The GLFW [User Guide][] and [Reference Manual][].
+ -  The GLFW [guides][] and [references][].
  -  If you know of any beginner-friendly articles about vectors, please send
     them to me so that I can add them here.
 
 [Basic 3D Math: Vectors]: http://www.matrix44.net/cms/notes/opengl-3d-graphics/basic-3d-math-vectors
-[Reference Manual]: http://www.glfw.org/GLFWReference277.pdf
-[User Guide]: http://www.glfw.org/GLFWUsersGuide277.pdf
+[guides]: http://www.glfw.org/docs/3.0.4/pages.html
+[references]: http://www.glfw.org/docs/3.0.4/modules.html
 [The vector math chapter of Learning Modern 3D Graphics Programming]: http://www.arcsynthesis.org/gltut/Basics/Introduction.html
 [Vector maths &ndash; a primer for games programmers]: http://www.wildbunny.co.uk/blog/vector-maths-a-primer-for-games-programmers/
 [Wikipedia article on vectors]: http://en.wikipedia.org/wiki/Euclidean_vector
