@@ -9,23 +9,7 @@ for multiple lights instead of just one. This is the final article on lighting
 
 <!--more-->
 
-Accessing The Code
-------------------
-
-Download all lessons as a zip from here:
-https://github.com/tomdalling/opengl-series/archive/master.zip
-
-Setup instructions are available in the first article: [Getting Started in
-Xcode, Visual C++, and Linux][].
-
-This article builds on the code from the previous article.
-
-All the code in this series of articles is available from github:
-https://github.com/tomdalling/opengl-series. You can download a zip of all
-the files from that page, or you can clone the repository if you are familiar
-with git. The code for this article can be found in the
-[`windows/08_even_more_lighting`][], [`osx/08_even_more_lighting`][], and
-[`linux/08_even_more_lighting`][] directories.
+<widget type="modern-opengl-preamble">08_even_more_lighting</widget>
 
 Directional Lights
 ------------------
@@ -70,7 +54,7 @@ expects every light to have a position. Luckily, we can represent the direction
 of a directional light with a homogeneous coordinate by setting $$W = 0$$.  As
 explained in the [previous article on homogeneous
 coordinates][homo_coords_article], when $$W = 0$$ in a 4D coordinate, it
-represents the direction of a point that is infinitely far away.  So if the
+represents the direction towards a point that is infinitely far away.  So if the
 coordinate represents the direction _towards_ the Sun, we can just negate it to
 produce the direction _away_ from the Sun, which is the direction of the light
 rays. Using this method of representing directional lights inside the position
@@ -162,15 +146,15 @@ variable is the angle between the center and the side of the cone, in degrees.
 </figure>
 
 <blockquote class="pull-right">
-  If the ray is outside of the cone, then we set the attenuation
+  If the pixel is outside of the cone, then we set the attenuation
   factor to zero.
 </blockquote>
   
-The implementation is fairly simple. For every light ray we calculate, we check
-whether it is inside or outside of the cone. If it's inside, we continue with
-the lighting calculations as we normally would. If the ray is _outside_ of the
-cone, then we set the attenuation factor to zero, which will make the
-light ray invisible. Here is the GLSL that implements the cone restriction:
+The implementation is fairly simple. For every pixel, we check whether it is
+inside or outside of the light cone. If it's inside, we continue with the
+lighting calculations as we normally would. If the pixel is _outside_ of the
+cone, then we set the attenuation factor to zero, which will make the light ray
+invisible. Here is the GLSL that implements the cone restriction:
 
 
 ```glsl
@@ -281,7 +265,7 @@ vec3 ApplyLight(Light light, vec3 surfaceColor, vec3 normal, vec3 surfacePos, ve
 
         //cone restrictions (affects attenuation)
         float lightToSurfaceAngle = degrees(acos(dot(-surfaceToLight, normalize(light.coneDirection))));
-        if(lightToSurfaceAngle > light.coneAngle/2.0){
+        if(lightToSurfaceAngle > light.coneAngle){
             attenuation = 0.0;
         }
     }
@@ -432,7 +416,7 @@ better performance too.
 
 The spotlight implementation in this article is very basic. It could be improved by
 softening the hard edges in GLSL using the [mix function][]. You could also
-sample a flashlight texture to stop the light from looking so flat.
+sample a flashlight texture to stop the light from looking so circular and flat.
 
 ### Deferred Rendering
 
@@ -440,7 +424,7 @@ sample a flashlight texture to stop the light from looking so flat.
   <iframe src="//www.youtube.com/embed/vooznqE-XMM" frameborder="0" allowfullscreen></iframe>
 </figure>
 
-The way we have implemented lighting is known as forward rendering,
+The way we have implemented lighting is known as _forward rendering_,
 and there are a couple of annoying issues associated with it. Firstly, there
 is a limit to the number of lights we can have. Secondly, every pixel that gets
 drawn requires calculations for every light &ndash; even if there are lights
@@ -503,7 +487,9 @@ you are in a dark room for long enough, your pupils dilate to allow more light
 to reach your retina, which makes the room seem brighter. If you walk outside
 into bright sunlight, the opposite happens, so that you don't go blind from the
 intense light. HDR rendering sort of imitates how your eye works, in order to
-keep the details visible in very dark and very bright scenes.
+keep the details visible in very dark and very bright scenes. RGB values are
+allowed to go above 1.0 during lighting calculations, then the values are later
+rescaled so that they fit nicely within the 0.0&ndash;1.0 range.
 
 ### Subsurface Scattering
 
