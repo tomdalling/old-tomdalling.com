@@ -61,11 +61,95 @@
   </header>
 
   <div class="post-content"><p>This is the first article covering lighting. We will begin our lighting adventure by implementing per-pixel, diffuse lighting with a single point light. In later articles we will implement ambient and specular reflection, directional lights, spotlights, attenuation, and using multiple lights.</p>
-<!--more--><h2>Accessing The Code</h2><p>Download all lessons as a zip from here:<a href="https://github.com/tomdalling/opengl-series/archive/master.zip">https://github.com/tomdalling/opengl-series/archive/master.zip</a> </p><p>Setup instructions are available in the first article: <a href="http://tomdalling.com/blog/modern-opengl/01-getting-started-in-xcode-and-visual-cpp/">Getting Started in Xcode, Visual C++, and Linux</a>.</p><p>This article builds on the code from the previous article.</p><p>All the code in this series of articles is available from github: <a href="https://github.com/tomdalling/opengl-series">https://github.com/tomdalling/opengl-series</a>. You can download a zip of all the files from that page, or you can clone the repository if you are familiar with git. The code for this article can be found in the <a href="https://github.com/tomdalling/opengl-series/tree/master/windows/06_diffuse_lighting"><code>windows/06_diffuse_lighting</code></a>, <a href="https://github.com/tomdalling/opengl-series/tree/master/osx/06_diffuse_lighting"><code>osx/06_diffuse_lighting</code></a>, and<a href="https://github.com/tomdalling/opengl-series/tree/master/linux/06_diffuse_lighting"><code>linux/06_diffuse_lighting</code></a> directories.</p><h2>Keyboard Controls For This Article</h2><p>The 'W', 'A', 'S', and 'D' keys are used for move forward, left, back and right, respectively. The 'X' and 'Z' keys move up and down. The '1' key sets the position of the light to the current position of the camera. The '2', '3', and '4' keys change the intensities (color) of the light to red, green and white, respectively.</p><h2>Point Lights</h2>
+<!--more--><p></p><div class="modern-opengl-preamble">
+  <h2>Accessing The Code</h2>
+
+  <p>
+    Download all the code as a zip from here:
+    <a href="https://github.com/tomdalling/opengl-series/archive/master.zip">
+      https://github.com/tomdalling/opengl-series/archive/master.zip
+    </a>
+  </p>
+
+  <p>
+    All the code in this series of articles is available from github:
+    <a href="https://github.com/tomdalling/opengl-series">https://github.com/tomdalling/opengl-series</a>.
+    You can download a zip of all the files from that page, or you can clone the
+    repository if you are familiar with git.
+  </p>
+
+  <p class="builds-on-previous">
+    This article builds on the code from the previous article.
+  </p>
+
+  <p>
+    The code for this article can be found in the
+    <a class="source_folder" href="https://github.com/tomdalling/opengl-series/tree/master/source/06_diffuse_lighting">
+      <code>source/06_diffuse_lighting</code>
+    </a>
+    folder. On OS X, open the <code>opengl-series.xcodeproj</code> file in the
+    root folder, and select the target that corresponds with this article. On
+    Windows, open the <code>opengl-series.sln</code> file in Visual Studio 2013,
+    and open the project that corresponds with this article.
+  </p>
+
+  <p>
+    The project includes all of its dependencies, so you shouldn't have to
+    install or configure anything extra.
+  </p>
+</div><h2>Keyboard Controls For This Article</h2>
+<table class="table table-hover table-bordered">
+  <tbody>
+    <tr>
+      <td><kbd>W</kbd></td>
+      <td>Move forward</td>
+    </tr>
+    <tr>
+      <td><kbd>A</kbd></td>
+      <td>Move left</td>
+    </tr>
+    <tr>
+      <td><kbd>S</kbd></td>
+      <td>Move backward</td>
+    </tr>
+    <tr>
+      <td><kbd>D</kbd></td>
+      <td>Move right</td>
+    </tr>
+    <tr>
+      <td><kbd>X</kbd></td>
+      <td>Move up</td>
+    </tr>
+    <tr>
+      <td><kbd>Z</kbd></td>
+      <td>Move down</td>
+    </tr>
+  </tbody>
+</table>
+<table class="table table-hover table-bordered">
+  <tbody>
+    <tr>
+      <td><kbd>1</kbd></td>
+      <td>Set light position to camera position</td>
+    </tr>
+    <tr>
+      <td><kbd>2</kbd></td>
+      <td>Set light intensities to green</td>
+    </tr>
+    <tr>
+      <td><kbd>3</kbd></td>
+      <td>Set light intensities to red</td>
+    </tr>
+    <tr>
+      <td><kbd>4</kbd></td>
+      <td>Set light intensities to white</td>
+    </tr>
+  </tbody>
+</table><h2>Point Lights</h2>
 <blockquote class="pull-right">
   Point lights radiate light outwards in all directions from a single point,
   much like a candle.
-</blockquote><p>In this article, we will be implementing a type of light called a "point light." Point lights radiate light outwards in all directions from a single point, much like a candle. If you look at the screenshot at the top of this article, it looks like an invisible candle is being held up to the wooden crates.</p><p>There are other common types of lights, such as directional lights and spotlights, but we will cover those in a later article.</p><p><figure>  <img src="/images/posts/modern-opengl-06/point-light.jpg" />  <figcaption>  Image by <a href="http://commons.wikimedia.org/wiki/File:Teelicht_2009.JPG">4028mdk09</a>  </figcaption> </figure></p><h2>Phong Reflection Model</h2>
+</blockquote><p>In this article, we will be implementing a type of light called a <em>point light</em>. Point lights radiate light outwards in all directions from a single point, much like a candle. If you look at the screenshot at the top of this article, it looks like an invisible candle is being held up to the wooden crates.</p><p>There are other common types of lights, such as directional lights and spotlights, but we will cover those in a later article.</p><p><figure>  <img src="/images/posts/modern-opengl-06/point-light.jpg" />  <figcaption>  Image by <a href="http://commons.wikimedia.org/wiki/File:Teelicht_2009.JPG">4028mdk09</a>  </figcaption> </figure></p><h2>Phong Reflection Model</h2>
 <blockquote class="pull-right">
   The Phong reflection model provides a method of calculating the color of a
   pixel, based on the parameters of a light source and a surface.
@@ -115,20 +199,15 @@ cos(100°) = -0.17 (Completely dark. Negative value means light is hitting the b
 <blockquote class="pull-right">
   Normals are unit vectors that are perpendicular (at right angle, 90°) to
   a surface.
-</blockquote><p>In order to calculate the AoI, we first need to know the direction that each surface is facing. The direction that a surface is facing is called the <em>normal</em> of that surface. Normals are unit vectors that are perpendicular (at right angle, 90°) to a surface.</p><p>The angle of incidence is defined as the angle between the surface normal, and the direction to the light source.</p><p><figure>  <img src="/images/posts/modern-opengl-06/normal_aoi.png" /> </figure></p><p>In the diagram above:</p>
-<ul>
-  <li><em>N</em> = the surface normal vector</li>
-  <li><em>L</em> = a vector from the surface to the light source</li>
-  <li><em>θ</em> = the angle of incidence</li>
-</ul><p>The vector from the surface to the light source, <em>L</em>, can be calculated with vector subtraction, like so:</p><p><figure>  [blockmath] L = lightPosition - surfacePosition [/blockmath] </figure></p><p>You may wish to read article 04 of this series if you need to brush up on vector math.</p><p>The surface normal is usually supplied from the VBO, the same way the vertex and texture coordinates are supplied. When we get to the code for this article, we will be adding a normal for each vertex in the VBO.</p><h2>Calculating The Angle Between Two Vectors: The Dot Product</h2>
+</blockquote><p>In order to calculate the AoI, we first need to know the direction that each surface is facing. The direction that a surface is facing is called the <em>normal</em> of that surface. Normals are unit vectors that are perpendicular (at right angle, 90°) to a surface.</p><p>The angle of incidence is defined as the angle between the surface normal, and the direction to the light source.</p><p><figure>  <img src="/images/posts/modern-opengl-06/normal_aoi.png" />  <figcaption>  <em>N</em> = the surface normal vector<br />  <em>L</em> = a vector from the surface to the light source<br />  <em>θ</em> = the angle of incidence  </figcaption> </figure></p><p>The vector from the surface to the light source, <em>L</em>, can be calculated with vector subtraction, like so:</p><p><figure>  [blockmath] L = lightPosition - surfacePosition [/blockmath] </figure></p><p>You may wish to read <a href="/blog/modern-opengl/04-cameras-vectors-and-input/">article 04</a> of this series if you need to brush up on vector math.</p><p>The surface normal is usually supplied from the VBO, the same way the vertex and texture coordinates are supplied. When we get to the code for this article, we will be adding a normal for each vertex in the VBO.</p><h2>Calculating The Angle Between Two Vectors: The Dot Product</h2>
 <blockquote class="pull-right">
   It is possible to calculate the angle between two vectors using the <em>dot
   product</em> of the vectors.
 </blockquote><p>It is possible to calculate the angle between two vectors using the <em>dot product</em> of the vectors. The dot product is an operation that takes two vectors, and results in a single number (a scalar). Shockingly, the dot product looks like a dot in mathematical notation: $$\vec{v_1}\bullet\vec{v_2}$$. In GLSL and GLM, it is a function called "dot": <code>dot(v1, v2)</code>, and <code>glm::dot(v1,
 v2)</code>.</p><p>The result of the dot product is related to the angle between the two vectors. The exact relationship is:</p><p><figure>  [blockmath]  \begin{align}  \vec {v_1} \bullet \vec {v_2} &amp;= |\vec {v_1}||\vec {v_2}|cos(\theta) \\  \frac{\vec {v_1} \bullet \vec {v_2}}{|\vec {v_1}||\vec {v_2}|} &amp;= cos(\theta) \\  cos^{-1}\left(\frac{\vec {v_1} \bullet \vec {v_2}}{|\vec {v_1}||\vec {v_2}|}\right) &amp;= \theta  \end{align}  [/blockmath] </figure></p><p>Where $$\vec{v_1}$$ and $$\vec{v_2}$$ are vectors, $$\theta$$ is the angle between the two vectors, and $$|\vec v|$$ is the magnitude of $$\vec v$$.</p><p>The exact same thing, written like code, looks like this:</p>
-<pre><code>                                  dot(v1, v2) == length(v1) * length(v2) * cos(angle)
-      dot(v1, v2) / (length(v1) * length(v2)) == cos(angle)
-acos(dot(v1, v2) / (length(v1) * length(v2))) == angle
+<pre><code>                              dot(v1,v2) == length(v1)*length(v2)*cos(angle)
+      dot(v1,v2)/(length(v1)*length(v2)) == cos(angle)
+acos(dot(v1,v2)/(length(v1)*length(v2))) == angle
 </code></pre><p><code>length</code> is a GLSL function that returns the magnitude of a vector.</p><p>We don't actually need to know the AoI, we just need <code>cos(AoI)</code>, which represents brightness. The brightness calculation in the fragment shader is based on the middle line of the formulas above.</p>
 <div class="highlight"><pre><span class="c1">//    cos(angle) = dot(v1, v2)                 / (length(v1) * length(v2))</span>
 <span class="k">float</span> <span class="n">brightness</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">surfaceToLight</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">length</span><span class="p">(</span><span class="n">surfaceToLight</span><span class="p">)</span> <span class="o">*</span> <span class="n">length</span><span class="p">(</span><span class="n">normal</span><span class="p">));</span>
@@ -199,7 +278,7 @@ acos(dot(v1, v2) / (length(v1) * length(v2))) == angle
     <span class="c1">//calculate the vector from this pixels surface to the light source</span>
     <span class="k">vec3</span> <span class="n">surfaceToLight</span> <span class="o">=</span> <span class="n">light</span><span class="p">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">fragPosition</span><span class="p">;</span>
 
-    <span class="c1">//calculate the cosine of the angle of incidence (brightness)</span>
+    <span class="c1">//calculate the cosine of the angle of incidence</span>
     <span class="k">float</span> <span class="n">brightness</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">surfaceToLight</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">length</span><span class="p">(</span><span class="n">surfaceToLight</span><span class="p">)</span> <span class="o">*</span> <span class="n">length</span><span class="p">(</span><span class="n">normal</span><span class="p">));</span>
     <span class="n">brightness</span> <span class="o">=</span> <span class="n">clamp</span><span class="p">(</span><span class="n">brightness</span><span class="p">,</span> <span class="mo">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
 
@@ -207,24 +286,26 @@ acos(dot(v1, v2) / (length(v1) * length(v2))) == angle
     <span class="c1">// 1. The angle of incidence: brightness</span>
     <span class="c1">// 2. The color/intensities of the light: light.intensities</span>
     <span class="c1">// 3. The texture and texture coord: texture(tex, fragTexCoord)</span>
-    <span class="n">finalColor</span> <span class="o">=</span> <span class="n">brightness</span> <span class="o">*</span> <span class="k">vec4</span><span class="p">(</span><span class="n">light</span><span class="p">.</span><span class="n">intensities</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">texture</span><span class="p">(</span><span class="n">tex</span><span class="p">,</span> <span class="n">fragTexCoord</span><span class="p">);</span>
+    <span class="k">vec4</span> <span class="n">surfaceColor</span> <span class="o">=</span> <span class="n">texture</span><span class="p">(</span><span class="n">tex</span><span class="p">,</span> <span class="n">fragTexCoord</span><span class="p">);</span>
+    <span class="n">finalColor</span> <span class="o">=</span> <span class="k">vec4</span><span class="p">(</span><span class="n">brightness</span> <span class="o">*</span> <span class="n">light</span><span class="p">.</span><span class="n">intensities</span> <span class="o">*</span> <span class="n">surfaceColor</span><span class="p">.</span><span class="n">rgb</span><span class="p">,</span> <span class="n">surfaceColor</span><span class="p">.</span><span class="n">a</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div><p>We have a new shader uniform called <code>light</code>, which is a struct containing the position and the intensities/color of the light.</p><p>The variables <code>fragTexCoord</code>, <code>fragNormal</code> and <code>fragVert</code> all come straight from the vertex shader. <code>fragTexCoord</code> is the texture coordinate, as we've seen in previous articles. <code>fragNormal</code> is the <em>untransformed</em> surface normal for this fragment/pixel. <code>fragVert</code> is the <em>untransformed</em> coordinate of the surface that we are drawing.</p><p>The first part of <code>main</code> transforms the normal into world space, as explained in the previous section of this article.</p>
 <div class="highlight"><pre><span class="k">mat3</span> <span class="n">normalMatrix</span> <span class="o">=</span> <span class="n">transpose</span><span class="p">(</span><span class="n">inverse</span><span class="p">(</span><span class="k">mat3</span><span class="p">(</span><span class="n">model</span><span class="p">)));</span>
 <span class="k">vec3</span> <span class="n">normal</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">normalMatrix</span> <span class="o">*</span> <span class="n">fragNormal</span><span class="p">);</span>
 </pre></div><p>The next part transforms the surface coordinate <code>fragVert</code> into world space.</p>
 <div class="highlight"><pre><span class="k">vec3</span> <span class="n">fragPosition</span> <span class="o">=</span> <span class="k">vec3</span><span class="p">(</span><span class="n">model</span> <span class="o">*</span> <span class="k">vec4</span><span class="p">(</span><span class="n">fragVert</span><span class="p">,</span> <span class="mi">1</span><span class="p">));</span>
-</pre></div><p>The <code>model</code> uniform is a 4x4 matrix, so we convert the coordinate to a vec4 in order to do the transformation, then we convert back to vec3.</p><p>Next, we calculate a vector from the surface coordinate to the light coordinate, both of which are in world space.</p>
+</pre></div><p>The <code>model</code> uniform is a 4x4 matrix, so we convert the coordinate to a <code>vec4</code> in order to do the transformation, then we convert back to <code>vec3</code>.</p><p>Next, we calculate a vector from the surface coordinate to the light coordinate, both of which are in world space.</p>
 <div class="highlight"><pre><span class="k">vec3</span> <span class="n">surfaceToLight</span> <span class="o">=</span> <span class="n">light</span><span class="p">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">fragPosition</span><span class="p">;</span>
 </pre></div><p>Next, we calculate the brightness, which is equal to <code>cos(angleOfIncidence)</code>. As explained earlier in the article, we use the dot product of the normal and a vector pointing towards the light.</p>
-<div class="highlight"><pre><span class="k">float</span> <span class="n">brightness</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">surfaceToLight</span><span class="p">)</span> <span class="o">/</span> <span class="n">length</span><span class="p">(</span><span class="n">surfaceToLight</span><span class="p">);</span>
+<div class="highlight"><pre><span class="k">float</span> <span class="n">brightness</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">surfaceToLight</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">length</span><span class="p">(</span><span class="n">surfaceToLight</span><span class="p">)</span> <span class="o">*</span> <span class="n">length</span><span class="p">(</span><span class="n">normal</span><span class="p">));</span>
 </pre></div><p>Remembering that brightness can be negative – which indicates that the light is hitting the <em>back</em> of the surface – we restrict the brightness to a value between 0 and 1. Negative values will become 0, which means completely dark.</p>
 <div class="highlight"><pre><span class="n">brightness</span> <span class="o">=</span> <span class="n">clamp</span><span class="p">(</span><span class="n">brightness</span><span class="p">,</span> <span class="mo">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
 </pre></div><p>Finally, using the brightness, the light intensities and the surface color, we can calculate the color of the fragment/pixel.</p>
-<div class="highlight"><pre><span class="n">finalColor</span> <span class="o">=</span> <span class="n">brightness</span> <span class="o">*</span> <span class="k">vec4</span><span class="p">(</span><span class="n">light</span><span class="p">.</span><span class="n">intensities</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">texture</span><span class="p">(</span><span class="n">tex</span><span class="p">,</span> <span class="n">fragTexCoord</span><span class="p">);</span>
+<div class="highlight"><pre><span class="k">vec4</span> <span class="n">surfaceColor</span> <span class="o">=</span> <span class="n">texture</span><span class="p">(</span><span class="n">tex</span><span class="p">,</span> <span class="n">fragTexCoord</span><span class="p">);</span>
+<span class="n">finalColor</span> <span class="o">=</span> <span class="k">vec4</span><span class="p">(</span><span class="n">brightness</span> <span class="o">*</span> <span class="n">light</span><span class="p">.</span><span class="n">intensities</span> <span class="o">*</span> <span class="n">surfaceColor</span><span class="p">.</span><span class="n">rgb</span><span class="p">,</span> <span class="n">surfaceColor</span><span class="p">.</span><span class="n">a</span><span class="p">);</span>
 </pre></div><p><code>texture(tex, fragTexCoord)</code> will get the color of the surface from the texture. This surface color determines how the intensities of the light are reflected or absorbed. Remember the formula <code>intensities × surface color =
-reflected intensities</code>. We are implementing that here with the code <code>vec4(light.intensities, 1) * texture(tex, fragTexCoord)</code>. The light intensities are a vec3 (RGB), but the final color is a vec4 (RGBA), so we convert the intensities to a vec4 and set the alpha channel to 1 (fully opaque).</p><p>After we calculate the reflected intensities with <code>vec4(light.intensities, 1) *
-texture(tex, fragTexCoord)</code>, we multiply them by the brightness to get the final color. Multiplying by the brightness will darken the reflected intensities based on the angle of incidence.</p><h2>Changes In main.cpp</h2><p>The majority of lighting is done in the fragment shader, so the C++ code changes are fairly minor. </p><p>We have a new global called <code>gLight</code> that is an exact copy of the light struct in the fragment shader.</p>
+reflected intensities</code>. We are implementing that here with the code <code>light.intensities * surfaceColor.rgb</code>.</p><p>After we calculate the reflected intensities with <code>light.intensities *
+surfaceColor.rgb</code>, we multiply them by <code>brightness</code> to get the final color. Multiplying by the brightness will darken the reflected intensities based on the angle of incidence.</p><p>The light intensities are a <code>vec3</code> (RGB), but the final color is a <code>vec4</code> (RGBA), so we convert the intensities to a <code>vec4</code> and set the alpha channel to the alpha value from the texture: <code>surfaceColor.a</code>. This means the rendered surface will be transparent wherever the texture is transparent.</p><h2>Changes In main.cpp</h2><p>The majority of lighting is done in the fragment shader, so the C++ code changes are fairly minor. </p><p>We have a new global called <code>gLight</code> that is an exact copy of the light struct in the fragment shader.</p>
 <div class="highlight"><pre><span class="k">struct</span> <span class="n">Light</span> <span class="p">{</span>
     <span class="n">glm</span><span class="o">::</span><span class="n">vec3</span> <span class="n">position</span><span class="p">;</span>
     <span class="n">glm</span><span class="o">::</span><span class="n">vec3</span> <span class="n">intensities</span><span class="p">;</span> <span class="c1">//a.k.a. the color of the light</span>
@@ -278,17 +359,17 @@ texture(tex, fragTexCoord)</code>, we multiply them by the brightness to get the
 <span class="n">shaders</span><span class="o">-&gt;</span><span class="n">setUniform</span><span class="p">(</span><span class="s">"light.intensities"</span><span class="p">,</span> <span class="n">gLight</span><span class="p">.</span><span class="n">intensities</span><span class="p">);</span>
 </pre></div><p>Next, let's look at the new keyboard controls to change the light inside of the <code>Update</code> function.</p>
 <div class="highlight"><pre><span class="c1">//move light</span>
-<span class="k">if</span><span class="p">(</span><span class="n">glfwGetKey</span><span class="p">(</span><span class="sc">'1'</span><span class="p">))</span>
+<span class="k">if</span><span class="p">(</span><span class="n">glfwGetKey</span><span class="p">(</span><span class="n">gWindow</span><span class="p">,</span> <span class="sc">'1'</span><span class="p">))</span>
     <span class="n">gLight</span><span class="p">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">gCamera</span><span class="p">.</span><span class="n">position</span><span class="p">();</span>
 
 <span class="c1">// change light color</span>
-<span class="k">if</span><span class="p">(</span><span class="n">glfwGetKey</span><span class="p">(</span><span class="sc">'2'</span><span class="p">))</span>
+<span class="k">if</span><span class="p">(</span><span class="n">glfwGetKey</span><span class="p">(</span><span class="n">gWindow</span><span class="p">,</span> <span class="sc">'2'</span><span class="p">))</span>
     <span class="n">gLight</span><span class="p">.</span><span class="n">intensities</span> <span class="o">=</span> <span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span> <span class="c1">//red</span>
-<span class="k">else</span> <span class="nf">if</span><span class="p">(</span><span class="n">glfwGetKey</span><span class="p">(</span><span class="sc">'3'</span><span class="p">))</span>
+<span class="k">else</span> <span class="nf">if</span><span class="p">(</span><span class="n">glfwGetKey</span><span class="p">(</span><span class="n">gWindow</span><span class="p">,</span> <span class="sc">'3'</span><span class="p">))</span>
     <span class="n">gLight</span><span class="p">.</span><span class="n">intensities</span> <span class="o">=</span> <span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span> <span class="c1">//green</span>
-<span class="k">else</span> <span class="nf">if</span><span class="p">(</span><span class="n">glfwGetKey</span><span class="p">(</span><span class="sc">'4'</span><span class="p">))</span>
+<span class="k">else</span> <span class="nf">if</span><span class="p">(</span><span class="n">glfwGetKey</span><span class="p">(</span><span class="n">gWindow</span><span class="p">,</span> <span class="sc">'4'</span><span class="p">))</span>
     <span class="n">gLight</span><span class="p">.</span><span class="n">intensities</span> <span class="o">=</span> <span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span> <span class="c1">//white</span>
-</pre></div><p>Pressing the '1' key sets the position of the light to the current position of the camera. Moving the light around will allow us to observe how the angle of incidence affects the brightness of the surfaces.</p><p>Pressing the '2', '3', and '4' keys will change the color of the light.</p><p>Inside the <code>AppMain</code> function we set the initial position and color of the light when the program starts.</p>
+</pre></div><p>Pressing the <kbd>1</kbd> key sets the position of the light to the current position of the camera. Moving the light around will allow us to observe how the angle of incidence affects the brightness of the surfaces.</p><p>Pressing the <kbd>2</kbd>, <kbd>3</kbd>, and <kbd>4</kbd> keys will change the color of the light.</p><p>Inside the <code>AppMain</code> function we set the initial position and color of the light when the program starts.</p>
 <div class="highlight"><pre><span class="n">gLight</span><span class="p">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">gCamera</span><span class="p">.</span><span class="n">position</span><span class="p">();</span>
 <span class="n">gLight</span><span class="p">.</span><span class="n">intensities</span> <span class="o">=</span> <span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span> <span class="c1">//white</span>
 </pre></div><p>Lastly, there are a couple of changes that are unrelated to lighting. I increased the movement speed of the camera, because it seemed a bit slow. I also increased the near plane distance of the camera from 0.01 to 0.5, because 0.01 was too small, and it as causing weird jagged edges to appear on the wooden crates.</p>

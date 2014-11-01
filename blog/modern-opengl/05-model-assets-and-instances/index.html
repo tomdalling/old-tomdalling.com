@@ -61,7 +61,43 @@
   </header>
 
   <div class="post-content"><p>In this article, we will be refactoring the code to be more like a 3D engine/framework. Specifically, we will be replacing some of the globals with structs that represent "assets" and "instances." At the end, we will have a single wooden crate asset, and five instances of that asset arranged to spell out "Hi" in 3D.</p>
-<!--more--><h2>Accessing The Code</h2><p>Download all lessons as a zip from here:<a href="https://github.com/tomdalling/opengl-series/archive/master.zip">https://github.com/tomdalling/opengl-series/archive/master.zip</a> </p><p>Setup instructions are available in the first article: <a href="http://tomdalling.com/blog/modern-opengl/01-getting-started-in-xcode-and-visual-cpp/">Getting Started in Xcode, Visual C++, and Linux</a>.</p><p>This article builds on the code from the previous article.</p><p>All the code in this series of articles is available from github: <a href="https://github.com/tomdalling/opengl-series">https://github.com/tomdalling/opengl-series</a>. You can download a zip of all the files from that page, or you can clone the repository if you are familiar with git. The code for this article can be found in the <a href="https://github.com/tomdalling/opengl-series/tree/master/windows/05_asset_instance"><code>windows/05_asset_instance</code></a>, <a href="https://github.com/tomdalling/opengl-series/tree/master/osx/05_asset_instance"><code>osx/05_asset_instance</code></a>, and <a href="https://github.com/tomdalling/opengl-series/tree/master/linux/05_asset_instance"><code>linux/05_asset_instance</code></a> directories.</p><h2>Assets, In General</h2>
+<!--more--><p></p><div class="modern-opengl-preamble">
+  <h2>Accessing The Code</h2>
+
+  <p>
+    Download all the code as a zip from here:
+    <a href="https://github.com/tomdalling/opengl-series/archive/master.zip">
+      https://github.com/tomdalling/opengl-series/archive/master.zip
+    </a>
+  </p>
+
+  <p>
+    All the code in this series of articles is available from github:
+    <a href="https://github.com/tomdalling/opengl-series">https://github.com/tomdalling/opengl-series</a>.
+    You can download a zip of all the files from that page, or you can clone the
+    repository if you are familiar with git.
+  </p>
+
+  <p class="builds-on-previous">
+    This article builds on the code from the previous article.
+  </p>
+
+  <p>
+    The code for this article can be found in the
+    <a class="source_folder" href="https://github.com/tomdalling/opengl-series/tree/master/source/05_asset_instance">
+      <code>source/05_asset_instance</code>
+    </a>
+    folder. On OS X, open the <code>opengl-series.xcodeproj</code> file in the
+    root folder, and select the target that corresponds with this article. On
+    Windows, open the <code>opengl-series.sln</code> file in Visual Studio 2013,
+    and open the project that corresponds with this article.
+  </p>
+
+  <p>
+    The project includes all of its dependencies, so you shouldn't have to
+    install or configure anything extra.
+  </p>
+</div><h2>Assets, In General</h2>
 <blockquote class="pull-right">
   For the purpose of this article, we will define an asset as a 3D object that
   can be drawn – often just referred to as a "model."
@@ -99,6 +135,8 @@
 <span class="cm">*/</span>
 
 <span class="c1">// unchanged globals</span>
+<span class="n">GLFWwindow</span><span class="o">*</span> <span class="n">gWindow</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="kt">double</span> <span class="n">gScrollY</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
 <span class="n">tdogl</span><span class="o">::</span><span class="n">Camera</span> <span class="n">gCamera</span><span class="p">;</span>
 <span class="n">GLfloat</span> <span class="n">gDegreesRotated</span> <span class="o">=</span> <span class="mf">0.0f</span><span class="p">;</span>
 </pre></div><p>The deleted globals are all part of the <code>ModelAsset</code> struct now. We only have a single asset, so we'll keep it in the global <code>gWoodenCrate</code> for now. Lastly, we have a list of instances in the variable <code>gInstances</code>.</p><p>Now lets look in the start of the <code>LoadWoodenCrateAsset</code> function to see how the asset is loaded:</p>
@@ -139,7 +177,7 @@
     <span class="n">hMid</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">translate</span><span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mf">0.8</span><span class="p">);</span>
     <span class="n">gInstances</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">hMid</span><span class="p">);</span>
 <span class="p">}</span>
-</pre></div><p>For each of the five instances, we set the asset to <code>&amp;amp;gWoodenCrate</code>, then set the transformation matrix to something unique, then append the instance to the <code>gInstances</code> list. </p><p>The functions <code>translate</code> and <code>scale</code> are just convenience functions that return matrices. The translation controls the position of the instance, and the scale controls the size. </p>
+</pre></div><p>For each of the five instances, we set the asset to <code>&amp;gWoodenCrate</code>, then set the transformation matrix to something unique, then append the instance to the <code>gInstances</code> list. </p><p>The functions <code>translate</code> and <code>scale</code> are just convenience functions that return matrices. The translation controls the position of the instance, and the scale controls the size. </p>
 <blockquote class="pull-right">
   The identity matrix is a special matrix that does <em>not</em> do any
   transformation.
