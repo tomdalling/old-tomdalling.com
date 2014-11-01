@@ -12,14 +12,11 @@ Commonly Used Commands
 TODO
 ----
 
- - Update OpenGL article 02 to include section about glBlendFunc
- - Don't load disqus in development. It's remembering incorrect post titles
-   before they are published
+ - Put mathjax into the static js, instead of link to CDN
  - Proper titles for category RSS feeds
  - Absolute URLs for RSS feeds (and maybe everywhere)
  - Test that follows all internal links to make sure they're correct
- - Turn on markdown options for automatic url linking, and common text
-   transformations like "--" and "..."
+ - Turn on markdown options for common text transformations like "--" and "..."
 
 Proofreading
 ------------
