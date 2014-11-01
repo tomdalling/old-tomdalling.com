@@ -9,23 +9,7 @@ gamma correction.
 
 <!--more-->
 
-Accessing The Code
-------------------
-
-Download all lessons as a zip from
-here:[https://github.com/tomdalling/opengl-series/archive/master.zip][] 
-
-Setup instructions are available in the first article: [Getting Started in
-Xcode, Visual C++, and Linux][].
-
-This article builds on the code from the previous article.
-
-All the code in this series of articles is available from github:
-[https://github.com/tomdalling/opengl-series][]. You can download a zip of all
-the files from that page, or you can clone the repository if you are familiar
-with git. The code for this article can be found in the
-[`windows/07_more_lighting`][], [`osx/07_more_lighting`][], and
-[`linux/07_more_lighting`][] directories.
+<widget type="modern-opengl-preamble">07_more_lighting</widget>
 
 Diffuse Component
 -----------------
@@ -58,10 +42,6 @@ down to this:
 ```glsl
 dot(normal, surfaceToLight)
 ```
-
-We use `surfaceColor.rgb` because we don't want to include the alpha value in
-the lighting calculation. The alpha value is used later, to affect the final
-color of the pixel/fragment.
 
 Ambient Component
 -----------------
@@ -260,7 +240,7 @@ In the code for the previous article, moving the light source away from the
 wooden crate didn't make the crate appear any darker. This is obviously wrong,
 because if you move a candle away from a surface in real life, then the surface
 gets darker. To fix this, we will implement attenuation. To see attenuation in
-action, hold down the '1' key, which sets the position of the light, and move
+action, hold down the <kbd>1</kbd> key, which sets the position of the light, and move
 the camera further away from the wooden crates. If you do the same thing in the
 previous article, you will notice that the surface doesn't get darker, but it
 does in this article.
@@ -318,7 +298,8 @@ just call $$k$$:
   [/blockmath]
   <figcaption>
     $$a$$ is the attenuation<br />
-    $$d$$ is the distance
+    $$d$$ is the distance<br />
+    $$k$$ is an arbitrary &quot;attenuation factor&quot;
   </figcaption>
 </figure>
 
@@ -348,7 +329,7 @@ Gamma Correction
 ----------------
 
 All of our lighting calculations so far have assumed that we are working a
-"linear color space." In a linear color space, if you double one of the RGB
+_linear color space_. In a linear color space, if you double one of the RGB
 color values, then the pixel on the screen should be twice as bright. For
 example, the 100% red color $$\(1,0,0)$$ should be twice as bright as
 the 50% red color $$\(0.5,0,0)$$.
@@ -384,12 +365,12 @@ shades of brightness in the middle.
 </blockquote>
 
 Gamma correction is an operation that changes the brightness of an RGB color.
-We do all our lighting calculations in linear colo rspace, then we do gamma
+We do all our lighting calculations in linear colorspace, then we do gamma
 correction to adjust the color before it gets displayed on the screen. This
 makes all the lighting look correct, instead of looking too dark.
 
 Gamma correction is pretty simple to implement. You take each of the RGB values
-and raise them to the power of "gamma." Some games give the user a "brightness"
+and raise them to the power of _gamma_. Some games give the user a brightness
 setting which allows them to change the gamma value, but we will just use the
 constant value $$\frac{1}{2.2}$$ in this article, which is the correct
 value for CRT monitors.
@@ -432,7 +413,7 @@ The gamma-corrected image looks wrong, but the correct image looks like the one
 from the last article, which didn't have any gamma correction. This is because
 we're actually doing gamma correction *twice*. That's right, we already had
 some form of gamma correction before this article. Most image file formats
-already contain gamma-corrected RGB values. The "wooden-crate.jpg" file that we
+already contain gamma-corrected RGB values. The `wooden-crate.jpg` file that we
 use as a texture is already gamma-corrected, and then we gamma-correct it a
 second time which makes it look too bright. We could just not implement gamma
 correction, which would make the textures look right, but then the lighting
@@ -441,7 +422,7 @@ would look wrong.
 We will just undo the gamma correction on the texture when we load it.
 Thankfully, this is very simple to do in OpenGL. Like most images, our the
 wooden crate image is in the [sRGB color space][], which is already gamma
-corrected. We can change the `internalFormat` argument of[glTexImage2D][] to
+corrected. We can change the `internalFormat` argument of [glTexImage2D][] to
 tell OpenGL that the texture data is already in the sRGB color space, and
 OpenGL will automatically un-correct the pixels into linear color space. For
 RGB pixel data, we change the `internalFormat` from `GL_RGB` to `GL_SRGB`. For
@@ -559,20 +540,6 @@ then each paragraph of code corresponds to a section in this article:
  -  Combine ambient, diffuse and specular components, with attenuation applied
  -  Perform gamma correction
 
-You'll notice that after gamma correction, the color is converted from a `vec3`
-into a `vec4`:
-
-```glsl
-finalColor = vec4(pow(linearColor, gamma), surfaceColor.a);
-```
-
-Remember earlier in the article, where I said we will ignore the alpha channel
-of the surface color? This is where we re-incorporate the alpha channel. We
-take the final, gamma corrected color and give it the alpha value that it
-originally had in the texture. This preserves the transparent areas of the
-texture. The texture we are using doesn't have any transparent areas though, so
-we won't see any difference.
-
 C++ Code Changes
 ----------------
 
@@ -660,12 +627,6 @@ Future Article Sneak Peek
 In the next article we will implement directional lights and spotlights. We
 will also get multiple lights working at the same time.
 
-[https://github.com/tomdalling/opengl-series/archive/master.zip]: https://github.com/tomdalling/opengl-series/archive/master.zip
-[Getting Started in Xcode, Visual C++, and Linux]: http://tomdalling.com/blog/modern-opengl/01-getting-started-in-xcode-and-visual-cpp/
-[https://github.com/tomdalling/opengl-series]: https://github.com/tomdalling/opengl-series
-[`windows/07_more_lighting`]: https://github.com/tomdalling/opengl-series/tree/master/windows/07_more_lighting
-[`osx/07_more_lighting`]: https://github.com/tomdalling/opengl-series/tree/master/osx/07_more_lighting
-[`linux/07_more_lighting`]: https://github.com/tomdalling/opengl-series/tree/master/linux/07_more_lighting
 [sRGB color space]: http://en.wikipedia.org/wiki/SRGB
 [glTexImage2D]: http://www.opengl.org/sdk/docs/man/xhtml/glTexImage2D.xml
 
