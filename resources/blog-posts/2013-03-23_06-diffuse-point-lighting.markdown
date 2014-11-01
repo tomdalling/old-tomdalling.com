@@ -10,32 +10,25 @@ directional lights, spotlights, attenuation, and using multiple lights.
 
 <!--more-->
 
-Accessing The Code
-------------------
-
-Download all lessons as a zip from
-here:[https://github.com/tomdalling/opengl-series/archive/master.zip][] 
-
-Setup instructions are available in the first article: [Getting Started in
-Xcode, Visual C++, and Linux][].
-
-This article builds on the code from the previous article.
-
-All the code in this series of articles is available from github:
-[https://github.com/tomdalling/opengl-series][].  You can download a zip of all
-the files from that page, or you can clone the repository if you are familiar
-with git. The code for this article can be found in the
-[`windows/06_diffuse_lighting`][], [`osx/06_diffuse_lighting`][],
-and[`linux/06_diffuse_lighting`][] directories.
+<widget type="modern-opengl-preamble">06_diffuse_lighting</widget>
 
 Keyboard Controls For This Article
 ----------------------------------
 
-The 'W', 'A', 'S', and 'D' keys are used for move forward, left, back and
-right, respectively. The 'X' and 'Z' keys move up and down. The '1' key sets
-the position of the light to the current position of the camera. The '2', '3',
-and '4' keys change the intensities (color) of the light to red, green and
-white, respectively.
+ ------------|----------
+ <kbd>W</kbd>| Move forward
+ <kbd>A</kbd>| Move left
+ <kbd>S</kbd>| Move backward
+ <kbd>D</kbd>| Move right
+ <kbd>X</kbd>| Move up
+ <kbd>Z</kbd>| Move down
+
+
+ ------------|----------
+ <kbd>1</kbd>| Set light position to camera position
+ <kbd>2</kbd>| Set light intensities to green
+ <kbd>3</kbd>| Set light intensities to red
+ <kbd>4</kbd>| Set light intensities to white
 
 Point Lights
 ------------
@@ -45,8 +38,8 @@ Point Lights
   much like a candle.
 </blockquote>
 
-In this article, we will be implementing a type of light called a "point
-light." Point lights radiate light outwards in all directions from a single
+In this article, we will be implementing a type of light called a _point
+light_. Point lights radiate light outwards in all directions from a single
 point, much like a candle. If you look at the screenshot at the top of this
 article, it looks like an invisible candle is being held up to the wooden
 crates.
@@ -297,13 +290,12 @@ the direction to the light source.
 
 <figure>
   <img src="/images/posts/modern-opengl-06/normal_aoi.png" />
+  <figcaption>
+      <em>N</em> = the surface normal vector<br />
+      <em>L</em> = a vector from the surface to the light source<br />
+      <em>θ</em> = the angle of incidence
+  </figcaption>
 </figure>
-
-In the diagram above:
-
- -  *N* = the surface normal vector
- -  *L* = a vector from the surface to the light source
- -  *θ* = the angle of incidence
 
 The vector from the surface to the light source, *L*, can be calculated with
 vector subtraction, like so:
@@ -312,7 +304,7 @@ vector subtraction, like so:
   [blockmath] L = lightPosition - surfacePosition [/blockmath]
 </figure>
 
-You may wish to read article 04 of this series if you need to brush up on
+You may wish to read [article 04][] of this series if you need to brush up on
 vector math.
 
 The surface normal is usually supplied from the VBO, the same way the vertex
@@ -353,9 +345,9 @@ between the two vectors, and $$\|\vec v\|$$ is the magnitude of $$\vec v$$.
 The exact same thing, written like code, looks like this:
 
 ```
-                                  dot(v1, v2) == length(v1) * length(v2) * cos(angle)
-      dot(v1, v2) / (length(v1) * length(v2)) == cos(angle)
-acos(dot(v1, v2) / (length(v1) * length(v2))) == angle
+                              dot(v1,v2) == length(v1)*length(v2)*cos(angle)
+      dot(v1,v2)/(length(v1)*length(v2)) == cos(angle)
+acos(dot(v1,v2)/(length(v1)*length(v2))) == angle
 ```
 
 `length` is a GLSL function that returns the magnitude of a vector.
@@ -501,7 +493,7 @@ void main() {
     //calculate the vector from this pixels surface to the light source
     vec3 surfaceToLight = light.position - fragPosition;
 
-    //calculate the cosine of the angle of incidence (brightness)
+    //calculate the cosine of the angle of incidence
     float brightness = dot(normal, surfaceToLight) / (length(surfaceToLight) * length(normal));
     brightness = clamp(brightness, 0, 1);
 
@@ -509,7 +501,8 @@ void main() {
     // 1. The angle of incidence: brightness
     // 2. The color/intensities of the light: light.intensities
     // 3. The texture and texture coord: texture(tex, fragTexCoord)
-    finalColor = brightness * vec4(light.intensities, 1) * texture(tex, fragTexCoord);
+    vec4 surfaceColor = texture(tex, fragTexCoord);
+    finalColor = vec4(brightness * light.intensities * surfaceColor.rgb, surfaceColor.a);
 }
 ```
 
@@ -536,8 +529,8 @@ The next part transforms the surface coordinate `fragVert` into world space.
 vec3 fragPosition = vec3(model * vec4(fragVert, 1));
 ```
 
-The `model` uniform is a 4x4 matrix, so we convert the coordinate to a vec4 in
-order to do the transformation, then we convert back to vec3.
+The `model` uniform is a 4x4 matrix, so we convert the coordinate to a `vec4` in
+order to do the transformation, then we convert back to `vec3`.
 
 Next, we calculate a vector from the surface coordinate to the light
 coordinate, both of which are in world space.
@@ -551,7 +544,7 @@ As explained earlier in the article, we use the dot product of the normal and a
 vector pointing towards the light.
 
 ```glsl
-float brightness = dot(normal, surfaceToLight) / length(surfaceToLight);
+float brightness = dot(normal, surfaceToLight) / (length(surfaceToLight) * length(normal));
 ```
 
 Remembering that brightness can be negative – which indicates that the light is
@@ -566,22 +559,26 @@ Finally, using the brightness, the light intensities and the surface color, we
 can calculate the color of the fragment/pixel.
 
 ```glsl
-finalColor = brightness * vec4(light.intensities, 1) * texture(tex, fragTexCoord);
+vec4 surfaceColor = texture(tex, fragTexCoord);
+finalColor = vec4(brightness * light.intensities * surfaceColor.rgb, surfaceColor.a);
 ```
 
 `texture(tex, fragTexCoord)` will get the color of the surface from the
 texture. This surface color determines how the intensities of the light are
 reflected or absorbed. Remember the formula `intensities × surface color =
 reflected intensities`. We are implementing that here with the code
-`vec4(light.intensities, 1) * texture(tex, fragTexCoord)`. The light
-intensities are a vec3 (RGB), but the final color is a vec4 (RGBA), so we
-convert the intensities to a vec4 and set the alpha channel to 1 (fully
-opaque).
+`light.intensities * surfaceColor.rgb`.
 
-After we calculate the reflected intensities with `vec4(light.intensities, 1) *
-texture(tex, fragTexCoord)`, we multiply them by the brightness to get the
+After we calculate the reflected intensities with `light.intensities *
+surfaceColor.rgb`, we multiply them by `brightness` to get the
 final color. Multiplying by the brightness will darken the reflected
 intensities based on the angle of incidence.
+
+The light intensities are a `vec3` (RGB), but the final color is a `vec4`
+(RGBA), so we convert the intensities to a `vec4` and set the alpha channel to
+the alpha value from the texture: `surfaceColor.a`. This means the rendered
+surface will be transparent wherever the texture is transparent.
+
 
 Changes In main.cpp
 -------------------
@@ -684,23 +681,24 @@ Next, let's look at the new keyboard controls to change the light inside of the
 
 ```cpp
 //move light
-if(glfwGetKey('1'))
+if(glfwGetKey(gWindow, '1'))
     gLight.position = gCamera.position();
 
 // change light color
-if(glfwGetKey('2'))
+if(glfwGetKey(gWindow, '2'))
     gLight.intensities = glm::vec3(1,0,0); //red
-else if(glfwGetKey('3'))
+else if(glfwGetKey(gWindow, '3'))
     gLight.intensities = glm::vec3(0,1,0); //green
-else if(glfwGetKey('4'))
+else if(glfwGetKey(gWindow, '4'))
     gLight.intensities = glm::vec3(1,1,1); //white
 ```
 
-Pressing the '1' key sets the position of the light to the current position of
-the camera. Moving the light around will allow us to observe how the angle of
-incidence affects the brightness of the surfaces.
+Pressing the <kbd>1</kbd> key sets the position of the light to the current
+position of the camera. Moving the light around will allow us to observe how
+the angle of incidence affects the brightness of the surfaces.
 
-Pressing the '2', '3', and '4' keys will change the color of the light.
+Pressing the <kbd>2</kbd>, <kbd>3</kbd>, and <kbd>4</kbd> keys will change the
+color of the light.
 
 Inside the `AppMain` function we set the initial position and color of the
 light when the program starts.
@@ -829,7 +827,6 @@ Additional Resources
 [Chapter 4: Rendering a Dynamic 3D Scene with Phong Shading]: http://duriansoftware.com/joe/An-intro-to-modern-OpenGL.-Chapter-4:-Rendering-a-Dynamic-3D-Scene-with-Phong-Shading.html
 [Diffuse Reflection]: http://en.wikibooks.org/wiki/GLSL_Programming/GLUT/Diffuse_Reflection
 [diffuse_ref_wiki]: http://en.wikipedia.org/wiki/Diffuse_reflection
-[Getting Started in Xcode, Visual C++, and Linux]: http://tomdalling.com/blog/modern-opengl/01-getting-started-in-xcode-and-visual-cpp/
 [Gouraud shading]: http://en.wikipedia.org/wiki/Gouraud_shading
 [Lights On]: http://www.arcsynthesis.org/gltut/Illumination/Tutorial%2009.html
 [Normal (geometry)]: http://en.wikipedia.org/wiki/Normal_(geometry)
@@ -841,9 +838,4 @@ Additional Resources
 [Tutorial 8 : Basic shading]: http://www.opengl-tutorial.org/beginners-tutorials/tutorial-8-basic-shading/
 [Vector Dot Product]: http://en.wikipedia.org/wiki/Dot_product
 [White light]: http://en.wikipedia.org/wiki/White#Science
-[`linux/06_diffuse_lighting`]: https://github.com/tomdalling/opengl-series/tree/master/linux/06_diffuse_lighting
-[`osx/06_diffuse_lighting`]: https://github.com/tomdalling/opengl-series/tree/master/osx/06_diffuse_lighting
-[`windows/06_diffuse_lighting`]: https://github.com/tomdalling/opengl-series/tree/master/windows/06_diffuse_lighting
-[https://github.com/tomdalling/opengl-series/archive/master.zip]: https://github.com/tomdalling/opengl-series/archive/master.zip
-[https://github.com/tomdalling/opengl-series]: https://github.com/tomdalling/opengl-series
-
+[article 04]: /blog/modern-opengl/04-cameras-vectors-and-input/
