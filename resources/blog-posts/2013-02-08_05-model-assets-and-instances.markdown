@@ -7,27 +7,11 @@ In this article, we will be refactoring the code to be more like a 3D
 engine/framework. Specifically, we will be replacing some of the globals with
 structs that represent "assets" and "instances." At the end, we will have a
 single wooden crate asset, and five instances of that asset arranged to spell
-out  "Hi" in 3D.
+out "Hi" in 3D.
 
 <!--more-->
 
-Accessing The Code
-------------------
-
-Download all lessons as a zip from
-here:[https://github.com/tomdalling/opengl-series/archive/master.zip][] 
-
-Setup instructions are available in the first article: [Getting Started in
-Xcode, Visual C++, and Linux][].
-
-This article builds on the code from the previous article.
-
-All the code in this series of articles is available from github:
-[https://github.com/tomdalling/opengl-series][]. You can download a zip of all
-the files from that page, or you can clone the repository if you are familiar
-with git. The code for this article can be found in the
-[`windows/05_asset_instance`][], [`osx/05_asset_instance`][], and
-[`linux/05_asset_instance`][] directories.
+<widget type="modern-opengl-preamble">05_asset_instance</widget>
 
 Assets, In General
 ------------------
@@ -191,6 +175,8 @@ GLuint gVBO = 0;
 */
 
 // unchanged globals
+GLFWwindow* gWindow = NULL;
+double gScrollY = 0.0;
 tdogl::Camera gCamera;
 GLfloat gDegreesRotated = 0.0f;
 ```
@@ -254,7 +240,7 @@ static void CreateInstances() {
 }
 ```
 
-For each of the five instances, we set the asset to `&amp;gWoodenCrate`, then
+For each of the five instances, we set the asset to `&gWoodenCrate`, then
 set the transformation matrix to something unique, then append the instance to
 the `gInstances` list. 
 
@@ -447,18 +433,12 @@ Additional Resources
 
 [ARB_draw_instanced]: http://www.opengl.org/registry/specs/ARB/draw_instanced.txt
 [An explanation of ARB_draw_instanced]: http://www.opengl.org/wiki/Vertex_Rendering#Instancing
-[Getting Started in Xcode, Visual C++, and Linux]: http://tomdalling.com/blog/modern-opengl/01-getting-started-in-xcode-and-visual-cpp/
 [Instances vs Entities]: #instances-vs-entities
 [Irrlicht]: http://irrlicht.sourceforge.net/docu/index.html
 [Links to articles about entity systems]: http://entity-systems.wikidot.com/es-approaches
 [Ogre3D]: http://www.ogre3d.org/docs/manual/manual_9.html
 [Unity]: http://docs.unity3d.com/Documentation/Components/comp-AssetsGroup.html
-[`linux/05_asset_instance`]: https://github.com/tomdalling/opengl-series/tree/master/linux/05_asset_instance
-[`osx/05_asset_instance`]: https://github.com/tomdalling/opengl-series/tree/master/osx/05_asset_instance
-[`windows/05_asset_instance`]: https://github.com/tomdalling/opengl-series/tree/master/windows/05_asset_instance
 [entity system]: http://t-machine.org/index.php/2007/11/11/entity-systems-are-the-future-of-mmog-development-part-2/
-[https://github.com/tomdalling/opengl-series/archive/master.zip]: https://github.com/tomdalling/opengl-series/archive/master.zip
-[https://github.com/tomdalling/opengl-series]: https://github.com/tomdalling/opengl-series
 [libgdx]: http://libgdx.badlogicgames.com/nightlies/docs/api/com/badlogic/gdx/graphics/g3d/model/Model.html
 [nice article, including a video, about composition vs inheritance in game programming]: http://www.learn-cocos2d.com/2010/06/prefer-composition-inheritance/
 [prefer composition to inheritance]: http://www.learn-cocos2d.com/2010/06/prefer-composition-inheritance/
