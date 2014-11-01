@@ -666,7 +666,7 @@ while(!glfwWindowShouldClose(gWindow)){
 ```
 
 Now we can capture the mouse. Just after we open the window with
-`glfwOpenWindow`, do this:
+`glfwCreateWindow`, do this:
 
 ```cpp
 // GLFW settings
