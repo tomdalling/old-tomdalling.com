@@ -99,7 +99,8 @@
 
 (defn get-assets []
   (concat (assets/load-assets "theme" ["/style.scss"])
-          (assets/load-assets "static" [#"^/images/.*(png|jpg|gif)$"])
+          (assets/load-assets "static" [#"^/images/.*(png|jpg|gif)$"
+                                        #"^/.*html$"])
           (assets/load-bundle "js" "all.js" ["/jquery-1.11.1.js" #".*\.js"])))
 
 (defn wrap-utf8 [handler]
