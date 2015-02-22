@@ -12,6 +12,7 @@
    :software-processes "Software Processes"
    :web "Web"
    :modern-opengl "Modern OpenGL Series"
+   :ruby "Ruby"
    :random-stuff "Miscellaneous"})
 
 (def page-duplicates
