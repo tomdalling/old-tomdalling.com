@@ -21,8 +21,6 @@ TODO
 Proofreading
 ------------
 
-TODO: `set spell` for all markdown files in vimrc
-
 Common typos:
 
  - therefor

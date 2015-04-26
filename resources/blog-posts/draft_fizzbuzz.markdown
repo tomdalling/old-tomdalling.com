@@ -123,10 +123,10 @@ Now, if the "Fizz" or "Buzz" strings need to be changed, we've got that covered.
 We're also covered if we want to change the way we test whether a number is 
 divisible by another number. I don't know _why_ we would ever need to change that,
 but hey, why stand in the rain of redundancy when everyone knows it's better
-to stay DRY? By extracting the modulo operator (`%`) into it's own function,
+to stay DRY? By extracting the modulo operator (`%`) into its own function,
 at least we've made the code more self-documenting. If someone else were to
 read the code and they didn't understand how the modulo operator worked,
-they can now work it out based on the function name.
+they could work it out based on the function name.
 
 All these changes are aimed at insulating ourselves from bugs caused by
 changing the code in the future. If you need to change something that exists in
@@ -143,15 +143,14 @@ Parameterization
 ----------------
 
 Let's level up the implementation by removing the hard-coded constants
-and turning them into parameters.
-
-First, let's think about what could be changed:
+and turning them into parameters. Here are the parameters that seem
+reasonable to me:
 
  - The range of integers covered.
  - The text that is output.
  - The multiples that trigger text to be output
 
-That seems reasonable to me. Here's the new, parameterized implementation:
+The new parameterized implementation looks like this:
 
 ```ruby
 def fizzbuzz(range, triggers)
@@ -178,7 +177,8 @@ We've introduced a new concept: triggers. A trigger is the pairing of a divisor
 and an output string. There is no official name for this pairing, due to
 FizzBuzz being a synthetic problem as opposed to a real-world problem, but it's
 not that uncommon. We create abstract models of data and processes, and these
-models contain things that need to be named. Note that this concept is
+models contain things that need to be named. Often times there is a
+pre-existing name we can use, but sometimes not. Note that this concept is
 completely absent from previous implementations.
 
 The `divisible_by?` function was removed, because the modulo operation only
@@ -460,17 +460,17 @@ And here is some example usage code, with example output:
 
 ```ruby
 FizzBuzz.range(1..5)
-#=> ['1', '2', 'Fizz', '3', 'Buzz']
+#=> ["1", "2", "Fizz", "4", "Buzz"]
 
 FizzBuzz.range(1..5, [['Odd', ->(i){ i.odd? }]])
-#=> ['Odd', '2', 'Odd', '4', 'Odd']
+#=> ["Odd", "2", "Odd", "4", "Odd"]
 
 e = FizzBuzz.enumerator
-e.next #=> '1'
-e.next #=> '2'
-e.next #=> 'Fizz'
-e.next #=> '4'
-e.next #=> 'Buzz'
+e.next #=> "1"
+e.next #=> "2"
+e.next #=> "Fizz"
+e.next #=> "4"
+e.next #=> "Buzz"
 ```
 
 Everything is inside a module called `FizzBuzz`.  It's an anti-pattern for
@@ -532,18 +532,18 @@ about 10 expressions/statements.
 
 The final implementation uses these methods: `range`, `enumerator`, `first`,
 `take`, `size`, `select`, `call`, `map`, `first`, `join`, `to_s`, `yield`, `+`,
-`=`, `==`. It has about 20 expressions/statements. It has higher-order
-functions and lambdas. It introduces the concept of triggers, and infinite
-enumerators. It also comes with a bunch of documentation, tests, and other
-supporting files. On top of that, it doesn't even print out the results &ndash;
-that part is left up to the user of the library.
+`==`. It has about 20 expressions/statements. It has higher-order functions and
+lambdas. It introduces the concept of triggers, and infinite enumerators. It
+also comes with a bunch of documentation, tests, and other supporting files. On
+top of that, it doesn't even print out the results &ndash; that part is left up
+to the user of the library.
 
 The final implementation represents a _veritable explosion_ of complexity.
 Complexity bad. More code means more bugs, slower maintenance, and a steeper
 learning curve for other developers.  We could have taken it further, too. We
 could have done performance optimisation, added concurrency, etc. There are
 plenty more ways to parameterize the code. Soon enough, you're
-implementing an `AbstractFizzBuzzRangeTransformerStrategyDecorator`, several
+implementing a [DefaultFizzBuzzUpperLimitParameter][], several
 levels deep into an inheritance hierarchy.
 
 You Ain't Gonna Need It
@@ -588,3 +588,4 @@ becomes necessary? In the absence of a definitive answer, lean towards YAGNI.
 [predicate]: http://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29
 [pure function]: http://www.sitepoint.com/functional-programming-pure-functions/
 [rubygems.org]: http://rubygems.org/
+[DefaultFizzBuzzUpperLimitParameter]: https://github.com/EnterpriseQualityCoding/FizzBuzzEnterpriseEdition/blob/00097ff1aae1045448811ebbe9a51429e6831d25/src/main/java/com/seriouscompany/business/java/fizzbuzz/packagenamingpackage/impl/parameters/DefaultFizzBuzzUpperLimitParameter.java
