@@ -28,6 +28,7 @@ Common typos:
  - it's
  - homogenous
  - colour (use American spelling)
+ - though/thought
 
 Also check for:
 

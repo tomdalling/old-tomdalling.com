@@ -523,7 +523,7 @@ What Have We Done?
 
 Let's reflect on the journey we have just taken. You may have thought that I
 was demonstrating how to improve the code in every iteration. Or maybe you
-though that _I thought_ I was improving the code.  Not so. Every iteration
+thought that _I thought_ I was improving the code.  Not so. Every iteration
 increased the complexity, and cost time. That's not what we want. We want
 functionality without bugs, and we want it as cheaply as possible.
 
