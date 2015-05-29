@@ -12,7 +12,8 @@
                  [clygments "0.1.1"]
                  [clj-time "0.8.0"]
                  [prismatic/schema "0.2.6"]]
-  :ring {:handler dowlgen.core/app}
+  :ring {:handler dowlgen.core/app
+         :nrepl {:start? true}}
   :aliases {"build-site" ["run" "-m" "dowlgen.core/export"]}
   :profiles {
     :dev {
