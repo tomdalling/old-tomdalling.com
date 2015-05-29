@@ -2,10 +2,10 @@
   :description "Static site generator for tomdalling.com"
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [me.raynes/cegdown "0.1.1"]
-                 [stasis "2.1.1"]
+                 [stasis "2.2.2"]
                  [ring "1.3.0"]
                  [enlive "1.1.5"]
-                 [optimus "0.15.0"]
+                 [optimus "0.17.0"]
                  [optimus-sass "0.0.2"]
                  [org.clojure/data.json "0.2.5"]
                  [org.clojure/data.xml "0.0.7"]
