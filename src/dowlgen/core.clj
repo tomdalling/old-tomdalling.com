@@ -99,9 +99,17 @@
 
 (defn get-assets []
   (concat (assets/load-assets "theme" ["/style.scss"])
-          (assets/load-assets "static" [#"^/images/.*(png|jpg|gif)$"
-                                        #"^/.*html$"])
-          (assets/load-bundle "js" "all.js" ["/jquery-1.11.1.js" #".*\.js"])))
+          (assets/load-assets "static" [#"[^.]+"])
+          (assets/load-bundle "js" "all.js" ["/jquery-1.11.1.js" #"^/.+\.js$"])))
+
+; assets/load-bundle has wierd behaviour. using this block to test output
+#_(let
+    [public-dir "static" path #"."]
+    #_[public-dir "js" path #"^/.+\.js$"]
+    (->> (optimus.class-path/file-paths-on-class-path)
+         (filter (fn [#^String p] (.contains p public-dir)))
+         (map #(optimus.assets.creation/slice-path-to-after public-dir %))
+         (filter #(re-find path %))))
 
 (defn wrap-utf8 [handler]
   (fn [request]
