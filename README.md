@@ -17,6 +17,8 @@ TODO
  - Absolute URLs for RSS feeds (and maybe everywhere)
  - Test that follows all internal links to make sure they're correct
  - Turn on markdown options for common text transformations like "--" and "..."
+ - In FizzBuzz article, fix Ruby type docs for `Array(String, int)` to be
+   `Array(String, Proc)`
 
 Proofreading
 ------------
