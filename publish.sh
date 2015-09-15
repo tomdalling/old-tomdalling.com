@@ -17,4 +17,4 @@ git checkout master
 rm -Rf ./*
 cp -R "${TMPOUTDIR}"* ./
 
-gitx
+gitup
