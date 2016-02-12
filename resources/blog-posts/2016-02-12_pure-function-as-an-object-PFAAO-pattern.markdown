@@ -58,7 +58,6 @@ Let's get started!
 Designing The API
 -----------------
 
-So, I've been tasked with creating this JSON to XML converter thing.
 After gathering the requirements, the next step is to ask: how much of this can be implemented with pure functions?
 
 As it turns out, pretty much the entire thing could be a pure function.
@@ -72,6 +71,9 @@ input = File.read('input.json')
 output = JSON2XML.convert(input)
 File.write('output.xml', output)
 ```
+
+This example code could easily be written as a test.
+Just use some dummy input, and assert that `output` is correct.
 
 Because the `File.read` and `File.write` calls are non-pure, I have purposely kept them separate from the conversion code.
 That allows the conversion step to be implemented as a pure function -- it just takes a string and returns a string.
@@ -153,7 +155,7 @@ Everything below the `convert` method is marked as private, signalling to other 
 
 The `convert` class method:
 
- 1. creates an object of it's own class,
+ 1. creates an object of its own class,
  2. passing its argument into the initializer,
  3. and calls a single method on the object, to generate the return value
 
@@ -183,7 +185,7 @@ I hear you say.
 Let's create it, then.
 
 How do you make a document object?
-Since we're using the Ox gem, we need to make a new `Ox::Document` object and fill it with all the output.
+Since we're using the Ox gem, we need to instantiate an `Ox::Document` and fill it with all the output.
 XML documents are only supposed to have a single root node in them, so all the content will have to be inside that.
 
 ```ruby
@@ -200,8 +202,8 @@ I hear you say, again.
 Let's create it, then.
 
 How do you make the root node?
-In Ox, you create a new `Ox::Element` object.
-We have to fill the root node with all the output data, so each city will have it's own node inside the root node.
+In Ox, you instantiate a `Ox::Element` object.
+We have to fill the root node with all the output data, so each city will have its own node inside the root node.
 Also, the root node has a "count" attribute on it, for reasons that I will explain later.
 
 ```ruby
@@ -217,9 +219,9 @@ end
 I hear you say, for a third time.
 "`city_nodes` doesn't exist either!"
 Let's create it.
-I'm sure you're getting the gist of what's happening.
+I'm sure you're getting the gist of what's happening here.
 
-Each city node is also an `Ox::Element` object, with a bunch of attributes set on it based on the JSON values.
+Each city node is also an `Ox::Element` object.
 We can create a city node from each line of the JSON input.
 
 ```ruby
@@ -303,13 +305,13 @@ end
 ```
 
 What I've just demonstrated is a top-down decomposition of the entire implementation.
-You start with the desired output &ndash; in this case, an XML string &ndash; and work your way backwards.
+You start with the desired output &ndash; in this case, an XML string &ndash; and work backwards.
 You write the code that you wish existed, and implement it later.
 This is a nice way to break down complicated algorithms into smaller, and smaller pieces.
 
-This is all made possible because of Ruby's syntax.
+This is all made possible by Ruby's syntax.
 Ruby blurs the line between local variables and a method calls.
-This allows us to write about values that we wish we had, as if they already exist as a local variable, and then implement them as a method later.
+This allows us to write identifiers representing values that we wish we had, as if they already exist as local variables, and then implement them later as methods.
 We're working with grain of the language, and this is one of the benefits.
 
 Notice how none of the methods have side effects.
@@ -323,7 +325,7 @@ To use FP terminology, all of the methods have _referential transparency_.
 Performance Optimisation
 ------------------------
 
-Astute readers may have noticed a performance hiccup in the `root_node` method:
+Astute readers may have noticed a performance hiccup in the `root_node` method.
 
 ```ruby
 def root_node
@@ -334,19 +336,18 @@ def root_node
 end
 ```
 
-The problem is that `city_nodes` is called two times.
-That means we're parsing the entire data set _twice_.
-That is unnecessary, and we could do the same conversion in half the time.
+I put the "count" attribute on the root node to demonstrate a common performance problem with this pattern.
 
-That's why I put the "count" attribute on the root node.
-It demonstrates a common performance problem with this pattern.
+The problem is that `city_nodes` is called two times.
+That means we're parsing the entire data set twice.
+That is unnecessary, and roughly doubles the run time of the conversion.
 
 Thankfully, due to all the methods being pure, we have a simple solution to this problem: memoization.
 Memoization is the caching of return values from pure functions.
 
-We've already seen that the `city_nodes` method always returns the same value, because it is a pure function.
+We've already seen that the `city_nodes` method always returns the same value.
 That means we can cache the return value the first time the function is called.
-On all subsequent calls, we can just return the cached value without running the function at all.
+On all subsequent calls, we can just return the cached value without running the rest of the function.
 
 Cache invalidation can be a tricky problem, but not in this case.
 When do we need to invalidate the cache?
@@ -355,7 +356,7 @@ It's a pure function.
 The return value literally never changes.
 We can just forget about cache invalidation completely.
 
-Here is the simple solution:
+Here is the solution:
 
 ```ruby
 def city_nodes
@@ -369,3 +370,37 @@ This trick isn't specific to the PFAAO pattern, it's just normal, idiomatic Ruby
 
 Now we can call `city_nodes` as many times as we like, from any other method, without having to worry about performance.
 This is a cleaner solution than storing the return value in a local variable before using it.
+
+
+When To Use PFAAO
+-----------------
+
+This pattern is good for implementing complicated pure functions.
+I've written a DOCX to HTML converter this way, quite happily.
+
+If the implementation is simple, it's not really worth defining a new class &ndash; just write a slightly larger function.
+If you're writing a pure function and it's growing out of control, that is the time to consider using this pattern.
+
+Where the implementation is mostly pure, but not completely, you can still use this pattern.
+The implementation will be more complicated, but still have a small and simple public API.
+Ruby isn't Haskell.
+We can use side effects, in a controlled fashion, wherever it makes sense.
+
+If your implementation requires a lot of mutable state, PFAAO is probably a bad fit.
+
+
+Conclusion
+----------
+
+It is possible, and even preferable, to write Ruby in a functional style.
+No monads or category theory required.
+Complicated pure functions can be written in idiomatic Ruby.
+
+Again, you can get the code for the article from GitHub:
+<https://github.com/tomdalling/pure-function-as-an-object>
+
+We've also learnt that PFAAO is a cool acronym.
+Say it out loud.
+PFAAO. PFAAO.
+
+PFAAO...
