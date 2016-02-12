@@ -1,6 +1,8 @@
 {:title "The Pure Function As An Object (PFAAO) Ruby Pattern"
  :disqus-id "com.tomdalling.blog.pure-function-as-an-object"
- ;; :main-image {:uri "/images/posts/fizzbuzz/main-image.jpg"}
+ :main-image {:uri "/images/posts/ruby.jpg"
+              :artist {:name "Rob Lavinsky, iRocks.com"
+                       :url "http://www.irocks.com/"}}
  :category :ruby}
 
 In this article, I want to demonstrate a nice way to write functional-style code in Ruby.
