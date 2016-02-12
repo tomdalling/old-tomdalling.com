@@ -1,20 +1,17 @@
 #!/bin/bash
 set -eu
 
-OUTDIR="./dist/"
-TMPOUTDIR="${TMPDIR}tomdallingcom_build/"
+MASTER_DIR="../master"
+BUILD_DIR="./dist"
 
 cd "$(dirname "$0")"
-rm -Rf "$OUTDIR"
+rm -Rf "$BUILD_DIR"
 lein midje
 lein build-site
-echo "www.tomdalling.com" > "${OUTDIR}CNAME"
-echo "Build output. See 'generator' branch for source." > "${OUTDIR}README.md"
+echo "www.tomdalling.com" > "${BUILD_DIR}/CNAME"
+echo "Build output. See 'generator' branch for source." > "${BUILD_DIR}/README.md"
 
-rm -Rf "$TMPOUTDIR"
-cp -R "$OUTDIR" "$TMPOUTDIR"
-git checkout master
-rm -Rf ./*
-cp -R "${TMPOUTDIR}"* ./
+rm -Rf "${MASTER_DIR}/"*
+cp -R "${BUILD_DIR}/"* "${MASTER_DIR}/"
 
-gitup
+(cd "$MASTER_DIR" && gitup commit)
