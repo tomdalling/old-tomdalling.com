@@ -139,8 +139,6 @@ class JSON2XML
   end
 
   private
-    private_class_method :new
-
     def initialize(input_json)
       @input_json = input_json
     end
@@ -152,7 +150,6 @@ end
 ```
 
 Instead of a module, `JSON2XML` is now a class.
-However, `private_class_method :new` prevents people from instantiating the class.
 Everything below the `convert` method is marked as private, signalling to other developers that `convert` is the only thing they should be calling, and everything else is an implementation detail.
 
 The `convert` class method:
@@ -264,7 +261,6 @@ class JSON2XML
   end
 
   private
-    private_class_method :new
     attr_reader :input_json
 
     def initialize(input_json)
@@ -389,6 +385,45 @@ Ruby isn't Haskell.
 We can use side effects, in a controlled fashion, wherever it makes sense.
 
 If your implementation requires a lot of mutable state, PFAAO is probably a bad fit.
+
+
+Optional Extras
+---------------
+
+ -  **Disallow instantiation of the class.**  
+    Unfortunately, making `initialize` private does not prevent instantiation of the class.
+    The fact that everything is private except the class method should indicate that the class isn't meant to be instantiated.
+    If that's not strict enough for you, you can make Ruby raise an error by adding this line of code to the class definition:
+
+    ```ruby
+    private_class_method :new
+    ```
+
+ -  **Make it quack like a `Proc`.**  
+    Objects that act like functions, such as `Proc` objects, are invoked using the `call` method in idiomatic Ruby.
+    I named the class method `convert` in the example above, but if you changed that to `call` you could use the class as if it were a `Proc`.
+    In that case, I would change the class name to `XML2JSONConverter` to keep the word "convert" in there.
+
+ -  **Make it convertable to a `Proc`.**  
+    Let's say you're using this PFAAO as a block fiarly often, like this:
+
+    ```ruby
+    documents.map{ |d| XML2JSON.convert(d) }
+    ```
+
+    It would be nicer to just pass the block argument using ampersand syntax like this:
+
+    ```ruby
+    documents.map(&XML2JSON)
+    ```
+
+    To make this a reality, implement the `to_proc` method on the class, like this:
+
+    ```ruby
+    def self.to_proc
+      method(:convert).to_proc
+    end
+    ```
 
 
 Conclusion
