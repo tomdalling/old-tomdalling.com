@@ -47,6 +47,8 @@ body {
     }
 
     .post-content {
+        line-height: 1.7;
+
         h2 { margin-top: 1em; }
         code, pre { font-family: 'Source Code Pro', monospace; }
         code { white-space: nowrap; }
@@ -54,7 +56,7 @@ body {
         div.highlight pre { color: inherit; } //bootstrap is clobbering this color
 
         div.highlight, table.table, figure, div.alert {
-            margin: 2em 0;
+            margin: 1em 0;
         }
 
         span.MathJax, code {
