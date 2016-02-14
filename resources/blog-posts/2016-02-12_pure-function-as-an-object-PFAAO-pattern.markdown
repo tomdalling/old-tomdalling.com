@@ -399,12 +399,12 @@ Optional Extras
     private_class_method :new
     ```
 
- -  **Make it quack like a `Proc`.**  
+ -  **Make it quack like a Proc.**  
     Objects that act like functions, such as `Proc` objects, are invoked using the `call` method in idiomatic Ruby.
     I named the class method `convert` in the example above, but if you changed that to `call` you could use the class as if it were a `Proc`.
     In that case, I would change the class name to `XML2JSONConverter` to keep the word "convert" in there.
 
- -  **Make it convertable to a `Proc`.**  
+ -  **Make it convertable to a Proc.**  
     Let's say you're using this PFAAO as a block fiarly often, like this:
 
     ```ruby
