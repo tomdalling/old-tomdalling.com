@@ -114,11 +114,11 @@
       <span class="c1"># TODO: implementation goes here</span>
     <span class="k">end</span>
 <span class="k">end</span>
-</pre></div><p>Instead of a module, <code>JSON2XML</code> is now a class. Everything below the <code>convert</code> method is marked as private, signalling to other developers that <code>convert</code> is the only thing they should be calling, and everything else is an implementation detail.</p><p>The <code>convert</code> class method:</p>
+</pre></div><p>Instead of a module, <code>JSON2XML</code> is now a class. Everything below the <code>convert</code> method is marked as private, signalling to other developers that <code>convert</code> is the only thing they should be calling, and everything else is an implementation detail. The <code>xml</code> method can't be called directly because it is private, so we use <code>send(:xml)</code> to get around that.</p><p>The <code>convert</code> class method:</p>
 <ol>
   <li>creates an object of its own class,</li>
   <li>passing its argument into the initializer,</li>
-  <li>and calls a single method on the object, to generate the return value</li>
+  <li>and calls a single method on the object, to generate the return value.</li>
 </ol><p>That's the overview of how the pattern works.</p><h2>Implementation Advantages</h2><p>Now let's finish off the implementation of the JSON to XML converter, to demonstrate some advantages of using this pattern.</p><p>The <code>xml</code> method is empty at the moment. It's supposed to return the output XML as a string, as required by the <code>convert</code> class method. How do you generate XML? One approach is to take some sort of XML "document" object, and serialize it. Let's do that:</p>
 <div class="highlight"><pre><span class="k">def</span> <span class="nf">xml</span>
   <span class="no">Ox</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">with_xml</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span>
