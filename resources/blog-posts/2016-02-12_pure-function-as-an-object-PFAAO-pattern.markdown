@@ -151,12 +151,13 @@ end
 
 Instead of a module, `JSON2XML` is now a class.
 Everything below the `convert` method is marked as private, signalling to other developers that `convert` is the only thing they should be calling, and everything else is an implementation detail.
+The `xml` method can't be called directly because it is private, so we use `send(:xml)` to get around that.
 
 The `convert` class method:
 
  1. creates an object of its own class,
  2. passing its argument into the initializer,
- 3. and calls a single method on the object, to generate the return value
+ 3. and calls a single method on the object, to generate the return value.
 
 That's the overview of how the pattern works.
 
