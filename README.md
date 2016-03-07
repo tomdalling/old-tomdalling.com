@@ -19,6 +19,8 @@ TODO
  - Turn on markdown options for common text transformations like "--" and "..."
  - In FizzBuzz article, fix Ruby type docs for `Array(String, int)` to be
    `Array(String, Proc)`
+ - Fix gluPerspective (see disqus comments)
+ - Fix broken links in opengl article 01 (see disqus comments)
 
 Proofreading
 ------------
