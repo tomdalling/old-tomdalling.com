@@ -259,7 +259,7 @@ body {
     }
     .mugshot {
         margin: 0 auto 1em;
-    } 
+    }
 }
 
 .programming-for-beginners-book {
@@ -269,6 +269,18 @@ body {
     }
     .btn {
         margin-top: 1em;
+    }
+}
+
+.rubypigeon {
+    .h1 {
+        display: block;
+        margin-top: 0;
+    }
+    .btn { margin-top: 1em; }
+    img {
+        max-width: 40%;
+        float: right;
     }
 }
 
