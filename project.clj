@@ -17,6 +17,7 @@
   :aliases {"build-site" ["run" "-m" "dowlgen.core/export"]}
   :profiles {
     :dev {
-      :plugins [[lein-ring "0.8.10"]]
+      :plugins [[lein-ring "0.8.10"]
+                [lein-midje "3.2.2"]]
       :dependencies [[midje "1.5.1"]]}}
   :main dowlgen.core)

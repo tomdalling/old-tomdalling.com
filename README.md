@@ -1,5 +1,10 @@
 Site generator for http://www.tomdalling.com/
 
+WARNING
+-------
+
+USE JAVA 8. DONT TRY TO UPGRDAE. IT WILL HURT U.
+
 Commonly Used Commands
 ----------------------
 
